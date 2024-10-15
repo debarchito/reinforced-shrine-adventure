@@ -4,7 +4,7 @@ This project serves as a *text-based adventure game-ish environment* to train **
 
 ## Run
 
-This project uses the [uv](https://github.com/astral-sh/uv) package manager (written in *Rust* btw). **uv** automatically creates and manages a **.venv** for you. Ensure you use **Python 3.12+**.
+This project uses the [uv](https://github.com/astral-sh/uv) package manager (written in *Rust* btw). **uv** automatically creates and manages a **.venv** for you. Ensure you are using **Python 3.12+**.
 
 ```sh
 git clone https://github.com/debarchito/reinforced-shrine-adventure.git
