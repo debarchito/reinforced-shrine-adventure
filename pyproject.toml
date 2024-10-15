@@ -1,0 +1,10 @@
+[project]
+name = "reinforced-shrine-adventure"
+version = "0.1.0"
+description = "A text-based adventure game-ish environment to train RL agents"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pygame>=2.6.1",
+    "ruff>=0.6.9",
+]
