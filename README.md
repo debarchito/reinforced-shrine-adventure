@@ -1,6 +1,6 @@
 ## About
 
-This project serves as a *text-based adventure game-ish environment* to train **RL agents**. I prepared this as a showcase for a `#BuildWithAI` event organized by `GDG on Campus | AdtU`. 
+This project serves as a *text-based adventure game-ish environment* to train solo **RL agents**. I prepared this as a showcase for a `#BuildWithAI` event organized by `GDG on Campus | AdtU`. 
 
 ## Run
 
