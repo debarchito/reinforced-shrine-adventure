@@ -17,5 +17,5 @@ uv sync
 source .venv/bin/activate.fish
 
 # Run the game
-python src/main.py
+python src/game.py
 ```
