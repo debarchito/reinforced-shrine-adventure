@@ -1,21 +1,32 @@
 import pygame
 
 pygame.init()
-screen = pygame.display.set_mode((1280, 720))
-clock = pygame.time.Clock()
-running = True
-dt = 0
 
+dt = 0 # delta time aka time passed since last frame
+is_running = True
+is_fullscreen = False
+
+display_info = pygame.display.Info()
+screen_width, screen_height = display_info.current_w - 100, display_info.current_h - 100
+
+clock = pygame.time.Clock()
+screen = pygame.display.set_mode((screen_width, screen_height))
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 
-while running:
+while is_running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            is_running = False
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
+            is_fullscreen = not is_fullscreen
+            if is_fullscreen:
+                screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            else:
+                screen = pygame.display.set_mode((screen_width, screen_height))
 
-    screen.fill("purple")
+    screen.fill("black")
 
-    pygame.draw.circle(screen, "red", player_pos, 40)
+    pygame.draw.circle(screen, "white", player_pos, 40)
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
