@@ -7,6 +7,7 @@ from pathlib import Path
 
 pygame.init()
 
+
 class Fonts:
     def monogram_extended(self, size: int) -> pygame.font.Font:
         return pygame.font.Font("assets/fonts/monogram_extended.ttf", size)
