@@ -1,6 +1,7 @@
 import pygame
 from utils import render_text_with_effects
 from init import Assets
+from components.button import Button
 
 assets = Assets()
 
@@ -28,19 +29,17 @@ heading_position = (
     screen.get_height() * 0.3,
 )
 
-# Load button surfaces
-button_normal = pygame.transform.scale(assets.images.ui.button_start(), (200, 100))
-button_hover = pygame.transform.scale(assets.images.ui.button_start_hover(), (200, 100))
-
-# Define start button rect and position
-start_button_rect = button_normal.get_rect(
-    center=(screen.get_width() // 2, int(screen.get_height() * 0.6))
+# Create the start button using the Button class
+start_button = Button(
+    normal_image=pygame.transform.scale(assets.images.ui.button_start(), (200, 100)),
+    hover_image=pygame.transform.scale(assets.images.ui.button_start_hover(), (200, 100)),
+    position=(screen.get_width() // 2, screen.get_height() * 0.6),
+    on_click=lambda: print("Button clicked!")
 )
 
-
-def handle_events(is_fullscreen: bool) -> tuple[bool, bool, bool]:
-    global background, screen, start_button_rect
-    is_running, is_hovering = True, False
+def handle_events(is_fullscreen: bool) -> tuple[bool, bool]:
+    global background, screen
+    is_running = True
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -58,16 +57,14 @@ def handle_events(is_fullscreen: bool) -> tuple[bool, bool, bool]:
                 )
             )
             background = pygame.transform.scale(background, screen.get_size())
-            start_button_rect.center = (
+            start_button.rect.center = (
                 screen.get_width() // 2,
                 int(screen.get_height() * 0.6),
             )
-        elif event.type == pygame.MOUSEBUTTONDOWN and is_hovering:
-            print("Button clicked!")
 
-    is_hovering = start_button_rect.collidepoint(pygame.mouse.get_pos())
+        start_button.handle_event(event)
 
-    return is_running, is_fullscreen, is_hovering
+    return is_running, is_fullscreen
 
 
 def main():
@@ -75,7 +72,7 @@ def main():
     is_running, is_fullscreen = True, False
 
     while is_running:
-        is_running, is_fullscreen, is_hovering = handle_events(is_fullscreen)
+        is_running, is_fullscreen = handle_events(is_fullscreen)
         screen.blit(background, (0, 0))
 
         render_text_with_effects(
@@ -88,7 +85,9 @@ def main():
             3,
         )
 
-        screen.blit(button_hover if is_hovering else button_normal, start_button_rect)
+        start_button.update()
+        start_button.draw(screen)
+
         pygame.display.flip()
         clock.tick(60)
 
