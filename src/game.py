@@ -1,11 +1,8 @@
 import pygame
-from pathlib import Path
 from utils import render_text_with_effects
-from enum import Enum
+from pathlib import Path
 from typing import cast
-
-pygame.init()
-
+from init import Assets
 
 class Colors:
     WHITE = (255, 255, 255)
@@ -13,42 +10,11 @@ class Colors:
     SHADOW = (100, 100, 100)
 
 
-class Assets(Enum):
-    BACKGROUND_MOON_SKY = (
-        "assets/images/backgrounds/moon_sky.png",
-        "image",
-        (pygame.display.Info().current_w - 100, pygame.display.Info().current_h - 100),
-    )
-    FONT_MONOGRAM_EXTENDED = ("assets/fonts/monogram-extended.ttf", "font", 100)
-    SOUND_AMBIENT_EVENING = ("assets/sounds/ambient_evening.mp3", "sound")
-    BUTTON_START_NORMAL = ("assets/images/ui/button_start.png", "image", (200, 100))
-    BUTTON_START_HOVER = (
-        "assets/images/ui/button_start_hover.png",
-        "image",
-        (200, 100),
-    )
-
-    def __init__(self, path: str, asset_type: str, *args: tuple) -> None:
-        self.path = Path(path)
-        self.asset_type = asset_type
-        self.args = args
-        self.asset: pygame.Surface | pygame.font.Font | None = self.load_asset()
-
-    def load_asset(self) -> pygame.Surface | pygame.font.Font | None:
-        if self.asset_type == "image":
-            image = pygame.image.load(self.path)
-            return pygame.transform.scale(image, self.args[0]) if self.args else image
-        elif self.asset_type == "font":
-            return pygame.font.Font(self.path, self.args[0])  # type: ignore
-        elif self.asset_type == "sound":
-            pygame.mixer.music.load(self.path)
-            return None
-        return None
-
-
 screen = pygame.display.set_mode(
     cast(pygame.Surface, Assets.BACKGROUND_MOON_SKY.asset).get_size()
 )
+
+pygame.mixer.music.load(cast(Path, Assets.SOUND_AMBIENT_EVENING.asset))
 pygame.mixer.music.play(-1)
 
 text_surface = cast(pygame.font.Font, Assets.FONT_MONOGRAM_EXTENDED.asset).render(
