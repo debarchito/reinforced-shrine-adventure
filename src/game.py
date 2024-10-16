@@ -4,27 +4,26 @@ from pathlib import Path
 from typing import cast
 from init import Assets
 
-class Colors:
-    WHITE = (255, 255, 255)
-    BLACK = (0, 0, 0)
-    SHADOW = (100, 100, 100)
-
-
+# Set default background
 screen = pygame.display.set_mode(
     cast(pygame.Surface, Assets.BACKGROUND_MOON_SKY.asset).get_size()
 )
 
+# Set default music
 pygame.mixer.music.load(cast(Path, Assets.SOUND_AMBIENT_EVENING.asset))
 pygame.mixer.music.play(-1)
 
-text_surface = cast(pygame.font.Font, Assets.FONT_MONOGRAM_EXTENDED.asset).render(
-    "Reinforced Shrine Adventure", True, Colors.WHITE
+# Create a heading
+heading = cast(pygame.font.Font, Assets.FONT_MONOGRAM_EXTENDED.asset).render(
+    "Reinforced Shrine Adventure", True, (255, 255, 255)
 )
-text_position = (
-    (screen.get_width() - text_surface.get_width()) / 2,
+heading_position = (
+    (screen.get_width() - heading.get_width()) / 2,
     screen.get_height() * 0.3,
 )
-button_rect = cast(pygame.Surface, Assets.BUTTON_START_NORMAL.asset).get_rect(
+
+# Create a start button
+start_button = cast(pygame.Surface, Assets.BUTTON_START_NORMAL.asset).get_rect(
     center=(screen.get_width() // 2, screen.get_height() * 0.6)
 )
 
@@ -32,6 +31,7 @@ button_rect = cast(pygame.Surface, Assets.BUTTON_START_NORMAL.asset).get_rect(
 def handle_events(is_fullscreen: bool) -> tuple[bool, bool, bool]:
     global screen
     is_running, is_hovering = True, False
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             is_running = False
@@ -50,9 +50,12 @@ def handle_events(is_fullscreen: bool) -> tuple[bool, bool, bool]:
             Assets.BACKGROUND_MOON_SKY.asset = pygame.transform.scale(
                 pygame.image.load(Assets.BACKGROUND_MOON_SKY.path), screen.get_size()
             )
-            button_rect.center = (screen.get_width() // 2, int(screen.get_height() * 0.6))
+            start_button.center = (
+                screen.get_width() // 2,
+                int(screen.get_height() * 0.6),
+            )
         elif event.type == pygame.MOUSEMOTION:
-            is_hovering = button_rect.collidepoint(event.pos)
+            is_hovering = start_button.collidepoint(event.pos)
         elif event.type == pygame.MOUSEBUTTONDOWN and is_hovering:
             print("Button clicked!")
     return is_running, is_fullscreen, is_hovering
@@ -69,9 +72,9 @@ def main():
             screen,
             "Reinforced Shrine Adventure",
             Assets.FONT_MONOGRAM_EXTENDED.asset,
-            text_position,
-            Colors.BLACK,
-            Colors.SHADOW,
+            heading_position,
+            (0, 0, 0),
+            (100, 100, 100),
             3,
         )
         screen.blit(
@@ -80,7 +83,7 @@ def main():
                 if is_hovering
                 else Assets.BUTTON_START_NORMAL.asset
             ),
-            button_rect,
+            start_button,
         )
         pygame.display.flip()
         clock.tick(60)

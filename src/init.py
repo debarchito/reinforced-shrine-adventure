@@ -10,6 +10,7 @@ from typing import cast
 pygame.init()
 info = pygame.display.Info()
 
+
 class Assets(Enum):
     BACKGROUND_MOON_SKY = (
         "assets/images/backgrounds/moon_sky.png",
