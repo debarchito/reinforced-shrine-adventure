@@ -22,14 +22,18 @@ heading_position = (
     screen.get_height() * 0.3,
 )
 
-# Create a start button
-start_button = cast(pygame.Surface, Assets.BUTTON_START_NORMAL.asset).get_rect(
-    center=(screen.get_width() // 2, screen.get_height() * 0.6)
+# Load button surfaces
+button_normal = cast(pygame.Surface, Assets.BUTTON_START_NORMAL.asset)
+button_hover = cast(pygame.Surface, Assets.BUTTON_START_HOVER.asset)
+
+# Define start button rect and position
+start_button_rect = button_normal.get_rect(
+    center=(screen.get_width() // 2, int(screen.get_height() * 0.6))
 )
 
 
 def handle_events(is_fullscreen: bool) -> tuple[bool, bool, bool]:
-    global screen
+    global screen, start_button_rect
     is_running, is_hovering = True, False
 
     for event in pygame.event.get():
@@ -50,14 +54,15 @@ def handle_events(is_fullscreen: bool) -> tuple[bool, bool, bool]:
             Assets.BACKGROUND_MOON_SKY.asset = pygame.transform.scale(
                 pygame.image.load(Assets.BACKGROUND_MOON_SKY.path), screen.get_size()
             )
-            start_button.center = (
+            start_button_rect.center = (
                 screen.get_width() // 2,
                 int(screen.get_height() * 0.6),
             )
-        elif event.type == pygame.MOUSEMOTION:
-            is_hovering = start_button.collidepoint(event.pos)
         elif event.type == pygame.MOUSEBUTTONDOWN and is_hovering:
             print("Button clicked!")
+
+    is_hovering = start_button_rect.collidepoint(pygame.mouse.get_pos())
+
     return is_running, is_fullscreen, is_hovering
 
 
@@ -68,6 +73,7 @@ def main():
     while is_running:
         is_running, is_fullscreen, is_hovering = handle_events(is_fullscreen)
         screen.blit(Assets.BACKGROUND_MOON_SKY.asset, (0, 0))
+
         render_text_with_effects(
             screen,
             "Reinforced Shrine Adventure",
@@ -77,14 +83,8 @@ def main():
             (100, 100, 100),
             3,
         )
-        screen.blit(
-            (
-                Assets.BUTTON_START_HOVER.asset
-                if is_hovering
-                else Assets.BUTTON_START_NORMAL.asset
-            ),
-            start_button,
-        )
+
+        screen.blit(button_hover if is_hovering else button_normal, start_button_rect)
         pygame.display.flip()
         clock.tick(60)
 
