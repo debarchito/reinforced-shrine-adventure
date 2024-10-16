@@ -6,7 +6,9 @@ dt = 0 # delta time aka time passed since last frame
 is_running = True
 is_fullscreen = False
 assets = {
-    "moon_sky": "assets/images/backgrounds/moon_sky.png"
+    "bg_moon_sky": "assets/images/backgrounds/moon_sky.png",
+    "font_monogram_extended": "assets/fonts/monogram-extended.ttf",
+    "sound_ambient_evening": "assets/sounds/ambient_evening.mp3"
 }
 
 display_info = pygame.display.Info()
@@ -14,9 +16,15 @@ screen_width, screen_height = display_info.current_w - 100, display_info.current
 
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((screen_width, screen_height))
-player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-background_image = pygame.image.load(assets["moon_sky"])
+background_image = pygame.image.load(assets["bg_moon_sky"])
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
+
+font = pygame.font.Font(assets["font_monogram_extended"], 86)
+text_surface = font.render("Reinforced Shrine Adventure", True, (255, 255, 255))
+text_pos = ((screen_width - text_surface.get_width()) / 2, (screen_height - text_surface.get_height()) / 2)
+
+pygame.mixer.music.load(assets["sound_ambient_evening"])
+pygame.mixer.music.play(-1)
 
 while is_running:
     for event in pygame.event.get():
@@ -31,19 +39,10 @@ while is_running:
                 screen = pygame.display.set_mode((display_info.current_w - 100, display_info.current_h - 100))
                 screen_width, screen_height = screen.get_size()
             background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
+            text_pos = ((screen_width - text_surface.get_width()) / 2, (screen_height - text_surface.get_height()) / 2)
 
     screen.blit(background_image, (0, 0))
-    pygame.draw.circle(screen, "white", player_pos, 40)
-
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w]:
-        player_pos.y -= 300 * dt
-    if keys[pygame.K_s]:
-        player_pos.y += 300 * dt
-    if keys[pygame.K_a]:
-        player_pos.x -= 300 * dt
-    if keys[pygame.K_d]:
-        player_pos.x += 300 * dt
+    screen.blit(text_surface, text_pos)
 
     pygame.display.flip()
     dt = clock.tick(60) / 1000

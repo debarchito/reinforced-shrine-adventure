@@ -1,0 +1,11 @@
+## Fonts
+
+1) monogram-extended.ttf, monogram-extended-italic.ttf (https://datagoblin.itch.io/monogram)
+
+## Images
+
+1) backgrounds/moon_sky.png (https://www.patreon.com/Anokolisa, https://anokolisa.itch.io/moon-graveyard)
+
+## Sounds
+
+1) sounds/ambient_evening.mp3 (https://github.com/Hytkat)
