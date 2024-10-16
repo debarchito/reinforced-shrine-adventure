@@ -1,13 +1,14 @@
 import pygame
 
+
 def render_text_with_effects(
-    screen: pygame.Surface, 
-    text: str, 
-    font: pygame.font.Font, 
-    pos: tuple[int, int], 
-    border_color: tuple[int, int, int], 
-    shadow_color: tuple[int, int, int], 
-    shadow_offset: int
+    screen: pygame.Surface,
+    text: str,
+    font: pygame.font.Font,
+    pos: tuple[int, int],
+    border_color: tuple[int, int, int],
+    shadow_color: tuple[int, int, int],
+    shadow_offset: int,
 ) -> None:
     """
     Renders a text with border, shadow and underline effects on the given pygame screen.
