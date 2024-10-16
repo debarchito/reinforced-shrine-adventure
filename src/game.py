@@ -1,20 +1,26 @@
 import pygame
 from utils import render_text_with_effects
-from pathlib import Path
-from typing import cast
 from init import Assets
 
-# Set default background
-screen = pygame.display.set_mode(
-    cast(pygame.Surface, Assets.BACKGROUND_MOON_SKY.asset).get_size()
-)
+assets = Assets()
 
-# Set default music
-pygame.mixer.music.load(cast(Path, Assets.SOUND_AMBIENT_EVENING.asset))
+info = pygame.display.Info()
+font = assets.fonts.monogram_extended(100)
+background = pygame.transform.scale(
+    assets.images.backgrounds.moon_sky(),
+    (info.current_w - 100, info.current_h - 100)
+)
+sound = assets.sounds.ambient_evening()
+
+# Set default background
+screen = pygame.display.set_mode(background.get_size())
+
+# Set default music/sound
+pygame.mixer.music.load(sound)
 pygame.mixer.music.play(-1)
 
 # Create a heading
-heading = cast(pygame.font.Font, Assets.FONT_MONOGRAM_EXTENDED.asset).render(
+heading = font.render(
     "Reinforced Shrine Adventure", True, (255, 255, 255)
 )
 heading_position = (
@@ -23,8 +29,8 @@ heading_position = (
 )
 
 # Load button surfaces
-button_normal = cast(pygame.Surface, Assets.BUTTON_START_NORMAL.asset)
-button_hover = cast(pygame.Surface, Assets.BUTTON_START_HOVER.asset)
+button_normal = pygame.transform.scale(assets.images.ui.button_start(), (200, 100))
+button_hover = pygame.transform.scale(assets.images.ui.button_start_hover(), (200, 100))
 
 # Define start button rect and position
 start_button_rect = button_normal.get_rect(
@@ -33,7 +39,7 @@ start_button_rect = button_normal.get_rect(
 
 
 def handle_events(is_fullscreen: bool) -> tuple[bool, bool, bool]:
-    global screen, start_button_rect
+    global background, screen, start_button_rect
     is_running, is_hovering = True, False
 
     for event in pygame.event.get():
@@ -46,14 +52,12 @@ def handle_events(is_fullscreen: bool) -> tuple[bool, bool, bool]:
                 if is_fullscreen
                 else pygame.display.set_mode(
                     (
-                        pygame.display.Info().current_w - 100,
-                        pygame.display.Info().current_h - 100,
+                        info.current_w - 100,
+                        info.current_h - 100,
                     )
                 )
             )
-            Assets.BACKGROUND_MOON_SKY.asset = pygame.transform.scale(
-                pygame.image.load(Assets.BACKGROUND_MOON_SKY.path), screen.get_size()
-            )
+            background = pygame.transform.scale(background, screen.get_size())
             start_button_rect.center = (
                 screen.get_width() // 2,
                 int(screen.get_height() * 0.6),
@@ -72,12 +76,12 @@ def main():
 
     while is_running:
         is_running, is_fullscreen, is_hovering = handle_events(is_fullscreen)
-        screen.blit(Assets.BACKGROUND_MOON_SKY.asset, (0, 0))
+        screen.blit(background, (0, 0))
 
         render_text_with_effects(
             screen,
             "Reinforced Shrine Adventure",
-            Assets.FONT_MONOGRAM_EXTENDED.asset,
+            font,
             heading_position,
             (0, 0, 0),
             (100, 100, 100),
