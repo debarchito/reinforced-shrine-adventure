@@ -1,17 +1,18 @@
 import pygame
 
-def load_assets(asset_dict):
-    loaded_assets = {}
-    for key, path in asset_dict.items():
-        if key.startswith("button_"):
-            loaded_assets[key] = pygame.image.load(path)
-        elif key == "font_monogram_extended":
-            loaded_assets[key] = pygame.font.Font(path, 86)
-        elif key == "sound_ambient_evening":
-            loaded_assets[key] = path
-    return loaded_assets
+def render_text_with_effects(
+    screen: pygame.Surface, 
+    text: str, 
+    font: pygame.font.Font, 
+    pos: tuple[int, int], 
+    border_color: tuple[int, int, int], 
+    shadow_color: tuple[int, int, int], 
+    shadow_offset: int
+) -> None:
+    """
+    Renders a text with border, shadow and underline effects on the given pygame screen.
+    """
 
-def render_text_with_effects(screen, text, font, pos, border_color, shadow_color, shadow_offset):
     text_surface = font.render(text, True, (255, 255, 255))
     border_surface = font.render(text, True, border_color)
     shadow_surface = font.render(text, True, shadow_color)

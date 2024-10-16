@@ -1,44 +1,53 @@
 import pygame
-from utils import load_assets, render_text_with_effects
+from utils import render_text_with_effects
 
 pygame.init()
 
 assets = {
-    "bg_moon_sky": "assets/images/backgrounds/moon_sky.png",
+    # backgrounds
+    "background_moon_sky": "assets/images/backgrounds/moon_sky.png",
+    # fonts
     "font_monogram_extended": "assets/fonts/monogram-extended.ttf",
+    "font_monogram_extended_italic": "assets/fonts/monogram-extended-itallic.ttf",
+    # sounds
     "sound_ambient_evening": "assets/sounds/ambient_evening.mp3",
+    # ui elements
+    # buttons
     "button_start": "assets/images/ui/button_start.png",
     "button_start_hover": "assets/images/ui/button_start_hover.png",
     "button_start_pressed": "assets/images/ui/button_start_pressed.png",
 }
 
-assets_loaded = load_assets(assets)
-
 # Set music
 pygame.mixer.music.load(assets["sound_ambient_evening"])
-pygame.mixer.music.play(-1)
+pygame.mixer.music.play(-1) # Play indefinitely
 
 # Sizing and background stuff
 display_info = pygame.display.Info()
+# Make it fit the screen but not to the edges
 screen_width, screen_height = display_info.current_w - 100, display_info.current_h - 100
 screen = pygame.display.set_mode((screen_width, screen_height))
-background_image = pygame.image.load(assets["bg_moon_sky"])
+# TODO: This is just a placeholder for default background.
+# To replace with the actual one in future
+background_image = pygame.image.load(assets["background_moon_sky"])
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
 
 # Buttons
-button_start_normal = assets_loaded["button_start"]
-button_start_hover = assets_loaded["button_start_hover"]
+button_start_normal = pygame.image.load(assets["button_start"])
+button_start_hover = pygame.image.load(assets["button_start_hover"])
 button_start_normal = pygame.transform.scale(button_start_normal, (200, 100))
 button_start_hover = pygame.transform.scale(button_start_hover, (200, 100))
 button_rect = button_start_normal.get_rect(center=(screen_width // 2, screen_height * 0.6))
 
-# Fonts and other variables
-font = assets_loaded["font_monogram_extended"]
+# Fonts and texts
+font = pygame.font.Font(assets["font_monogram_extended"], 100)
 text_surface = font.render("Reinforced Shrine Adventure", True, (255, 255, 255))
 text_pos = ((screen_width - text_surface.get_width()) / 2, screen_height * 0.3)
 border_color = (0, 0, 0)
 shadow_color = (100, 100, 100)
 shadow_offset = 3
+
+# Others
 is_running = True
 is_fullscreen = False
 is_hovering = False
@@ -62,6 +71,7 @@ while is_running:
         if event.type == pygame.MOUSEMOTION:
             is_hovering = button_rect.collidepoint(event.pos)
         elif event.type == pygame.MOUSEBUTTONDOWN and is_hovering:
+            # TODO: Save the state of the game using sqlite
             print("Button clicked!")
 
     screen.blit(background_image, (0, 0))
