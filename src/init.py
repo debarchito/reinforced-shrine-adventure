@@ -66,7 +66,7 @@ class UI:
 
     def button_options_active(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("assets/images/ui/button_options_active.png", namehint)
-    
+
     def button_credits(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("assets/images/ui/button_credits.png", namehint)
 

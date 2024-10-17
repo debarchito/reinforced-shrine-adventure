@@ -39,7 +39,6 @@ class Surface(ABC):
         pass
 
 
-
 class SurfaceManager:
     """Manages different game surfaces, handling their activation and transitions."""
 

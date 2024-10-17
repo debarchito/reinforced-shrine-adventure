@@ -4,6 +4,7 @@ from surface import SurfaceManager
 from surfaces.root import RootSurface
 from surfaces.settings import SettingsSurface
 
+
 def main():
     assets = Assets()
     surface = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

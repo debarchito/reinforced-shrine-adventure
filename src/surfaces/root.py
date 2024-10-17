@@ -4,15 +4,21 @@ from init import Assets  # type: ignore
 from components.button import Button  # type: ignore
 from components.text import Text  # type: ignore
 
+
 class RootSurface(Surface):
-    def __init__(self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager):
+    def __init__(
+        self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager
+    ):
         super().__init__(surface)
         self.manager = manager
         self.info = pygame.display.Info()
         self.background = pygame.transform.scale(
-            assets.images.backgrounds.moon_sky(), (self.info.current_w, self.info.current_h)
+            assets.images.backgrounds.moon_sky(),
+            (self.info.current_w, self.info.current_h),
         )
-        self.surface = pygame.display.set_mode(self.background.get_size(), pygame.FULLSCREEN)
+        self.surface = pygame.display.set_mode(
+            self.background.get_size(), pygame.FULLSCREEN
+        )
         self.heading = Text(
             content="Reinforced Shrine Adventure",
             font=assets.fonts.monogram_extended(130),
@@ -70,7 +76,7 @@ class RootSurface(Surface):
 
     def update(self) -> None:
         if not self.is_active:
-            return 
+            return
 
         self.start_button.update()
         self.cog_button.update()
