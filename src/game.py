@@ -22,8 +22,6 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
-                manager.toggle_fullscreen()
             manager.handle_event(event)
         manager.update()
         manager.draw()
