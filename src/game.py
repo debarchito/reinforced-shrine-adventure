@@ -74,6 +74,10 @@ def event_handler(is_running: bool, is_fullscreen: bool) -> tuple[bool, bool]:
                 screen.get_width() // 2,
                 int(screen.get_height() * 0.6),
             )
+            cog_button.rect.center = (
+                screen.get_width() // 2,
+                int(screen.get_height() * 0.73),
+            )
         
         cog_button.handle_event(event)
         start_button.handle_event(event)
