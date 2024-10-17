@@ -49,6 +49,15 @@ class UI:
     def button_quit_active(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("assets/images/ui/button_quit_active.png", namehint)
 
+    def button_home(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/button_home.png", namehint)
+
+    def button_home_hover(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/button_home_hover.png", namehint)
+
+    def button_home_active(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/button_home_active.png", namehint)
+
     def button_options(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("assets/images/ui/button_options.png", namehint)
 
