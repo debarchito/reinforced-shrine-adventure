@@ -10,7 +10,7 @@ def main():
 
     manager = SurfaceManager(surface)
     root_surface = RootSurface(surface, assets, manager)
-    settings_surface = SettingsSurface(surface, assets)
+    settings_surface = SettingsSurface(surface, assets, manager)
     manager.add_surface("root", root_surface)
     manager.add_surface("settings", settings_surface)
     manager.set_active_surface("root")
