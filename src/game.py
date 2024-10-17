@@ -39,9 +39,8 @@ start_button = Button(
 )
 
 
-def event_handler(is_fullscreen: bool) -> tuple[bool, bool]:
+def event_handler(is_running: bool, is_fullscreen: bool) -> tuple[bool, bool]:
     global background, screen
-    is_running = True
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -74,7 +73,7 @@ def main():
     is_running, is_fullscreen = True, False
 
     while is_running:
-        is_running, is_fullscreen = event_handler(is_fullscreen)
+        is_running, is_fullscreen = event_handler(is_running, is_fullscreen)
 
         screen.blit(background, (0, 0))
         heading.draw(screen)
