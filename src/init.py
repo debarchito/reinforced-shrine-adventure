@@ -40,6 +40,15 @@ class UI:
     def button_cog_active(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("assets/images/ui/button_cog_active.png", namehint)
 
+    def button_quit(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/button_quit.png", namehint)
+
+    def button_quit_hover(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/button_quit_hover.png", namehint)
+
+    def button_quit_active(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/button_quit_active.png", namehint)
+
 
 class Images:
     def __init__(self):

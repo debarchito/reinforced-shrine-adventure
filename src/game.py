@@ -47,8 +47,20 @@ cog_button = Button(
     active_image=pygame.transform.scale(
         assets.images.ui.button_cog_active(), (100, 100)
     ),
-    position=(screen.get_width() // 2, int(screen.get_height() * 0.73)),
+    position=(screen.get_width() // 2 - 50, int(screen.get_height() * 0.73)),
     on_click=lambda _button, _event: print("Settings button"),
+)
+
+quit_button = Button(
+    normal_image=pygame.transform.scale(assets.images.ui.button_quit(), (100, 100)),
+    hover_image=pygame.transform.scale(
+        assets.images.ui.button_quit_hover(), (100, 100)
+    ),
+    active_image=pygame.transform.scale(
+        assets.images.ui.button_quit_active(), (100, 100)
+    ),
+    position=(screen.get_width() // 2 + 50, int(screen.get_height() * 0.73)),
+    on_click=lambda _button, _event: pygame.quit(),
 )
 
 def event_handler(is_running: bool, is_fullscreen: bool) -> tuple[bool, bool]:
@@ -75,12 +87,17 @@ def event_handler(is_running: bool, is_fullscreen: bool) -> tuple[bool, bool]:
                 int(screen.get_height() * 0.6),
             )
             cog_button.rect.center = (
-                screen.get_width() // 2,
+                screen.get_width() // 2 - 50,
+                int(screen.get_height() * 0.73),
+            )
+            quit_button.rect.center = (
+                screen.get_width() // 2 + 50,
                 int(screen.get_height() * 0.73),
             )
         
         cog_button.handle_event(event)
         start_button.handle_event(event)
+        quit_button.handle_event(event)
 
     return is_running, is_fullscreen
 
@@ -101,6 +118,9 @@ def main():
 
         cog_button.update()
         cog_button.draw(screen)
+
+        quit_button.update()
+        quit_button.draw(screen)
 
         pygame.display.flip()
         clock.tick(60)
