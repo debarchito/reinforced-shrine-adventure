@@ -35,7 +35,7 @@ start_button = Button(
         assets.images.ui.button_start_active(), (200, 100)
     ),
     position=(screen.get_width() // 2, int(screen.get_height() * 0.6)),
-    on_click=lambda: print("Button clicked x3!!!"),
+    on_click=lambda _button, _event: print("Button clicked x3!!!"),
 )
 
 
