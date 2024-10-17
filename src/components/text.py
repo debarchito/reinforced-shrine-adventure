@@ -1,6 +1,7 @@
 import pygame
 from typing import Optional, Callable, Any
 
+
 class Text:
     """
     A declerative text component.
