@@ -1,5 +1,5 @@
 import pygame
-from typing import Optional, Callable
+from typing import Optional, Callable, Any
 
 
 class Button:
@@ -11,19 +11,21 @@ class Button:
         self,
         normal_image: pygame.Surface,
         hover_image: pygame.Surface,
-        pressed_image: pygame.Surface,
+        active_image: pygame.Surface,
         position: tuple[int, int],
         on_click: Optional[Callable] = None,
+        on_draw: Optional[Callable[["Button", pygame.Surface], Any]] = None,
     ):
         self.normal_image = normal_image
         self.hover_image = hover_image
-        self.pressed_image = pressed_image
+        self.active_image = active_image
         self.position = position
         self.on_click = on_click
         self.current_image = self.normal_image
         self.rect = self.current_image.get_rect(center=position)
         self.is_hovered = False
         self.is_pressed = False
+        self.on_draw = on_draw
 
     def update(self) -> None:
         """
@@ -32,7 +34,7 @@ class Button:
 
         self.is_hovered = self.rect.collidepoint(pygame.mouse.get_pos())
         if self.is_pressed:
-            self.current_image = self.pressed_image
+            self.current_image = self.active_image
         else:
             self.current_image = (
                 self.hover_image if self.is_hovered else self.normal_image
@@ -51,9 +53,11 @@ class Button:
                     self.on_click()
             self.is_pressed = False
 
-    def draw(self, screen: pygame.Surface) -> None:
+    def draw(self, surface: pygame.Surface) -> None:
         """
         Draw the button.
         """
 
-        screen.blit(self.current_image, self.rect)
+        surface.blit(self.current_image, self.rect)
+        if self.on_draw:
+            self.on_draw(self, surface)

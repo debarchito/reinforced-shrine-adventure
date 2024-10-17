@@ -1,12 +1,11 @@
 import pygame
-from utils import render_text_with_effects
 from init import Assets
 from components.button import Button
+from components.text import Text
 
 assets = Assets()
 
 info = pygame.display.Info()
-font = assets.fonts.monogram_extended(100)
 background = pygame.transform.scale(
     assets.images.backgrounds.moon_sky(), (info.current_w - 100, info.current_h - 100)
 )
@@ -20,10 +19,10 @@ pygame.mixer.music.load(sound)
 pygame.mixer.music.play(-1)
 
 # Create a heading
-heading = font.render("Reinforced Shrine Adventure", True, (255, 255, 255))
-heading_position = (
-    (screen.get_width() - heading.get_width()) / 2,
-    screen.get_height() * 0.3,
+heading = Text(
+    content="Reinforced Shrine Adventure",
+    font=assets.fonts.monogram_extended(130),
+    position=(screen.get_width() // 2, int(screen.get_height() * 0.3)),
 )
 
 # Create the start button using the Button class
@@ -32,15 +31,15 @@ start_button = Button(
     hover_image=pygame.transform.scale(
         assets.images.ui.button_start_hover(), (200, 100)
     ),
-    pressed_image=pygame.transform.scale(
-        assets.images.ui.button_start_pressed(), (200, 100)
+    active_image=pygame.transform.scale(
+        assets.images.ui.button_start_active(), (200, 100)
     ),
     position=(screen.get_width() // 2, int(screen.get_height() * 0.6)),
     on_click=lambda: print("Button clicked x3!!!"),
 )
 
 
-def handle_events(is_fullscreen: bool) -> tuple[bool, bool]:
+def event_handler(is_fullscreen: bool) -> tuple[bool, bool]:
     global background, screen
     is_running = True
 
@@ -75,22 +74,12 @@ def main():
     is_running, is_fullscreen = True, False
 
     while is_running:
-        is_running, is_fullscreen = handle_events(is_fullscreen)
+        is_running, is_fullscreen = event_handler(is_fullscreen)
+
         screen.blit(background, (0, 0))
-
-        render_text_with_effects(
-            screen,
-            "Reinforced Shrine Adventure",
-            font,
-            heading_position,
-            (0, 0, 0),
-            (100, 100, 100),
-            3,
-        )
-
+        heading.draw(screen)
         start_button.update()
         start_button.draw(screen)
-
         pygame.display.flip()
         clock.tick(60)
 
