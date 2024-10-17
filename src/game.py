@@ -38,6 +38,18 @@ start_button = Button(
     on_click=lambda _button, _event: print("Button clicked x3!!!"),
 )
 
+# Create the settings
+cog_button = Button(
+    normal_image=pygame.transform.scale(assets.images.ui.button_cog(), (100, 100)),
+    hover_image=pygame.transform.scale(
+        assets.images.ui.button_cog_hover(), (100, 100)
+    ),
+    active_image=pygame.transform.scale(
+        assets.images.ui.button_cog_active(), (100, 100)
+    ),
+    position=(screen.get_width() // 2, int(screen.get_height() * 0.73)),
+    on_click=lambda _button, _event: print("Settings button"),
+)
 
 def event_handler(is_running: bool, is_fullscreen: bool) -> tuple[bool, bool]:
     global background, screen
@@ -62,7 +74,8 @@ def event_handler(is_running: bool, is_fullscreen: bool) -> tuple[bool, bool]:
                 screen.get_width() // 2,
                 int(screen.get_height() * 0.6),
             )
-
+        
+        cog_button.handle_event(event)
         start_button.handle_event(event)
 
     return is_running, is_fullscreen
@@ -76,9 +89,15 @@ def main():
         is_running, is_fullscreen = event_handler(is_running, is_fullscreen)
 
         screen.blit(background, (0, 0))
+
         heading.draw(screen)
+
         start_button.update()
         start_button.draw(screen)
+
+        cog_button.update()
+        cog_button.draw(screen)
+
         pygame.display.flip()
         clock.tick(60)
 
