@@ -13,7 +13,7 @@ class Button:
         hover_image: pygame.Surface,
         active_image: pygame.Surface,
         position: tuple[int, int],
-        on_click: Optional[Callable] = None,
+        on_click: Optional[Callable[["Button", pygame.event.Event], Any]] = None,
         on_draw: Optional[Callable[["Button", pygame.Surface], Any]] = None,
     ):
         self.normal_image = normal_image
@@ -50,7 +50,7 @@ class Button:
         elif event.type == pygame.MOUSEBUTTONUP:
             if self.is_active and self.is_hovered:
                 if self.on_click:
-                    self.on_click()
+                    self.on_click(self, event)
             self.is_active = False
 
     def draw(self, surface: pygame.Surface) -> None:
