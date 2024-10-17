@@ -24,7 +24,7 @@ class Button:
         self.current_image = self.normal_image
         self.rect = self.current_image.get_rect(center=position)
         self.is_hovered = False
-        self.is_pressed = False
+        self.is_active = False
         self.on_draw = on_draw
 
     def update(self) -> None:
@@ -33,7 +33,7 @@ class Button:
         """
 
         self.is_hovered = self.rect.collidepoint(pygame.mouse.get_pos())
-        if self.is_pressed:
+        if self.is_active:
             self.current_image = self.active_image
         else:
             self.current_image = (
@@ -46,12 +46,12 @@ class Button:
         """
 
         if event.type == pygame.MOUSEBUTTONDOWN and self.is_hovered:
-            self.is_pressed = True
+            self.is_active = True
         elif event.type == pygame.MOUSEBUTTONUP:
-            if self.is_pressed and self.is_hovered:
+            if self.is_active and self.is_hovered:
                 if self.on_click:
                     self.on_click()
-            self.is_pressed = False
+            self.is_active = False
 
     def draw(self, surface: pygame.Surface) -> None:
         """
