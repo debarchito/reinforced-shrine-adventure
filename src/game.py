@@ -2,10 +2,12 @@ import pygame
 import logging
 from init import Assets
 from surface import SurfaceManager
+
 # from surfaces.root import RootSurface
 # from surfaces.settings import SettingsSurface
 
 logging.basicConfig(level=logging.INFO)
+
 
 def main():
     assets = Assets()
@@ -32,6 +34,7 @@ def main():
         clock.tick(60)
 
     pygame.quit()
+
 
 if __name__ == "__main__":
     main()

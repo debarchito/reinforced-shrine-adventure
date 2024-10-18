@@ -2,12 +2,15 @@ import pygame
 import logging
 import traceback
 import importlib
-import gc
+
+# import gc
 from abc import ABC, abstractmethod
 from typing import Optional
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+
+# from watchdog.events import FileSystemEventHandler
 from init import Assets
+
 
 class Surface(ABC):
     """Abstract base class for all game surfaces."""
@@ -44,16 +47,19 @@ class Surface(ABC):
 
         pass
 
+
 class SurfaceManager:
     """Manages different game surfaces, handling their activation and transitions."""
 
-    def __init__(self, display_surface: pygame.Surface, assets: Assets, enable_hmr: bool = False):
+    def __init__(
+        self, display_surface: pygame.Surface, assets: Assets, enable_hmr: bool = False
+    ):
         self.display_surface = display_surface
         self.assets = assets
         self.surfaces: dict[str, Surface] = {}
         self.active_surface: Optional[Surface] = None
         self.enable_hmr = enable_hmr
-        self.observer: Optional[Observer] = None # type: ignore
+        self.observer: Optional[Observer] = None  # type: ignore
 
         # if enable_hmr:
         #     self.start_hmr()
@@ -64,7 +70,7 @@ class SurfaceManager:
         logging.info(f"Loading surface: {module_name}")
 
         try:
-            new_module = importlib.import_module(f'surfaces.{module_name}')
+            new_module = importlib.import_module(f"surfaces.{module_name}")
             new_module = importlib.reload(new_module)
 
             surface_class_name = f"{module_name.capitalize()}Surface"
@@ -76,7 +82,9 @@ class SurfaceManager:
                 logging.info(f"Surface '{module_name}' loaded successfully.")
                 return new_surface
             else:
-                logging.error(f"No matching class '{surface_class_name}' found in {module_name}.")
+                logging.error(
+                    f"No matching class '{surface_class_name}' found in {module_name}."
+                )
         except Exception as e:
             logging.error(f"Error loading surface '{module_name}': {e}")
             traceback.print_exc()
@@ -86,7 +94,7 @@ class SurfaceManager:
         """Add a surface to the manager."""
 
         self.surfaces[name] = surface
-    
+
     def set_active_surface(self, name: str) -> None:
         """Switch the active surface by name."""
 
@@ -123,6 +131,7 @@ class SurfaceManager:
     #     self.observer.schedule(event_handler, path='./src/surfaces', recursive=False)
     #     self.observer.start()
     #     logging.info("Hot Module Replacement enabled. Watching for file changes...")
+
 
 # class SurfaceHotModuleReplacement(FileSystemEventHandler):
 #     """Handle changes in surface files and reload dynamically."""
