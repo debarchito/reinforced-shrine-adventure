@@ -21,7 +21,7 @@ class SettingsSurface(Surface):
         self.heading = Text(
             content="Settings",
             font=assets.fonts.monogram_extended(80),
-            position=(surface.get_width() // 6.2, int(surface.get_height() * 0.078)),
+            position=(300, 85),
         )
         self.back_button = Button(
             normal_image=pygame.transform.scale(
@@ -33,7 +33,7 @@ class SettingsSurface(Surface):
             active_image=pygame.transform.scale(
                 assets.images.ui.button_arrow_left_active(), (100, 100)
             ),
-            position=(surface.get_width() // 20, int(surface.get_height() * 0.085)),
+            position=(90, 90),
             on_click=lambda _button, _event: manager.set_active_surface("root"),
             sound_on_click=pygame.mixer.Sound(assets.sounds.button_click_1()),
         )
