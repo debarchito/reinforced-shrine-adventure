@@ -58,6 +58,15 @@ class UI:
     def button_home_active(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("assets/images/ui/button_home_active.png", namehint)
 
+    def button_arrow_left(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/button_arrow_left.png", namehint)
+
+    def button_arrow_left_hover(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/button_arrow_left_hover.png", namehint)
+
+    def button_arrow_left_active(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/button_arrow_left_active.png", namehint)
+
 
 class Images:
     def __init__(self):
