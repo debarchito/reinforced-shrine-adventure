@@ -19,21 +19,21 @@ class SettingsSurface(Surface):
             self.background.get_size(), pygame.FULLSCREEN
         )
         self.heading = Text(
-            content="Settings Page",
-            font=assets.fonts.monogram_extended(130),
-            position=(surface.get_width() // 2, int(surface.get_height() * 0.3)),
+            content="Settings",
+            font=assets.fonts.monogram_extended(80),
+            position=(surface.get_width() // 6.2, int(surface.get_height() * 0.078)),
         )
-        self.home_button = Button(
+        self.back_button = Button(
             normal_image=pygame.transform.scale(
-                assets.images.ui.button_home(), (100, 100)
+                assets.images.ui.button_arrow_left(), (100, 100)
             ),
             hover_image=pygame.transform.scale(
-                assets.images.ui.button_home_hover(), (100, 100)
+                assets.images.ui.button_arrow_left_hover(), (100, 100)
             ),
             active_image=pygame.transform.scale(
-                assets.images.ui.button_home_active(), (100, 100)
+                assets.images.ui.button_arrow_left_active(), (100, 100)
             ),
-            position=(surface.get_width() // 2, int(surface.get_height() * 0.6)),
+            position=(surface.get_width() // 20, int(surface.get_height() * 0.085)),
             on_click=lambda _button, _event: manager.set_active_surface("root"),
             sound_on_click=pygame.mixer.Sound(assets.sounds.button_click_1()),
         )
@@ -44,13 +44,13 @@ class SettingsSurface(Surface):
         if not self.is_active:
             return
 
-        self.home_button.handle_event(event)
+        self.back_button.handle_event(event)
 
     def update(self) -> None:
         if not self.is_active:
             return
 
-        self.home_button.update()
+        self.back_button.update()
 
     def draw(self) -> None:
         if not self.is_active:
@@ -58,4 +58,4 @@ class SettingsSurface(Surface):
 
         self.surface.blit(self.background, (0, 0))
         self.heading.draw(self.surface)
-        self.home_button.draw(self.surface)
+        self.back_button.draw(self.surface)
