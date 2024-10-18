@@ -7,7 +7,7 @@ from surfaces.settings import SettingsSurface
 
 def main():
     assets = Assets()
-    surface = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    surface = pygame.display.set_mode((0, 0))
 
     manager = SurfaceManager(surface)
     root_surface = RootSurface(surface, assets, manager)

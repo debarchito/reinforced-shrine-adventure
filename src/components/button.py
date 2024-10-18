@@ -14,6 +14,7 @@ class Button:
         active_image: pygame.Surface,
         position: tuple[int, int],
         on_click: Optional[Callable[["Button", pygame.event.Event], Any]] = None,
+        sound_on_click: Optional[pygame.mixer.Sound] = None,
         on_draw: Optional[Callable[["Button", pygame.Surface], Any]] = None,
     ):
         self.normal_image = normal_image
@@ -26,6 +27,7 @@ class Button:
         self.is_hovered = False
         self.is_active = False
         self.on_draw = on_draw
+        self.sound_on_click = sound_on_click
 
     def update(self) -> None:
         """
@@ -51,6 +53,8 @@ class Button:
             if self.is_active and self.is_hovered:
                 if self.on_click:
                     self.on_click(self, event)
+                if self.sound_on_click:
+                    self.sound_on_click.play()
             self.is_active = False
 
     def draw(self, surface: pygame.Surface) -> None:
