@@ -6,7 +6,6 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pygame>=2.6.1",
-    "watchdog>=5.0.3",
 ]
 
 [tool.uv]
