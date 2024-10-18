@@ -87,6 +87,9 @@ class Sounds:
     def ambient_evening(self) -> Path:
         return Path("assets/sounds/ambient_evening.mp3")
 
+    def button_click_1(self) -> Path:
+        return Path("assets/sounds/button_click_1.mp3")
+
 
 class Assets:
     def __init__(self):

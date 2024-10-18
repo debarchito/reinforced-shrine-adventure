@@ -35,6 +35,7 @@ class SettingsSurface(Surface):
             ),
             position=(surface.get_width() // 2, int(surface.get_height() * 0.6)),
             on_click=lambda _button, _event: manager.set_active_surface("root"),
+            sound_on_click=pygame.mixer.Sound(assets.sounds.button_click_1()),
         )
         pygame.mixer.music.load(assets.sounds.ambient_evening())
         pygame.mixer.music.play(-1)
