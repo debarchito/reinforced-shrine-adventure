@@ -11,6 +11,7 @@ class SettingsSurface(Surface):
     ):
         super().__init__(surface)
         self.info = pygame.display.Info()
+        self.assets = assets
         self.background = pygame.transform.scale(
             assets.images.backgrounds.moon_sky(),
             (self.info.current_w, self.info.current_h),
