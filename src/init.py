@@ -58,24 +58,6 @@ class UI:
     def button_home_active(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("assets/images/ui/button_home_active.png", namehint)
 
-    def button_options(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load("assets/images/ui/button_options.png", namehint)
-
-    def button_options_hover(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load("assets/images/ui/button_options_hover.png", namehint)
-
-    def button_options_active(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load("assets/images/ui/button_options_active.png", namehint)
-
-    def button_credits(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load("assets/images/ui/button_credits.png", namehint)
-
-    def button_credits_hover(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load("assets/images/ui/button_credits_hover.png", namehint)
-
-    def button_credits_active(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load("assets/images/ui/button_credits_active.png", namehint)
-
 
 class Images:
     def __init__(self):
