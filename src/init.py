@@ -28,7 +28,9 @@ class UI:
         return pygame.image.load("../assets/images/ui/button_start_hover.png", namehint)
 
     def button_start_active(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load("../assets/images/ui/button_start_active.png", namehint)
+        return pygame.image.load(
+            "../assets/images/ui/button_start_active.png", namehint
+        )
 
     def button_cog(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("../assets/images/ui/button_cog.png", namehint)
