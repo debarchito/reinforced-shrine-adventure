@@ -16,9 +16,6 @@ class SettingsSurface(Surface):
             assets.images.backgrounds.moon_sky(),
             (self.info.current_w, self.info.current_h),
         )
-        self.surface = pygame.display.set_mode(
-            self.background.get_size(), pygame.FULLSCREEN
-        )
         self.heading = Text(
             content="Settings",
             font=assets.fonts.monogram_extended(80),
