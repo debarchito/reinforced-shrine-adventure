@@ -16,11 +16,14 @@ class SettingsSurface(Surface):
             assets.images.backgrounds.moon_sky(),
             (self.info.current_w, self.info.current_h),
         )
+        
+        # Heading for the settings page
         self.heading = Text(
             content="Settings",
             font=assets.fonts.monogram_extended(80),
             position=(300, 85),
         )
+        
         self.button_click_1 = pygame.mixer.Sound(self.assets.sounds.button_click_1())
         self.manager.sfx_sound_objects.append(self.button_click_1)
         self.back_button = Button(
@@ -38,20 +41,31 @@ class SettingsSurface(Surface):
             sound_on_click=self.button_click_1,
         )
 
-        # Initialize sliders with the correct start_value
+        # SFX Slider and Label
+        self.sfx_label = Text(
+            content="SFX",
+            font=assets.fonts.monogram_extended(40),  # Smaller font for the labels
+            position=(self.surface.get_width() // 2 - 250, 200),  # Left side of slider
+        )
         self.sfx_slider = Slider(
             rect=(self.surface.get_width() // 2 - 100, 200, 200, 20),
             min_value=0.0,
             max_value=1.0,
-            start_value=self.manager.current_global_sfx_volume,  # Use current SFX volume
+            start_value=self.manager.current_global_sfx_volume,
             on_change=self.set_sfx_volume
         )
 
+        # Music Slider and Label
+        self.music_label = Text(
+            content="Background",
+            font=assets.fonts.monogram_extended(40),
+            position=(self.surface.get_width() // 2 - 250, 300),  # Left side of slider
+        )
         self.music_slider = Slider(
             rect=(self.surface.get_width() // 2 - 100, 300, 200, 20),
             min_value=0.0,
             max_value=1.0,
-            start_value=pygame.mixer.music.get_volume(),  # Use current music volume
+            start_value=pygame.mixer.music.get_volume(),
             on_change=self.set_music_volume
         )
 
@@ -84,5 +98,10 @@ class SettingsSurface(Surface):
         self.surface.blit(self.background, (0, 0))
         self.heading.draw(self.surface)
         self.back_button.draw(self.surface)
+
+        # Draw sliders and labels
+        self.sfx_label.draw(self.surface)
         self.sfx_slider.draw(self.surface)
+
+        self.music_label.draw(self.surface)
         self.music_slider.draw(self.surface)
