@@ -23,7 +23,7 @@ class SettingsSurface(Surface):
             position=(300, 85),
         )
         self.button_click_1 = pygame.mixer.Sound(self.assets.sounds.button_click_1())
-        self.manager.sound_objects.append(self.button_click_1)
+        self.manager.sfx_sound_objects.append(self.button_click_1)
         self.back_button = Button(
             normal_image=pygame.transform.scale(
                 assets.images.ui.button_arrow_left(), (100, 100)
