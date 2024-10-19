@@ -4,7 +4,7 @@ This project serves as a *text-based adventure game-ish environment* to train so
 
 ## Run
 
-This project uses the [pixi](https://github.com/prefix-dev/pixi) package manager (written in *Rust* btw).
+This project uses the [pixi](https://github.com/prefix-dev/pixi) package manager (written in *Rust* btw). Ensure you are using `python=3.11`!
 
 ```sh
 git clone https://github.com/debarchito/reinforced-shrine-adventure.git
