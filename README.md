@@ -36,10 +36,10 @@ pixi install
 # Activate the virtual environment
 pixi shell
 
-# Run the game
+# Run the game. Hot-Module-Replacement (HMR) is enabled
 pixi run game
 ```
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the `MIT License`. See the [LICENSE](LICENSE) file for more details.
