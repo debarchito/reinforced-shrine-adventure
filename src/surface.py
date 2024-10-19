@@ -100,12 +100,12 @@ class SurfaceManager:
         print(f"Detected change in {path}. Reloading module...")
 
         module_name = os.path.normpath(path).replace(os.path.sep, ".")
-        module_name = module_name.rsplit('.', 1)[0]
+        module_name = module_name.rsplit(".", 1)[0]
 
         if module_name in sys.modules:
             importlib.reload(sys.modules[module_name])
 
-        surface_name = os.path.basename(path).rsplit('.', 1)[0].lower()
+        surface_name = os.path.basename(path).rsplit(".", 1)[0].lower()
         if surface_name in self.surfaces:
             surface_class = getattr(
                 sys.modules[module_name], f"{surface_name.capitalize()}Surface"
