@@ -51,6 +51,7 @@ class SurfaceManager:
         self.assets = assets
         self.surfaces: dict[str, Surface] = {}
         self.active_surface: Optional[Surface] = None
+        self.current_global_sfx_volume = 1.0
         self.sound_objects: list[pygame.mixer.Sound] = []
 
     def add_surface(self, name: str, surface: Surface) -> None:
@@ -122,9 +123,9 @@ class SurfaceManager:
             ):
                 self.set_active_surface(surface_name)
 
-    def set_global_volume(self, volume: float) -> None:
-        """Set the global volume for all audio channels."""
+    def set_global_sfx_volume(self, volume: float) -> None:
+        """Set the global volume for music."""
 
-        pygame.mixer.music.set_volume(volume)
+        self.current_global_sfx_volume = volume
         for sound in self.sound_objects:
             sound.set_volume(volume)

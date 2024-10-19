@@ -35,7 +35,7 @@ class RootSurface(Surface):
                 assets.images.ui.button_start_active(), (200, 100)
             ),
             position=(surface.get_width() // 2, int(surface.get_height() * 0.6)),
-            on_click=lambda _button, _event: self.start_button_clicked(),
+            on_click=lambda _button, _event: print("You clicked on a button!"),
             sound_on_click=self.button_click_1,
         )
         self.cog_button = Button(
@@ -94,6 +94,3 @@ class RootSurface(Surface):
         self.start_button.draw(self.surface)
         self.cog_button.draw(self.surface)
         self.quit_button.draw(self.surface)
-
-    def start_button_clicked(self) -> None:
-        self.manager.set_global_volume(1.0)
