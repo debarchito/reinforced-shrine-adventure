@@ -1,3 +1,4 @@
+import os
 import pygame
 from src.init import Assets
 from src.surface import SurfaceManager
@@ -7,7 +8,10 @@ from src.surfaces.settings import SettingsSurface
 
 def main():
     assets = Assets()
-    surface = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    info = pygame.display.Info()
+    surface = pygame.display.set_mode(
+        (info.current_w, info.current_h), pygame.FULLSCREEN
+    )
 
     manager = SurfaceManager(surface, assets)
     manager.add_surface("root", RootSurface(surface, assets, manager))
@@ -17,7 +21,19 @@ def main():
     clock = pygame.time.Clock()
     running = True
 
+    last_modified = {}
+    for root, _, files in os.walk("src/surfaces"):
+        for file in files:
+            if file.endswith(".py"):
+                path = os.path.join(root, file)
+                last_modified[path] = os.path.getmtime(path)
+
     while running:
+        for path, mtime in last_modified.items():
+            if os.path.getmtime(path) > mtime:
+                manager.reinitialize_surface(path)
+                last_modified[path] = os.path.getmtime(path)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False

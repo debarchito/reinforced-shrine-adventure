@@ -1,4 +1,7 @@
+import os
+import sys
 import pygame
+import importlib
 from abc import ABC, abstractmethod
 from typing import Optional
 from src.init import Assets
@@ -81,3 +84,37 @@ class SurfaceManager:
         if self.active_surface and self.active_surface.is_active:
             self.active_surface.draw()
             pygame.display.flip()
+
+    def reinitialize_surfaces(self):
+        """Reinitialize all surfaces."""
+
+        for name, surface in self.surfaces.items():
+            new_surface = surface.__class__(self.display_surface, self.assets, self)
+            self.surfaces[name] = new_surface
+
+            if self.active_surface == surface:
+                self.set_active_surface(name)
+
+    def reinitialize_surface(self, path: str) -> None:
+        """Reinitialize a specific surface based on the changed file path."""
+        print(f"Detected change in {path}. Reloading module...")
+
+        module_name = path.replace(os.path.sep, ".").replace(".py", "")
+        if module_name in sys.modules:
+            importlib.reload(sys.modules[module_name])
+
+        surface_name = os.path.basename(path).replace(".py", "").lower()
+        if surface_name in self.surfaces:
+            surface_class = getattr(
+                sys.modules[module_name], f"{surface_name.capitalize()}Surface"
+            )
+            self.surfaces[surface_name] = surface_class(
+                self.display_surface, self.assets, self
+            )
+            print(f"Reinitialized {surface_name} surface")
+
+            if (
+                self.active_surface.__class__.__name__
+                == self.surfaces[surface_name].__class__.__name__
+            ):
+                self.set_active_surface(surface_name)
