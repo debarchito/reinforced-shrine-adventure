@@ -4,7 +4,7 @@ This project serves as a *text-based adventure game-ish environment* to train so
 
 ## Run
 
-This project uses the [pixi](https://github.com/prefix-dev/pixi) package manager (written in *Rust* btw). To install `pixi`, run:
+This project uses the [pixi](https://github.com/prefix-dev/pixi) package manager (written in *Rust* btw). Follow the instructions below to install `pixi`, setup autocompletions and run the game:
 
 ```sh
 # Install pixi on Linux & macOS
