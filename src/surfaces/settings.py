@@ -12,6 +12,7 @@ class SettingsSurface(Surface):
         super().__init__(surface)
         self.info = pygame.display.Info()
         self.assets = assets
+        self.manager = manager
         self.background = pygame.transform.scale(
             assets.images.backgrounds.moon_sky(),
             (self.info.current_w, self.info.current_h),
@@ -21,6 +22,8 @@ class SettingsSurface(Surface):
             font=assets.fonts.monogram_extended(80),
             position=(300, 85),
         )
+        self.button_click_1 = pygame.mixer.Sound(self.assets.sounds.button_click_1())
+        self.manager.sound_objects.append(self.button_click_1)
         self.back_button = Button(
             normal_image=pygame.transform.scale(
                 assets.images.ui.button_arrow_left(), (100, 100)
@@ -33,10 +36,8 @@ class SettingsSurface(Surface):
             ),
             position=(90, 90),
             on_click=lambda _button, _event: manager.set_active_surface("root"),
-            sound_on_click=pygame.mixer.Sound(assets.sounds.button_click_1()),
+            sound_on_click=self.button_click_1,
         )
-        pygame.mixer.music.load(assets.sounds.ambient_evening())
-        pygame.mixer.music.play(-1)
 
     def handle_event(self, event: pygame.event.Event) -> None:
         if not self.is_active:

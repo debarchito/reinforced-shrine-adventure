@@ -10,6 +10,7 @@ class RootSurface(Surface):
         self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager
     ):
         super().__init__(surface)
+        self.assets = assets
         self.manager = manager
         self.info = pygame.display.Info()
         self.background = pygame.transform.scale(
@@ -21,6 +22,8 @@ class RootSurface(Surface):
             font=assets.fonts.monogram_extended(130),
             position=(surface.get_width() // 2, int(surface.get_height() * 0.3)),
         )
+        self.button_click_1 = pygame.mixer.Sound(assets.sounds.button_click_1())
+        self.manager.sound_objects.append(self.button_click_1)
         self.start_button = Button(
             normal_image=pygame.transform.scale(
                 assets.images.ui.button_start(), (200, 100)
@@ -32,8 +35,8 @@ class RootSurface(Surface):
                 assets.images.ui.button_start_active(), (200, 100)
             ),
             position=(surface.get_width() // 2, int(surface.get_height() * 0.6)),
-            on_click=lambda _button, _event: print("Button clicked x3!!!"),
-            sound_on_click=pygame.mixer.Sound(assets.sounds.button_click_1()),
+            on_click=lambda _button, _event: self.start_button_clicked(),
+            sound_on_click=self.button_click_1,
         )
         self.cog_button = Button(
             normal_image=pygame.transform.scale(
@@ -47,7 +50,7 @@ class RootSurface(Surface):
             ),
             position=(surface.get_width() // 2 - 50, int(surface.get_height() * 0.73)),
             on_click=lambda _button, _event: manager.set_active_surface("settings"),
-            sound_on_click=pygame.mixer.Sound(assets.sounds.button_click_1()),
+            sound_on_click=self.button_click_1,
         )
         self.quit_button = Button(
             normal_image=pygame.transform.scale(
@@ -61,7 +64,7 @@ class RootSurface(Surface):
             ),
             position=(surface.get_width() // 2 + 50, int(surface.get_height() * 0.73)),
             on_click=lambda _button, _event: pygame.quit(),
-            sound_on_click=pygame.mixer.Sound(assets.sounds.button_click_1()),
+            sound_on_click=self.button_click_1,
         )
         pygame.mixer.music.load(assets.sounds.ambient_evening())
         pygame.mixer.music.play(-1)
@@ -91,3 +94,6 @@ class RootSurface(Surface):
         self.start_button.draw(self.surface)
         self.cog_button.draw(self.surface)
         self.quit_button.draw(self.surface)
+
+    def start_button_clicked(self) -> None:
+        self.manager.set_global_volume(1.0)
