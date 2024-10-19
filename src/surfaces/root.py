@@ -1,8 +1,8 @@
 import pygame
-from surface import Surface, SurfaceManager  # type: ignore
-from init import Assets  # type: ignore
-from components.button import Button  # type: ignore
-from components.text import Text  # type: ignore
+from src.surface import Surface, SurfaceManager
+from src.init import Assets
+from src.components.button import Button
+from src.components.text import Text
 
 
 class RootSurface(Surface):

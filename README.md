@@ -4,18 +4,27 @@ This project serves as a *text-based adventure game-ish environment* to train so
 
 ## Run
 
-This project uses the [uv](https://github.com/astral-sh/uv) package manager (written in *Rust* btw). **uv** automatically creates and manages a **.venv** for you. Ensure you are using **Python 3.11+**.
+This project uses the [pixi](https://github.com/prefix-dev/pixi) package manager (written in *Rust* btw).
 
 ```sh
 git clone https://github.com/debarchito/reinforced-shrine-adventure.git
 cd reinforced-shrine-adventure
 
-# Creates .venv and installs packages
-uv sync
+# If your system is avx2 capable, set this env variable to "1" before installing packages
+# set PYGAME_DETECT_AVX2 1 # fish
+# export PYGAME_DETECT_AVX2=1 # bash/zsh
+# $env:PYGAME_DETECT_AVX2="1" # powershell
 
-# Activate the .venv (fish shell e.g.)
-source .venv/bin/activate.fish
+# Installs packages
+pixi install
+
+# Activate the shell
+pixi shell
 
 # Run the game
-cd src && python game.py
+pixi run game
 ```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.

@@ -10,3 +10,7 @@ wheels/
 
 # Virtual environments
 .venv
+
+# pixi environments
+.pixi
+*.egg-info

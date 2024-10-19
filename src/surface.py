@@ -1,7 +1,7 @@
 import pygame
 from abc import ABC, abstractmethod
 from typing import Optional
-from init import Assets
+from src.init import Assets
 
 
 class Surface(ABC):
