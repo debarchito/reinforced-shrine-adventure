@@ -38,12 +38,12 @@ class SettingsSurface(Surface):
             sound_on_click=self.button_click_1,
         )
 
-        # Add sliders for SFX and Music volume control
+        # Initialize sliders with the correct start_value
         self.sfx_slider = Slider(
             rect=(self.surface.get_width() // 2 - 100, 200, 200, 20),
             min_value=0.0,
             max_value=1.0,
-            start_value=self.manager.current_global_sfx_volume,
+            start_value=self.manager.current_global_sfx_volume,  # Use current SFX volume
             on_change=self.set_sfx_volume
         )
 
@@ -51,7 +51,7 @@ class SettingsSurface(Surface):
             rect=(self.surface.get_width() // 2 - 100, 300, 200, 20),
             min_value=0.0,
             max_value=1.0,
-            start_value=pygame.mixer.music.get_volume(),
+            start_value=pygame.mixer.music.get_volume(),  # Use current music volume
             on_change=self.set_music_volume
         )
 
