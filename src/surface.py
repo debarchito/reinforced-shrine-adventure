@@ -99,11 +99,13 @@ class SurfaceManager:
         """Reinitialize a specific surface based on the changed file path."""
         print(f"Detected change in {path}. Reloading module...")
 
-        module_name = path.replace(os.path.sep, ".").replace(".py", "")
+        module_name = os.path.normpath(path).replace(os.path.sep, ".")
+        module_name = module_name.rsplit('.', 1)[0]
+
         if module_name in sys.modules:
             importlib.reload(sys.modules[module_name])
 
-        surface_name = os.path.basename(path).replace(".py", "").lower()
+        surface_name = os.path.basename(path).rsplit('.', 1)[0].lower()
         if surface_name in self.surfaces:
             surface_class = getattr(
                 sys.modules[module_name], f"{surface_name.capitalize()}Surface"
