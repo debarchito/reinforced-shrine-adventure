@@ -44,7 +44,7 @@ pixi run game
 
 The story is written using the [Ink](https://github.com/inkle/ink) scripting language and [Inky](https://github.com/inkle/inky) editor for real-time feedback. You can find the story in the [story](story) directory. To load the story in the game, you need to export it as `JSON` (functionality available in the `Inky` editor). Check [story.ink.json](story/json/story.ink.json) for the exported version of the complete story (as it stands).
 
-You can get started with `Ink` using the official documentation: [WritingWithInk](https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md). It covers everything you need to write succesful stories with `Ink`.
+> You can get started with `Ink` using the official documentation: [WritingWithInk](https://github.com/inkle/ink/blob/master/Documentation/WritingWithInk.md). It covers everything you need to write succesful stories in `Ink`. If you want a video tutorial, I recommend [Learn Ink (video game dialogue language) in 15 minutes | Ink tutorial](https://youtu.be/KSRpcftVyKg?si=h3jSHifFc-Qa-kCR) by [Shaped By Rain Studios](https://www.youtube.com/@ShapedByRainStudios). I personally found it quite helpful.
 
 [story.ink](story/story.ink) serves as the entry point for the story in the game. Put seperate scenes in separate files inside the [story](story) directory. Afterwards, import them in [story.ink](story/story.ink) and use them in appropriate places.
 
