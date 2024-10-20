@@ -10,10 +10,10 @@ pygame.init()
 
 class Fonts:
     def monogram_extended(self, size: int) -> pygame.font.Font:
-        return pygame.font.Font("assets/fonts/monogram_extended.ttf", size)
+        return pygame.font.Font("assets/fonts/truetype/monogram_extended.ttf", size)
 
     def monogram_extended_italic(self, size: int) -> pygame.font.Font:
-        return pygame.font.Font("assets/fonts/monogram_extended_italic.ttf", size)
+        return pygame.font.Font("assets/fonts/truetype/monogram_extended_italic.ttf", size)
 
 
 class Backgrounds:
@@ -80,10 +80,10 @@ class Images:
 
 class Sounds:
     def ambient_evening(self) -> str:
-        return "assets/sounds/ambient_evening.mp3"
+        return "assets/sounds/music/ambient_evening.mp3"
 
     def button_click_1(self) -> str:
-        return "assets/sounds/button_click_1.mp3"
+        return "assets/sounds/sfx/button_click_1.mp3"
 
 
 class Assets:
