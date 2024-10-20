@@ -48,8 +48,6 @@ The story is written using the [Ink](https://github.com/inkle/ink) scripting lan
 
 [story.ink](story/story.ink) serves as the entry point for the story in the game. Put seperate scenes in separate files inside the [story](story) directory. Afterwards, import them in [story.ink](story/story.ink) and use them in appropriate places.
 
-Refer to the [Style.md](story/Style.md) file for the style guide for the story.
-
 ## Credits for assets used?
 
 Please check the [assets/Credits.md](assets/Credits.md) file. It contains the credits for all the assets used in this project.
