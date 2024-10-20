@@ -34,7 +34,7 @@ Kaori: "It's in that old abandoned amusement park by the sea. You know, the one 
     ~ courage += 1
     Kaori: "That's what makes it exciting, Aie!"
 * [Stay silent]
-    ~ courage -= 1
+~ courage -= 1
     You shrink in your seat, hoping to avoid being dragged into this.
 
 - Ryu: "A test of courage, huh? Sounds like fun!"
@@ -43,7 +43,7 @@ Haruto: "I'm in! What about you, Kanae?"
 
 Kanae: "Well... okay. But we should be careful, right?"
 
-All eyes turn to you, {player_name}.
+All eyes turn to you.
 
 Kaori: "Come on, Aie! It'll be fun. We can't do this without you!"
 
@@ -59,6 +59,7 @@ Kaori: "Come on, Aie! It'll be fun. We can't do this without you!"
     -> convince_player
 
 === convince_player ===
+
 Airi: "It would mean a lot if you came, Aie. We're all friends here."
 
 Ryu: "Yeah, and think of the stories we'll have to tell when school starts again!"
@@ -74,6 +75,7 @@ Ryu: "Yeah, and think of the stories we'll have to tell when school starts again
     -> talisman_option
 
 === talisman_option ===
+
 * [Accept the talisman]
     {player_name}: "Well... if we have talismans, I guess it might be okay."
     ~ has_talisman = true
@@ -86,6 +88,7 @@ Ryu: "Yeah, and think of the stories we'll have to tell when school starts again
     -> final_decision
 
 === final_decision ===
+
 The group looks at you expectantly. This is your last chance to decide.
 
 * [Join the group]
@@ -102,6 +105,7 @@ The group looks at you expectantly. This is your last chance to decide.
     -> solo_ending
 
 === group_planning ===
+
 Kaori: "Alright! Let's meet at the old park entrance tomorrow at dusk. Don't forget to bring flashlights!"
 
 As your friends chatter excitedly about tomorrow's adventure, you feel a mix of anticipation and anxiety. What awaits you at the abandoned shrine?
@@ -140,17 +144,21 @@ The group disperses, leaving you with your thoughts about the upcoming test of c
 -> group_ending
 
 === group_ending ===
+
 # Group Ending
+
 {courage >= 5:
     Despite your initial reservations, you feel a spark of excitement about the adventure ahead. Maybe this test of courage is just what you need to come out of your shell. You head home, already thinking about what to pack for tomorrow.
 - else:
-    You head home, a knot of worry in your stomach. As night falls, you wonder if you've made the right decision. But it's too late to back out now. You'll just have to face whatever comes tomorrow.
+    You head home, a knot of worry in your stomach. As night falls, you wonder about things that could go wrong... but it's too late to back out now. You'll just have to face whatever comes tomorrow.
 }
 
 -> DONE
 
 === solo_ending ===
+
 # Solo Ending
+
 You head home alone, feeling a mix of relief and regret. As you settle in for a quiet evening, your phone buzzes with messages from your friends.
 
 Kaori: "We'll miss you tomorrow, Aie! But we understand. Maybe next time?"
