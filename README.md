@@ -2,7 +2,7 @@
 
 This project serves as a *text-based adventure game-ish environment* to train solo **RL agents**. I prepared this as a showcase for a `#BuildWithAI` event organized by `GDG on Campus | AdtU`. 
 
-## Run
+## Usage and development
 
 This project uses the [pixi](https://github.com/prefix-dev/pixi) package manager (written in *Rust* btw). Follow the instructions below to install `pixi`, setup autocompletions and run the game:
 
@@ -39,6 +39,12 @@ pixi shell
 # Run the game. Hot-Module-Replacement (HMR) is enabled
 pixi run game
 ```
+
+## How do I work on the story?
+
+The story is written using the [Ink](https://github.com/inkle/ink) scripting language and written using the [Inky](https://github.com/inkle/inky) editor for real-time feedback. You can find the story in the [story](story) directory. To use it in the game, you need to export it to `JSON` (functionality available in the `Inky` editor). Check [story.ink.json](story/json/story.ink.json) for the exported version of the complete story (as it stands).
+
+[story.ink](story/story.ink) serves as the entry point for the story in the game. Put seperate scenes in separate files inside the [story](story) directory. Afterwards, import them in [story.ink](story/story.ink) and put them in appropriate places.
 
 ## License
 
