@@ -44,7 +44,7 @@ pixi run game
 
 The story is written using the [Ink](https://github.com/inkle/ink) scripting language and written using the [Inky](https://github.com/inkle/inky) editor for real-time feedback. You can find the story in the [story](story) directory. To use it in the game, you need to export it to `JSON` (functionality available in the `Inky` editor). Check [story.ink.json](story/json/story.ink.json) for the exported version of the complete story (as it stands).
 
-[story.ink](story/story.ink) serves as the entry point for the story in the game. Put seperate scenes in separate files inside the [story](story) directory. Afterwards, import them in [story.ink](story/story.ink) and put them in appropriate places.
+[story.ink](story/story.ink) serves as the entry point for the story in the game. Put seperate scenes in separate files inside the [story](story) directory. Afterwards, import them in [story.ink](story/story.ink) and use them in appropriate places.
 
 ## License
 
