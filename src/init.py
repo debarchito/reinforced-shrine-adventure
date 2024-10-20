@@ -3,6 +3,7 @@ Initialize pygame and load assets.
 """
 
 import pygame
+import json
 
 pygame.init()
 
@@ -90,3 +91,4 @@ class Assets:
         self.fonts = Fonts()
         self.images = Images()
         self.sounds = Sounds()
+        self.story = json.load(open("story/json/story.ink.json"))

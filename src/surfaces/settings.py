@@ -7,7 +7,9 @@ from src.components.slider import Slider
 
 
 class SettingsSurface(Surface):
-    def __init__(self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager):
+    def __init__(
+        self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager
+    ):
         super().__init__(surface)
         self.info = pygame.display.Info()
         self.assets = assets
@@ -16,14 +18,14 @@ class SettingsSurface(Surface):
             assets.images.backgrounds.moon_sky(),
             (self.info.current_w, self.info.current_h),
         )
-        
+
         # Heading for the settings page
         self.heading = Text(
             content="Settings",
             font=assets.fonts.monogram_extended(80),
             position=(300, 85),
         )
-        
+
         self.button_click_1 = pygame.mixer.Sound(self.assets.sounds.button_click_1())
         self.manager.sfx_sound_objects.append(self.button_click_1)
         self.back_button = Button(
@@ -52,7 +54,7 @@ class SettingsSurface(Surface):
             min_value=0.0,
             max_value=1.0,
             start_value=self.manager.current_global_sfx_volume,
-            on_change=self.set_sfx_volume
+            on_change=self.set_sfx_volume,
         )
 
         # Music Slider and Label
@@ -66,7 +68,7 @@ class SettingsSurface(Surface):
             min_value=0.0,
             max_value=1.0,
             start_value=pygame.mixer.music.get_volume(),
-            on_change=self.set_music_volume
+            on_change=self.set_music_volume,
         )
 
     def set_sfx_volume(self, volume):
