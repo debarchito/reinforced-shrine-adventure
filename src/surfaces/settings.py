@@ -53,7 +53,7 @@ class SettingsSurface(Surface):
             rect=(self.surface.get_width() // 2 - 100, 200, 200, 20),
             min_value=0.0,
             max_value=1.0,
-            start_value=self.manager.current_global_sfx_volume,
+            start_value=self.manager.current_global_sfx_volume - 0.1,
             on_change=self.set_sfx_volume,
         )
 
@@ -67,7 +67,7 @@ class SettingsSurface(Surface):
             rect=(self.surface.get_width() // 2 - 100, 300, 200, 20),
             min_value=0.0,
             max_value=1.0,
-            start_value=pygame.mixer.music.get_volume(),
+            start_value=pygame.mixer.music.get_volume() - 0.1,
             on_change=self.set_music_volume,
         )
 
