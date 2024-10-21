@@ -8,7 +8,6 @@ class Slider:
         self.max_value = max_value
         self.value = start_value
         self.on_change = on_change
-        # Calculate the initial handle position based on start_value
         self.handle = pygame.Rect(
             self.rect.x
             + (self.rect.width * ((start_value - min_value) / (max_value - min_value))),
@@ -34,5 +33,9 @@ class Slider:
             self.on_change(self.value)
 
     def draw(self, surface):
-        pygame.draw.rect(surface, (100, 100, 100), self.rect)  # Background bar
-        pygame.draw.rect(surface, (255, 255, 255), self.handle)  # Handle
+        pygame.draw.rect(
+            surface, (41, 78, 103), self.rect, border_radius=2
+        )  # Background bar
+        pygame.draw.rect(
+            surface, (208, 239, 243), self.handle, border_radius=2
+        )  # Handle
