@@ -44,11 +44,17 @@ class SettingsSurface(Surface):
         )
 
         # SFX Slider and Label
+        font = assets.fonts.monogram_extended(40)  # Load the font
+        font.set_bold(True)  # Enable bold manually
         self.sfx_label = Text(
             content="SFX",
-            font=assets.fonts.monogram_extended(40),  # Smaller font for the labels
-            position=(self.surface.get_width() // 2 - 250, 200),  # Left side of slider
+            font=assets.fonts.monogram_extended(50),  # Use the bold font
+            position=(
+                self.surface.get_width() // 2 - (self.surface.get_width() / 6.5),
+                self.surface.get_height() // 2 - (self.surface.get_height() / 3.35),
+            ),  # type: ignore
         )
+
         self.sfx_slider = Slider(
             rect=(self.surface.get_width() // 2 - 100, 200, 200, 20),
             min_value=0.0,
@@ -60,14 +66,17 @@ class SettingsSurface(Surface):
         # Music Slider and Label
         self.music_label = Text(
             content="Background",
-            font=assets.fonts.monogram_extended(40),
-            position=(self.surface.get_width() // 2 - 250, 300),  # Left side of slider
+            font=assets.fonts.monogram_extended(50),
+            position=(
+                self.surface.get_width() // 2 - (self.surface.get_width() / 6.5),
+                self.surface.get_height() // 2 - (self.surface.get_height() / 4.955),
+            ),  # type: ignore
         )
         self.music_slider = Slider(
             rect=(self.surface.get_width() // 2 - 100, 300, 200, 20),
             min_value=0.0,
             max_value=1.0,
-            start_value=pygame.mixer.music.get_volume() - 0.1,
+            start_value=pygame.mixer.music.get_volume() - 0.09,
             on_change=self.set_music_volume,
         )
 

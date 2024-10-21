@@ -13,7 +13,9 @@ class Fonts:
         return pygame.font.Font("assets/fonts/truetype/monogram_extended.ttf", size)
 
     def monogram_extended_italic(self, size: int) -> pygame.font.Font:
-        return pygame.font.Font("assets/fonts/truetype/monogram_extended_italic.ttf", size)
+        return pygame.font.Font(
+            "assets/fonts/truetype/monogram_extended_italic.ttf", size
+        )
 
 
 class Backgrounds:
