@@ -1,9 +1,9 @@
 import pygame
-from src.surface import Surface, SurfaceManager
-from src.init import Assets
-from src.components.text import Text
-from src.components.button import Button
-from src.components.slider import Slider
+from game.surface import Surface, SurfaceManager
+from game.asset import Assets
+from game.components.text import Text
+from game.components.button import Button
+from game.components.slider import Slider
 
 
 class SettingsSurface(Surface):

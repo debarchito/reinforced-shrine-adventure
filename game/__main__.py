@@ -1,9 +1,9 @@
 import os
 import pygame
-from src.init import Assets
-from src.surface import SurfaceManager
-from src.surfaces.root import RootSurface
-from src.surfaces.settings import SettingsSurface
+from game.asset import Assets
+from game.surface import SurfaceManager
+from game.surfaces.root import RootSurface
+from game.surfaces.settings import SettingsSurface
 
 
 def main():
@@ -44,3 +44,8 @@ def main():
         clock.tick(60)
 
     pygame.quit()
+
+
+if __name__ == "__main__":
+    pygame.init()
+    main()

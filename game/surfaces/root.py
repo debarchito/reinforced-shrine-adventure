@@ -1,8 +1,8 @@
 import pygame
-from src.surface import Surface, SurfaceManager
-from src.init import Assets
-from src.components.button import Button
-from src.components.text import Text
+from game.surface import Surface, SurfaceManager
+from game.asset import Assets
+from game.components.button import Button
+from game.components.text import Text
 
 
 class RootSurface(Surface):

@@ -5,8 +5,6 @@ Initialize pygame and load assets.
 import pygame
 import json
 
-pygame.init()
-
 
 class Fonts:
     def monogram_extended(self, size: int) -> pygame.font.Font:
