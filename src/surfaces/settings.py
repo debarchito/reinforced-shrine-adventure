@@ -7,7 +7,9 @@ from src.components.slider import Slider
 
 
 class SettingsSurface(Surface):
-    def __init__(self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager):
+    def __init__(
+        self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager
+    ):
         super().__init__(surface)
         self.info = pygame.display.Info()
         self.assets = assets
@@ -112,17 +114,35 @@ class SettingsSurface(Surface):
         self.music_slider.draw(self.surface)
 
         # Draw "0" and "100" at the start and end of the SFX slider
-        self.draw_slider_numbers(self.sfx_slider, 250)  # y-coordinate for the SFX slider
+        self.draw_slider_numbers(
+            self.sfx_slider, 250
+        )  # y-coordinate for the SFX slider
 
         # Draw "0" and "100" at the start and end of the music slider
-        self.draw_slider_numbers(self.music_slider, 370)  # y-coordinate for the music slider
+        self.draw_slider_numbers(
+            self.music_slider, 370
+        )  # y-coordinate for the music slider
 
     def draw_slider_numbers(self, slider, y_position):
         """Helper method to draw '0' and '100' at the start and end of each slider."""
         # Render the numbers
         zero_text = self.number_font.render("0", True, (255, 255, 255))  # White color
-        hundred_text = self.number_font.render("100", True, (255, 255, 255))  # White color
+        hundred_text = self.number_font.render(
+            "100", True, (255, 255, 255)
+        )  # White color
 
         # Adjust text positions for the left and right ends of the slider
-        self.surface.blit(zero_text, (slider.rect.x - (zero_text.get_width()*2), y_position - (zero_text.get_height()/8)))  # "0" at the left side
-        self.surface.blit(hundred_text, (slider.rect.right + (zero_text.get_width()/1.1), y_position - (zero_text.get_height()/8)))  # "100" at the right side
+        self.surface.blit(
+            zero_text,
+            (
+                slider.rect.x - (zero_text.get_width() * 2),
+                y_position - (zero_text.get_height() / 8),
+            ),
+        )  # "0" at the left side
+        self.surface.blit(
+            hundred_text,
+            (
+                slider.rect.right + (zero_text.get_width() / 1.1),
+                y_position - (zero_text.get_height() / 8),
+            ),
+        )  # "100" at the right side

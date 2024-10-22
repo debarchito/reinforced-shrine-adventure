@@ -34,14 +34,26 @@ class Slider:
 
     def draw(self, surface):
         # Draw the background bar
-        pygame.draw.rect(surface, (41, 78, 103), self.rect, border_radius=2)  # Background bar
+        pygame.draw.rect(
+            surface, (41, 78, 103), self.rect, border_radius=2
+        )  # Background bar
 
         # Calculate filled width based on the current value
-        fill_width = (self.value - self.min_value) / (self.max_value - self.min_value) * self.rect.width
+        fill_width = (
+            (self.value - self.min_value)
+            / (self.max_value - self.min_value)
+            * self.rect.width
+        )
 
         # Draw the filled part (left side)
-        filled_rect = pygame.Rect(self.rect.x, self.rect.y, fill_width, self.rect.height)
-        pygame.draw.rect(surface, (70, 130, 180), filled_rect, border_radius=2)  # Change color as needed
+        filled_rect = pygame.Rect(
+            self.rect.x, self.rect.y, fill_width, self.rect.height
+        )
+        pygame.draw.rect(
+            surface, (70, 130, 180), filled_rect, border_radius=2
+        )  # Change color as needed
 
         # Draw the handle on top of the filled part
-        pygame.draw.rect(surface, (208, 239, 243), self.handle, border_radius=2)  # Handle
+        pygame.draw.rect(
+            surface, (208, 239, 243), self.handle, border_radius=2
+        )  # Handle
