@@ -7,6 +7,7 @@ from game.surfaces.settings import SettingsSurface
 
 
 def main():
+    pygame.init()
     assets = Assets()
     info = pygame.display.Info()
     surface = pygame.display.set_mode(
@@ -44,8 +45,3 @@ def main():
         clock.tick(60)
 
     pygame.quit()
-
-
-if __name__ == "__main__":
-    pygame.init()
-    main()
