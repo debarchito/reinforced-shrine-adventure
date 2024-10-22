@@ -10,12 +10,11 @@ def run_mode(mode):
         case "hybrid":
             ... # TODO: Run RL mode + game mode
         case _:
-            print(f"Mode '{mode}' is not recognized. Running default mode.")
-            game_main()
+            raise ValueError(f"Mode '{mode}' is not recognized.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the game in different modes.")
-    parser.add_argument('--mode', type=str, default='main', help='Mode to run the game in')
+    parser.add_argument("--mode", type=str, default="game", help="Mode to run the game in")
     args = parser.parse_args()
 
     run_mode(args.mode)
