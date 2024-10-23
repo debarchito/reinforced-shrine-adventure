@@ -23,7 +23,7 @@ def main():
     running = True
 
     last_modified = {}
-    for root, _, files in os.walk("src/surfaces"):
+    for root, _, files in os.walk("game/surfaces"):
         for file in files:
             if file.endswith(".py"):
                 path = os.path.join(root, file)
