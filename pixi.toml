@@ -8,15 +8,15 @@ version = "0.1.0"
 
 [tasks]
 game = "reloadium run -m run --mode game"
-check = "ruff check . && pylyzer **/*.py"
+check = "ruff check . && pyright"
 format = "ruff format ."
 
 [dependencies]
 python = "3.11.*"
-ruff = ">=0.6.9,<0.7"
 
 [pypi-dependencies]
 reloadium = ">=1.5.1, <2"
 pygame = ">=2.6.1, <3"
 bink = ">=0.3.2, <0.4"
-pylyzer = ">=0.0.51, <0.0.69"
+pyright = ">=1.1.386, <2"
+ruff = "*"

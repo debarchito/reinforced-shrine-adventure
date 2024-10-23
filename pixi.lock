@@ -33,9 +33,11 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2024b-hc8b5060_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/xz-5.2.6-h166bdaf_0.tar.bz2
       - pypi: https://files.pythonhosted.org/packages/13/bf/231d6eefbe75bf15ca0d6670ae10b75f79dd92661aee5de1cc57c664068c/bink-0.3.2-py3-none-manylinux_2_17_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/d2/1d/1b658dbd2b9fa9c4c9f32accbfc0205d532c8c6194dc0f2a4c0428e7128a/nodeenv-1.9.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/7a/a1/9ae2852ebd3a7cc7d9ae7ff7919ab983e4a5c1b7a14e840732f23b2b48f6/pygame-2.6.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/f7/f1/59013f26b1ca8747dada0c593f0ec9cf9f90c5e1c386bfda30ecbb5ee665/pylyzer-0.0.68-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/cc/68/47fd6b3ffa27c99d7e0c866c618f07784b8806712059049daa492ca7e526/pyright-1.1.386-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/01/0a/3047ef9c4ab0abd10ca89d6c970a36c10810917fe566658780894bd5f003/reloadium-1.5.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
       osx-64:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/bzip2-1.0.8-hfdf4475_7.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/ca-certificates-2024.8.30-h8857fd0_0.conda
@@ -54,9 +56,11 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2024b-hc8b5060_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/xz-5.2.6-h775f41a_0.tar.bz2
       - pypi: https://files.pythonhosted.org/packages/41/7d/76ae1ad2c5d435fa531137e24f47ba5e2b557d3eccb568c11ac00df6091c/bink-0.3.2-py3-none-macosx_10_15_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/d2/1d/1b658dbd2b9fa9c4c9f32accbfc0205d532c8c6194dc0f2a4c0428e7128a/nodeenv-1.9.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/c4/ca/8f367cb9fe734c4f6f6400e045593beea2635cd736158f9fabf58ee14e3c/pygame-2.6.1-cp311-cp311-macosx_10_9_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/68/8c/02be1bd15b5c40f8bd090a56b43eb29f47e0f567233f69eec058ef774965/pylyzer-0.0.51-cp311-cp311-macosx_10_9_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/cc/68/47fd6b3ffa27c99d7e0c866c618f07784b8806712059049daa492ca7e526/pyright-1.1.386-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/55/20/891c8e3869750e6a97f9f70b2879e1ed590ad9ec3995c78982e238805f04/reloadium-1.5.1-cp311-cp311-macosx_11_0_universal2.whl
+      - pypi: https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
       osx-arm64:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/bzip2-1.0.8-h99b78c6_7.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/ca-certificates-2024.8.30-hf0a4a13_0.conda
@@ -75,9 +79,11 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2024b-hc8b5060_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/xz-5.2.6-h57fd34a_0.tar.bz2
       - pypi: https://files.pythonhosted.org/packages/40/6d/3b18b6cd26c281970a591ccca1c449d7dcb86062c547e8917083157bd375/bink-0.3.2.tar.gz
+      - pypi: https://files.pythonhosted.org/packages/d2/1d/1b658dbd2b9fa9c4c9f32accbfc0205d532c8c6194dc0f2a4c0428e7128a/nodeenv-1.9.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/83/47/6edf2f890139616b3219be9cfcc8f0cb8f42eb15efd59597927e390538cb/pygame-2.6.1-cp311-cp311-macosx_11_0_arm64.whl
-      - pypi: https://files.pythonhosted.org/packages/5b/54/1a8eed8da6e03575515fc078a171bcb0bf8ae769875b581e529e809e34f7/pylyzer-0.0.68-py3-none-macosx_11_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/cc/68/47fd6b3ffa27c99d7e0c866c618f07784b8806712059049daa492ca7e526/pyright-1.1.386-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f2/b4/09174e0a7da9bcb4b33e624834ef6818877b7b1cd89f497ebe4bcec4d1be/reloadium-1.5.1-cp311-cp311-macosx_12_0_arm64.whl
+      - pypi: https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
       win-64:
       - conda: https://conda.anaconda.org/conda-forge/win-64/bzip2-1.0.8-h2466b09_7.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/ca-certificates-2024.8.30-h56e8100_0.conda
@@ -97,9 +103,11 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/vs2015_runtime-14.40.33810-h3bf8584_22.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/xz-5.2.6-h8d14728_0.tar.bz2
       - pypi: https://files.pythonhosted.org/packages/fc/8a/b40297db945a88592ceb90979755eb2bf92558bcfbd596c570aeee7f2a92/bink-0.3.2-py3-none-win_amd64.whl
+      - pypi: https://files.pythonhosted.org/packages/d2/1d/1b658dbd2b9fa9c4c9f32accbfc0205d532c8c6194dc0f2a4c0428e7128a/nodeenv-1.9.1-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/d2/55/ca3eb851aeef4f6f2e98a360c201f0d00bd1ba2eb98e2c7850d80aabc526/pygame-2.6.1-cp311-cp311-win_amd64.whl
-      - pypi: https://files.pythonhosted.org/packages/03/9e/188258ae85cc777f2189a50e64aca24fabc655edbb6b60426710036878cf/pylyzer-0.0.68-py3-none-win_amd64.whl
+      - pypi: https://files.pythonhosted.org/packages/cc/68/47fd6b3ffa27c99d7e0c866c618f07784b8806712059049daa492ca7e526/pyright-1.1.386-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3a/49/498308ace2816d6bd90b9afaac9b835666c95369945b13f7c26d7e0d923c/reloadium-1.5.1-cp311-cp311-win_amd64.whl
+      - pypi: https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
 packages:
 - kind: conda
   name: _libgcc_mutex
@@ -743,6 +751,12 @@ packages:
   purls: []
   size: 822066
   timestamp: 1724658603042
+- kind: pypi
+  name: nodeenv
+  version: 1.9.1
+  url: https://files.pythonhosted.org/packages/d2/1d/1b658dbd2b9fa9c4c9f32accbfc0205d532c8c6194dc0f2a4c0428e7128a/nodeenv-1.9.1-py2.py3-none-any.whl
+  sha256: ba11c9782d29c27c70ffbdda2d7415098754709be8a7056d79a737cd901155c9
+  requires_python: '>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*'
 - kind: conda
   name: openssl
   version: 3.3.2
@@ -835,28 +849,17 @@ packages:
   sha256: 91476902426facd4bb0dad4dc3b2573bc82c95c71b135e0daaea072ed528d299
   requires_python: '>=3.6'
 - kind: pypi
-  name: pylyzer
-  version: 0.0.51
-  url: https://files.pythonhosted.org/packages/68/8c/02be1bd15b5c40f8bd090a56b43eb29f47e0f567233f69eec058ef774965/pylyzer-0.0.51-cp311-cp311-macosx_10_9_x86_64.whl
-  sha256: b2db0fa559c87808e67038b4fa1827b48fcc35d6673b20eda505cf3567d86b1a
-  requires_python: '>=3.7'
-- kind: pypi
-  name: pylyzer
-  version: 0.0.68
-  url: https://files.pythonhosted.org/packages/03/9e/188258ae85cc777f2189a50e64aca24fabc655edbb6b60426710036878cf/pylyzer-0.0.68-py3-none-win_amd64.whl
-  sha256: b611ee47fe65a0d93f524931773c2be33a2d88f121bd0c5355d62cc76b6ee502
-  requires_python: '>=3.7'
-- kind: pypi
-  name: pylyzer
-  version: 0.0.68
-  url: https://files.pythonhosted.org/packages/5b/54/1a8eed8da6e03575515fc078a171bcb0bf8ae769875b581e529e809e34f7/pylyzer-0.0.68-py3-none-macosx_11_0_arm64.whl
-  sha256: ed2ad77cdd482440e121b08a9cd595968690c4964f6b05333dd3b8e0e4d176da
-  requires_python: '>=3.7'
-- kind: pypi
-  name: pylyzer
-  version: 0.0.68
-  url: https://files.pythonhosted.org/packages/f7/f1/59013f26b1ca8747dada0c593f0ec9cf9f90c5e1c386bfda30ecbb5ee665/pylyzer-0.0.68-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: 4c848f4989cc210f59d1fad05d4de8334ab50016a28569310997cdf3c55eac03
+  name: pyright
+  version: 1.1.386
+  url: https://files.pythonhosted.org/packages/cc/68/47fd6b3ffa27c99d7e0c866c618f07784b8806712059049daa492ca7e526/pyright-1.1.386-py3-none-any.whl
+  sha256: 7071ac495593b2258ccdbbf495f1a5c0e5f27951f6b429bed4e8b296eb5cd21d
+  requires_dist:
+  - nodeenv>=1.6.0
+  - typing-extensions>=4.1
+  - twine>=3.4.1 ; extra == 'all'
+  - nodejs-wheel-binaries ; extra == 'all'
+  - twine>=3.4.1 ; extra == 'dev'
+  - nodejs-wheel-binaries ; extra == 'nodejs'
   requires_python: '>=3.7'
 - kind: conda
   name: python
@@ -1262,6 +1265,12 @@ packages:
   purls: []
   size: 3318875
   timestamp: 1699202167581
+- kind: pypi
+  name: typing-extensions
+  version: 4.12.2
+  url: https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl
+  sha256: 04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d
+  requires_python: '>=3.8'
 - kind: conda
   name: tzdata
   version: 2024b
