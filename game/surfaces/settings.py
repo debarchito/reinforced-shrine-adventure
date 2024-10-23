@@ -47,11 +47,11 @@ class SettingsSurface(Surface):
         self.sfx_label = Text(
             content="SFX",
             font=assets.fonts.monogram_extended(50),
-            position=(self.surface.get_width() // 2 - 50, 200),  # Centered
+            position=(self.surface.get_width() // 2 - self.surface.get_width() // 9 - 55, self.surface.get_height() // 2 - self.surface.get_height() // 4),  # Centered
         )
 
         self.sfx_slider = Slider(
-            rect=(self.surface.get_width() // 2 - 150, 250, 300, 30),  # Centered width
+            rect=(self.surface.get_width() // 2, self.surface.get_height() // 2 - self.surface.get_height() // 3.83, 480, 30),  # Centered width
             min_value=0.0,
             max_value=1.0,
             start_value=self.manager.current_global_sfx_volume - 0.1,
@@ -62,11 +62,11 @@ class SettingsSurface(Surface):
         self.music_label = Text(
             content="Background Music",
             font=assets.fonts.monogram_extended(50),
-            position=(self.surface.get_width() // 2 - 100, 320),  # Centered
+            position=(self.surface.get_width() // 2 - self.surface.get_width() // 9 - 55, self.surface.get_height() // 2 - self.surface.get_height() // 4 + 120),  # Centered
         )
 
         self.music_slider = Slider(
-            rect=(self.surface.get_width() // 2 - 150, 370, 300, 30),  # Centered width
+            rect=(self.surface.get_width() // 2, self.surface.get_height() // 2 - self.surface.get_height() // 3.83 + 120, 480, 30),  # Centered width
             min_value=0.0,
             max_value=1.0,
             start_value=pygame.mixer.music.get_volume() - 0.1,
