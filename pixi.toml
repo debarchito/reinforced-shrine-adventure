@@ -13,7 +13,6 @@ game = "reloadium run -m run --mode game"
 python = "3.11.*"
 mypy = ">=1.12.0,<2"
 ruff = ">=0.6.9,<0.7"
-black = ">=24.10.0,<25"
 
 [pypi-dependencies]
 reloadium = ">=1.5.1, <2"
