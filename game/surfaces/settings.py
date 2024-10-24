@@ -133,12 +133,12 @@ class SettingsSurface(Surface):
 
         # Draw "0" and "100" at the start and end of the SFX slider
         self.draw_slider_numbers(
-            self.sfx_slider, 250
+            self.sfx_slider, self.surface.get_height() // 2 - self.surface.get_height() // 3.83 + 5
         )  # y-coordinate for the SFX slider
 
         # Draw "0" and "100" at the start and end of the music slider
         self.draw_slider_numbers(
-            self.music_slider, 370
+            self.music_slider, self.surface.get_height() // 2 - self.surface.get_height() // 3.83 + 125
         )  # y-coordinate for the music slider
 
     def draw_slider_numbers(self, slider, y_position):
