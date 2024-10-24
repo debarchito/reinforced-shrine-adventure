@@ -91,7 +91,7 @@ class SurfaceManager:
         """Reinitialize all surfaces."""
 
         for name, surface in self.surfaces.items():
-            new_surface = surface.__class__(self.display_surface, self.assets, self)
+            new_surface = surface.__class__(self.display_surface, self.assets, self)  # type: ignore
             self.surfaces[name] = new_surface
 
             if self.active_surface == surface:
