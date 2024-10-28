@@ -3,7 +3,7 @@ authors = ["Debarchito Nath <dev.debarchito.nath@protonmail.com>"]
 channels = ["conda-forge"]
 description = "A text-based adventure game-ish environment to train solo RL agents"
 name = "reinforced-shrine-adventure"
-platforms = ["linux-64", "win-64", "osx-64", "osx-arm64"]
+platforms = ["linux-64", "win-64"]
 version = "0.1.0"
 
 [tasks]
