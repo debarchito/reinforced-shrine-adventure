@@ -13,6 +13,7 @@ class Text:
         font: pygame.font.Font,
         position: tuple[int, int],
         color: tuple[int, int, int] = (255, 255, 255),
+        center: bool = True,
         on_draw: Optional[Callable[["Text", pygame.Surface], Any]] = None,
     ):
         self.content = content
@@ -21,7 +22,10 @@ class Text:
         self.color = color
         self.on_draw = on_draw
         self.image = self.font.render(content, True, color)
-        self.rect = self.image.get_rect(center=position)
+        if center:
+            self.rect = self.image.get_rect(center=position)
+        else:
+            self.rect = self.image.get_rect(topleft=position)
 
     def update_content(self, new_content: str):
         """
