@@ -1,15 +1,19 @@
-# root.py
 import pygame
+from typing import cast
 from game.surface import Surface, SurfaceManager
 from game.asset import Assets
 from game.components.button import Button
 from game.components.text import Text
-from game.surfaces.game_surface import GameSurface
+from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
 
 
 class RootSurface(Surface):
     def __init__(
-        self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager, gs: GameSurface
+        self,
+        surface: pygame.Surface,
+        assets: Assets,
+        manager: SurfaceManager,
+        gs: SummerBreakChoiceSurface,
     ):
         super().__init__(surface)
         self.assets = assets
@@ -99,9 +103,8 @@ class RootSurface(Surface):
         self.quit_button.draw(self.surface)
 
     def start_game(self):
-        # Perform a fade-out effect by calling GameSurface's fade_transition method
-        gs = GameSurface(self.surface, self.assets, self.manager)
+        gs = cast(
+            SummerBreakChoiceSurface, self.manager.surfaces["summer_break_choice"]
+        )
         gs.fade_transition(self.surface)
-        
-        # Switch to the game surface
-        self.manager.set_active_surface("game")
+        self.manager.set_active_surface("summer_break_choice")

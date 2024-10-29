@@ -5,8 +5,11 @@ from game.components.text import Text
 from game.components.button import Button
 from game.components.slider import Slider
 
+
 class SettingsSurface(Surface):
-    def __init__(self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager):
+    def __init__(
+        self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager
+    ):
         super().__init__(surface)
         self.info = pygame.display.Info()
         self.assets = assets

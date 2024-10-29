@@ -20,6 +20,11 @@ class Backgrounds:
     def moon_sky(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("assets/images/backgrounds/moon_sky.png", namehint)
 
+    def empty_evening_classroom(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load(
+            "assets/images/backgrounds/empty_evening_classroom.jpg", namehint
+        )
+
 
 class UI:
     def button_start(self, namehint: str = "") -> pygame.Surface:

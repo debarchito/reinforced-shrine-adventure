@@ -15,7 +15,7 @@ while not end:
     print(f"Num. choices: {len(choices)}\n")
 
     if choices:
-        for i, text in enumerate(choices): # type: ignore
+        for i, text in enumerate(choices):  # type: ignore
             print(f"{i + 1}. {text}")
 
         choice_idx = int(input("Enter choice: "))
