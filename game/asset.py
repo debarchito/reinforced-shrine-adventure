@@ -84,6 +84,9 @@ class UI:
     def banner_dialogue_wood(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("assets/images/ui/banner_dialogue_wood.png", namehint)
 
+    def banner_choice_wood(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/banner_choice_wood.png", namehint)
+
 
 class Images:
     def __init__(self):
