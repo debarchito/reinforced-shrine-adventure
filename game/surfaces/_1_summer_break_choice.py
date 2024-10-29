@@ -9,6 +9,7 @@ class SummerBreakChoiceSurface(Surface):
         self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager
     ):
         super().__init__(surface)
+        self.assets = assets
         self.manager = manager
         self.background_image = assets.images.backgrounds.empty_classroom()
         self.background_image = pygame.transform.scale(
@@ -17,10 +18,10 @@ class SummerBreakChoiceSurface(Surface):
         )
         self.dialogue_banner = DialogueBanner(
             surface=surface,
-            banner_image=assets.images.ui.banner_dialogue(),
+            banner_image=assets.images.ui.banner_dialogue_wood(),
             text_content="Ong it does! Overflow shouldn't occur if the words are seperated correctly. This is quite nice, eh? Now what if there are way too many words? How will the system handle this? This can get quite a bit messy but I like to test it out.",
-            text_color=(0, 0, 0),
-            font=assets.fonts.monogram_extended(50),
+            text_color=(42, 0, 30),
+            font=self.assets.fonts.monogram_extended(50),
         )
 
     def fade_transition(self, surface, color=(0, 0, 0), duration=1000):

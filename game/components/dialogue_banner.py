@@ -85,7 +85,7 @@ class DialogueBanner:
         for i, line in enumerate(visible_lines):
             # Add ellipsis at start if not first page and first line
             if self.current_page > 0 and i == 0:
-                line = "... " + line
+                line = "..." + line
 
             # Add ellipsis at end if more pages exist and last line
             next_page_start = (self.current_page + 1) * self.max_lines
@@ -93,7 +93,7 @@ class DialogueBanner:
                 next_page_start < len(self.full_text_lines)
                 and i == len(visible_lines) - 1
             ):
-                line = line + " ..."
+                line = line + "..."
 
             self.texts.append(
                 Text(
