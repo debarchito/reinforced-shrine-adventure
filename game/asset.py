@@ -25,6 +25,9 @@ class Backgrounds:
             "assets/images/backgrounds/empty_evening_classroom.jpg", namehint
         )
 
+    def empty_classroom(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/backgrounds/empty_classroom.jpg", namehint)
+
 
 class UI:
     def button_start(self, namehint: str = "") -> pygame.Surface:

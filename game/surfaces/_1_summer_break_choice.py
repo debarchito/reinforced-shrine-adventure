@@ -9,7 +9,7 @@ class SummerBreakChoiceSurface(Surface):
     ):
         super().__init__(surface)
         self.manager = manager
-        self.background_image = assets.images.backgrounds.empty_evening_classroom()
+        self.background_image = assets.images.backgrounds.empty_classroom()
         self.background_image = pygame.transform.scale(
             self.background_image,
             (pygame.display.Info().current_w, pygame.display.Info().current_h),
