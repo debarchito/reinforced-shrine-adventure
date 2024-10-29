@@ -6,6 +6,7 @@ from game.surface import SurfaceManager
 from game.surfaces.root import RootSurface
 from game.surfaces.settings import SettingsSurface
 from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
+from bink.story import story_from_file
 
 
 def main():
@@ -15,12 +16,13 @@ def main():
     surface = pygame.display.set_mode(
         (info.current_w, info.current_h), pygame.FULLSCREEN
     )
+    story = story_from_file("story/json/story.ink.json")
 
     manager = SurfaceManager(surface, assets)
     manager.add_surface("root", RootSurface(surface, assets, manager))
     manager.add_surface("settings", SettingsSurface(surface, assets, manager))
     manager.add_surface(
-        "summer_break_choice", SummerBreakChoiceSurface(surface, assets, manager)
+        "summer_break_choice", SummerBreakChoiceSurface(surface, assets, manager, story)
     )
     manager.set_active_surface("root")
 

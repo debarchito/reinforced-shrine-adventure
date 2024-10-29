@@ -2,24 +2,35 @@ import pygame
 from game.components.dialogue_banner import DialogueBanner
 from game.surface import Surface, SurfaceManager
 from game.asset import Assets
+from bink.story import Story
 
 
 class SummerBreakChoiceSurface(Surface):
     def __init__(
-        self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager
+        self,
+        surface: pygame.Surface,
+        assets: Assets,
+        manager: SurfaceManager,
+        story: Story,
     ):
         super().__init__(surface)
         self.assets = assets
+        self.story = story
         self.manager = manager
         self.background_image = assets.images.backgrounds.empty_classroom()
         self.background_image = pygame.transform.scale(
             self.background_image,
             (pygame.display.Info().current_w, pygame.display.Info().current_h),
         )
+
+        initial_text = ""
+        if self.story.can_continue():
+            initial_text = self.story.cont()
+
         self.dialogue_banner = DialogueBanner(
             surface=surface,
             banner_image=assets.images.ui.banner_dialogue_wood(),
-            text_content="Ong it does! Overflow shouldn't occur if the words are seperated correctly. This is quite nice, eh? Now what if there are way too many words? How will the system handle this? This can get quite a bit messy but I like to test it out.",
+            text_content=initial_text,
             text_color=(42, 0, 30),
             font=self.assets.fonts.monogram_extended(50),
         )
@@ -49,9 +60,14 @@ class SummerBreakChoiceSurface(Surface):
     def handle_event(self, event: pygame.event.Event) -> None:
         self.dialogue_banner.handle_event(event)
 
-    def update(self) -> None:
-        # self.dialogue_banner.update_text("YAHOOO")
-        ...
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.story.can_continue():
+                next_text = self.story.cont()
+                self.dialogue_banner.update_text(next_text)
+            else:
+                ...
+
+    def update(self) -> None: ...
 
     def draw(self) -> None:
         self.surface.blit(self.background_image, (0, 0))
