@@ -26,7 +26,9 @@ class Backgrounds:
         )
 
     def empty_classroom(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load("assets/images/backgrounds/empty_classroom.jpg", namehint)
+        return pygame.image.load(
+            "assets/images/backgrounds/empty_classroom.jpg", namehint
+        )
 
 
 class UI:
@@ -78,6 +80,9 @@ class UI:
         return pygame.image.load(
             "assets/images/ui/button_arrow_left_active.png", namehint
         )
+
+    def banner_dialogue(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/banner_dialogue.png", namehint)
 
 
 class Images:

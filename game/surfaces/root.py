@@ -13,7 +13,6 @@ class RootSurface(Surface):
         surface: pygame.Surface,
         assets: Assets,
         manager: SurfaceManager,
-        gs: SummerBreakChoiceSurface,
     ):
         super().__init__(surface)
         self.assets = assets

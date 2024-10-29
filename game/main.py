@@ -17,12 +17,11 @@ def main():
     )
 
     manager = SurfaceManager(surface, assets)
-    summer_break_choice_surface = SummerBreakChoiceSurface(surface, assets, manager)
-    manager.add_surface(
-        "root", RootSurface(surface, assets, manager, summer_break_choice_surface)
-    )
+    manager.add_surface("root", RootSurface(surface, assets, manager))
     manager.add_surface("settings", SettingsSurface(surface, assets, manager))
-    manager.add_surface("summer_break_choice", summer_break_choice_surface)
+    manager.add_surface(
+        "summer_break_choice", SummerBreakChoiceSurface(surface, assets, manager)
+    )
     manager.set_active_surface("root")
 
     clock = pygame.time.Clock()

@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import pygame
 import importlib
@@ -107,11 +108,10 @@ class SurfaceManager:
         if module_name in sys.modules:
             importlib.reload(sys.modules[module_name])
 
-        surface_name = os.path.basename(path).rsplit(".", 1)[0].lower()
-        if surface_name in self.surfaces:
-            surface_class = getattr(
-                sys.modules[module_name], f"{surface_name.capitalize()}Surface"
-            )
+        surface_name = re.sub(r"^_\d+_", "", os.path.basename(path).rsplit(".", 1)[0])
+        if surface_name.lower() in self.surfaces:
+            class_name = "".join(part.title() for part in surface_name.split("_"))
+            surface_class = getattr(sys.modules[module_name], f"{class_name}Surface")
             self.surfaces[surface_name] = surface_class(
                 self.display_surface, self.assets, self
             )

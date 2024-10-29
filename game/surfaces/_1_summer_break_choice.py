@@ -1,4 +1,5 @@
 import pygame
+from game.components.dialogue_banner import DialogueBanner
 from game.surface import Surface, SurfaceManager
 from game.asset import Assets
 
@@ -13,6 +14,17 @@ class SummerBreakChoiceSurface(Surface):
         self.background_image = pygame.transform.scale(
             self.background_image,
             (pygame.display.Info().current_w, pygame.display.Info().current_h),
+        )
+        self.dialogue_banner = DialogueBanner(
+            surface=surface,
+            banner_image=assets.images.ui.banner_dialogue(),
+            text_content="This is some text (not final)",
+            text_color=(0, 0, 0),
+            font=assets.fonts.monogram_extended(50),
+            banner_width_percent=0.9,
+            banner_height_percent=0.3,
+            text_x_percent=0.4,
+            text_y_percent=0.5,
         )
 
     def fade_transition(self, surface, color=(0, 0, 0), duration=1000):
@@ -38,7 +50,6 @@ class SummerBreakChoiceSurface(Surface):
             clock.tick(60)
 
     def handle_event(self, event: pygame.event.Event) -> None:
-        # I don't think we need to handle ESC for now. It can be implemented later.
         pass
 
     def update(self) -> None:
@@ -46,3 +57,4 @@ class SummerBreakChoiceSurface(Surface):
 
     def draw(self) -> None:
         self.surface.blit(self.background_image, (0, 0))
+        self.dialogue_banner.draw(self.surface)
