@@ -1,9 +1,11 @@
+# main.py
 import os
 import pygame
 from game.asset import Assets
 from game.surface import SurfaceManager
 from game.surfaces.root import RootSurface
 from game.surfaces.settings import SettingsSurface
+from game.surfaces.game_surface import GameSurface
 
 
 def main():
@@ -15,9 +17,11 @@ def main():
     )
 
     manager = SurfaceManager(surface, assets)
-    manager.add_surface("root", RootSurface(surface, assets, manager))
+    game_surface = GameSurface(surface, assets, manager)
+    manager.add_surface("root", RootSurface(surface, assets, manager, game_surface))
     manager.add_surface("settings", SettingsSurface(surface, assets, manager))
     manager.set_active_surface("root")
+    manager.add_surface("game", game_surface)
 
     clock = pygame.time.Clock()
     running = True

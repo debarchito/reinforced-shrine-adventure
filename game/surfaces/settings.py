@@ -5,11 +5,8 @@ from game.components.text import Text
 from game.components.button import Button
 from game.components.slider import Slider
 
-
 class SettingsSurface(Surface):
-    def __init__(
-        self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager
-    ):
+    def __init__(self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager):
         super().__init__(surface)
         self.info = pygame.display.Info()
         self.assets = assets
@@ -23,7 +20,7 @@ class SettingsSurface(Surface):
         self.heading = Text(
             content="Settings",
             font=assets.fonts.monogram_extended(80),
-            position=(300, 85),  # Original position
+            position=(300, 85),
         )
 
         self.button_click_1 = pygame.mixer.Sound(self.assets.sounds.button_click_1())
@@ -50,7 +47,7 @@ class SettingsSurface(Surface):
             position=(
                 self.surface.get_width() // 2 - self.surface.get_width() // 9 - 55,
                 self.surface.get_height() // 2 - self.surface.get_height() // 4,
-            ),  # Centered
+            ),
         )
 
         self.sfx_slider = Slider(
@@ -59,7 +56,7 @@ class SettingsSurface(Surface):
                 self.surface.get_height() // 2 - self.surface.get_height() // 3.83,
                 480,
                 30,
-            ),  # Centered width
+            ),
             min_value=0.0,
             max_value=1.0,
             start_value=self.manager.current_global_sfx_volume - 0.1,
@@ -73,7 +70,7 @@ class SettingsSurface(Surface):
             position=(
                 self.surface.get_width() // 2 - self.surface.get_width() // 9 - 55,
                 self.surface.get_height() // 2 - self.surface.get_height() // 4 + 120,
-            ),  # Centered
+            ),
         )
 
         self.music_slider = Slider(
@@ -84,15 +81,15 @@ class SettingsSurface(Surface):
                 + 120,
                 480,
                 30,
-            ),  # Centered width
+            ),
             min_value=0.0,
             max_value=1.0,
             start_value=pygame.mixer.music.get_volume() - 0.1,
             on_change=self.set_music_volume,
         )
 
-        # Prepare the font for rendering numbers "0" and "100"
-        self.number_font = assets.fonts.monogram_extended(30)  # Font for numbers
+        # Font for rendering numbers "0" and "100"
+        self.number_font = assets.fonts.monogram_extended(30)
 
     def set_sfx_volume(self, volume):
         """Set global SFX volume."""
@@ -104,6 +101,11 @@ class SettingsSurface(Surface):
 
     def handle_event(self, event: pygame.event.Event) -> None:
         if not self.is_active:
+            return
+
+        # Toggle back to the game surface when Esc is pressed
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            self.manager.set_active_surface("game")
             return
 
         self.back_button.handle_event(event)
@@ -135,34 +137,30 @@ class SettingsSurface(Surface):
         self.draw_slider_numbers(
             self.sfx_slider,
             self.surface.get_height() // 2 - self.surface.get_height() // 3.83 + 5,
-        )  # y-coordinate for the SFX slider
+        )
 
         # Draw "0" and "100" at the start and end of the music slider
         self.draw_slider_numbers(
             self.music_slider,
             self.surface.get_height() // 2 - self.surface.get_height() // 3.83 + 125,
-        )  # y-coordinate for the music slider
+        )
 
     def draw_slider_numbers(self, slider, y_position):
         """Helper method to draw '0' and '100' at the start and end of each slider."""
-        # Render the numbers
-        zero_text = self.number_font.render("0", True, (255, 255, 255))  # White color
-        hundred_text = self.number_font.render(
-            "100", True, (255, 255, 255)
-        )  # White color
+        zero_text = self.number_font.render("0", True, (255, 255, 255))
+        hundred_text = self.number_font.render("100", True, (255, 255, 255))
 
-        # Adjust text positions for the left and right ends of the slider
         self.surface.blit(
             zero_text,
             (
                 slider.rect.x - (zero_text.get_width() * 2),
                 y_position - (zero_text.get_height() / 8),
             ),
-        )  # "0" at the left side
+        )
         self.surface.blit(
             hundred_text,
             (
                 slider.rect.right + (zero_text.get_width() / 1.1),
                 y_position - (zero_text.get_height() / 8),
             ),
-        )  # "100" at the right side
+        )

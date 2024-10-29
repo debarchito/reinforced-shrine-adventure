@@ -1,13 +1,15 @@
+# root.py
 import pygame
 from game.surface import Surface, SurfaceManager
 from game.asset import Assets
 from game.components.button import Button
 from game.components.text import Text
+from game.surfaces.game_surface import GameSurface
 
 
 class RootSurface(Surface):
     def __init__(
-        self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager
+        self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager, gs: GameSurface
     ):
         super().__init__(surface)
         self.assets = assets
@@ -35,9 +37,10 @@ class RootSurface(Surface):
                 assets.images.ui.button_start_active(), (200, 100)
             ),
             position=(surface.get_width() // 2, int(surface.get_height() * 0.6)),
-            on_click=lambda _button, _event: print("You clicked on a button!"),
+            on_click=lambda _button, _event: self.start_game(),
             sound_on_click=self.button_click_1,
         )
+
         self.cog_button = Button(
             normal_image=pygame.transform.scale(
                 assets.images.ui.button_cog(), (100, 100)
@@ -94,3 +97,11 @@ class RootSurface(Surface):
         self.start_button.draw(self.surface)
         self.cog_button.draw(self.surface)
         self.quit_button.draw(self.surface)
+
+    def start_game(self):
+        # Perform a fade-out effect by calling GameSurface's fade_transition method
+        gs = GameSurface(self.surface, self.assets, self.manager)
+        gs.fade_transition(self.surface)
+        
+        # Switch to the game surface
+        self.manager.set_active_surface("game")
