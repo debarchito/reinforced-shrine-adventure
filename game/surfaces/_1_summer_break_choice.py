@@ -70,7 +70,7 @@ class SummerBreakChoiceSurface(Surface):
         choices = self.story.get_current_choices()
 
         for i, choice in enumerate(choices):  # type: ignore
-            y_offset = 0.3 + (i * 0.15)  # Stack choices vertically
+            y_offset = 0.55 + (i * 0.08)  # Start lower and stack more compactly
             banner = ChoiceBanner(
                 surface=self.surface,
                 banner_image=self.assets.images.ui.banner_choice_wood(),

@@ -17,7 +17,7 @@ class ChoiceBanner:
         banner_image: pygame.Surface,
         text_content: str,
         font: pygame.font.Font,
-        y_offset: float = 0.5,  # Default to middle of screen
+        y_offset: float = 0.7,  # Positioned just above dialogue banner
         text_color: tuple[int, int, int] = (255, 255, 255),
         on_draw: Optional[Callable] = None,
     ):
@@ -25,8 +25,8 @@ class ChoiceBanner:
         screen_height = surface.get_height()
 
         # Banner dimensions - smaller than dialogue banner
-        self.banner_width = int(screen_width * 0.4)
-        self.banner_height = int(screen_height * 0.15)
+        self.banner_width = int(screen_width * 0.3)
+        self.banner_height = int(screen_height * 0.05)
 
         self.banner_image = pygame.transform.scale(
             banner_image, (self.banner_width, self.banner_height)
@@ -49,7 +49,7 @@ class ChoiceBanner:
             font=self.font,
             position=(
                 self.position[0] + (self.banner_width * 0.1),  # type: ignore
-                self.position[1] + (self.banner_height * 0.3),
+                self.position[1] + (self.banner_height * 0.15),
             ),
             color=self.text_color,
             center=False,
@@ -67,7 +67,7 @@ class ChoiceBanner:
         # Update text position
         self.text.position = (  # type: ignore
             self.position[0] + (self.banner_width * 0.1),
-            self.position[1] + (self.banner_height * 0.3),
+            self.position[1] + (self.banner_height * 0.15),
         )
 
     def update_text(self, new_text: str):
