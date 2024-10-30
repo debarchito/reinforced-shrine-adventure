@@ -22,6 +22,8 @@ class SummerBreakChoiceSurface(Surface):
         self.manager = manager
         self.info = pygame.display.Info()
         self.choice_banners = []
+        self.button_click_1 = pygame.mixer.Sound(self.assets.sounds.button_click_1())
+        self.manager.sfx_sound_objects.append(self.button_click_1)
         self.__setup_background()
         self.__setup_initial_dialogue()
         self.__update_choices()
@@ -43,6 +45,7 @@ class SummerBreakChoiceSurface(Surface):
             font=self.assets.fonts.monogram_extended(50),
             character_name=char_name,
             character_name_color=(255, 215, 0),
+            on_advance=self.button_click_1,
         )
 
     def __get_next_dialogue(self) -> str:
@@ -131,6 +134,14 @@ class SummerBreakChoiceSurface(Surface):
         char_name, dialogue_text = self.__parse_dialogue(next_text)
         self.dialogue_banner.update_text(dialogue_text, char_name)
         self.__update_choices()
+
+    def hook(self) -> None:
+        """
+        Hook up any necessary components for this surface.
+        """
+
+        pygame.mixer.music.load(self.assets.sounds.empty_classroom())
+        pygame.mixer.music.play(-1)
 
     def handle_event(self, event: pygame.event.Event) -> None:
         """Handle input events for dialogue and choices."""

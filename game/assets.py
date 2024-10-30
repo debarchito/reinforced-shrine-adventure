@@ -113,6 +113,9 @@ class Sounds:
     def ambient_evening(self) -> str:
         return "assets/sounds/music/ambient_evening.mp3"
 
+    def empty_classroom(self) -> str:
+        return "assets/sounds/music/empty_classroom.mp3"
+
     def button_click_1(self) -> str:
         return "assets/sounds/sfx/button_click_1.mp3"
 

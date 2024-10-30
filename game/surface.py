@@ -35,6 +35,13 @@ class Surface(ABC):
 
         self.is_active = False
 
+    def hook(self) -> None:
+        """
+        Hook up any necessary components for this surface.
+        """
+
+        ...
+
     @abstractmethod
     def handle_event(self, event: pygame.event.Event) -> None:
         """
@@ -83,7 +90,9 @@ class SurfaceManager:
             self.active_surface.deactivate()
             self.last_active_surface = self.active_surface
         self.active_surface = self.surfaces.get(name)
-        cast(Surface, self.active_surface).activate()
+        surface = cast(Surface, self.active_surface)
+        surface.hook()
+        surface.activate()
 
     def handle_event(self, event: pygame.event.Event) -> None:
         """

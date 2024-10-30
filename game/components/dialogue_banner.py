@@ -19,6 +19,7 @@ class DialogueBanner:
         character_name: Optional[str] = None,
         character_name_color: tuple[int, int, int] = (255, 255, 255),
         on_draw: Optional[Callable[["DialogueBanner", pygame.Surface], Any]] = None,
+        on_advance: Optional[pygame.mixer.Sound] = None,
     ):
         screen_width = surface.get_width()
         screen_height = surface.get_height()
@@ -47,6 +48,7 @@ class DialogueBanner:
         self.current_page = 0
         self.texts = []
         self.on_draw = on_draw
+        self.on_advance = on_advance
         self.__update_visible_texts()
 
     def __wrap_text(self, text_content: str) -> list[str]:
@@ -141,6 +143,8 @@ class DialogueBanner:
         if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1) or (
             event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE
         ):
+            if self.on_advance:
+                self.on_advance.play()
             next_page_start = (self.current_page + 1) * (
                 self.max_lines - 1 if self.character_name else self.max_lines
             )

@@ -25,7 +25,6 @@ class RootSurface(Surface):
         self.__setup_background()
         self.__setup_heading(surface)
         self.__setup_buttons(surface)
-        self.__setup_audio()
 
     def __setup_background(self) -> None:
         self.background = pygame.transform.scale(
@@ -89,10 +88,6 @@ class RootSurface(Surface):
             sound_on_click=self.button_click_1,
         )
 
-    def __setup_audio(self) -> None:
-        pygame.mixer.music.load(self.assets.sounds.ambient_evening())
-        pygame.mixer.music.play(-1)
-
     def __start_game(self) -> None:
         """
         Transition to the first game scene.
@@ -102,6 +97,14 @@ class RootSurface(Surface):
         )
         summer_break_surface.fade_transition(self.surface)
         self.manager.set_active_surface("summer_break_choice")
+
+    def hook(self) -> None:
+        """
+        Hook up any necessary components for this surface.
+        """
+
+        pygame.mixer.music.load(self.assets.sounds.ambient_evening())
+        pygame.mixer.music.play(-1)
 
     def handle_event(self, event: pygame.event.Event) -> None:
         """
