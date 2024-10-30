@@ -178,6 +178,8 @@ class SummerBreakChoiceSurface(Surface):
                 choice_num = event.key - pygame.K_1
             elif pygame.K_KP1 <= event.key <= pygame.K_KP9:
                 choice_num = event.key - pygame.K_KP1
+            elif event.key == pygame.K_ESCAPE:
+                self.manager.set_active_surface("pause")
 
             if choice_num is not None and choice_num < len(self.choice_banners):
                 self.__handle_choice_selection(choice_num)

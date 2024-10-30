@@ -28,10 +28,29 @@ class SettingsSurface(Surface):
         self.__setup_labels()
 
     def __setup_background(self) -> None:
-        self.background = pygame.transform.scale(
-            self.assets.images.backgrounds.moon_sky(),
-            (self.info.current_w, self.info.current_h),
+        self.backdrop = pygame.Surface(self.surface.get_size())
+        self.blur_surface = pygame.Surface(self.surface.get_size(), pygame.SRCALPHA)
+
+    def __glass_overlay(self) -> None:
+        """
+        Create frosted glass effect over the current display
+        """
+
+        self.backdrop.blit(self.surface, (0, 0))
+        self.blur_surface.fill((0, 0, 0, 180))
+        scale_factor = 0.05
+        small = pygame.transform.scale(
+            self.backdrop,
+            (
+                int(self.surface.get_width() * scale_factor),
+                int(self.surface.get_height() * scale_factor),
+            ),
         )
+        blurred = pygame.transform.scale(
+            small, (self.surface.get_width(), self.surface.get_height())
+        )
+        self.backdrop = blurred
+        self.backdrop.blit(self.blur_surface, (0, 0))
 
     def __setup_heading(self) -> None:
         self.heading = Text(
@@ -130,10 +149,18 @@ class SettingsSurface(Surface):
             ),
         )
 
+    def hook(self) -> None:
+        """
+        Hook up any necessary components for this surface.
+        """
+
+        self.__glass_overlay()
+
     def handle_event(self, event: pygame.event.Event) -> None:
         """
         Handle input events for the settings menu.
         """
+
         if not self.is_active:
             return
 
@@ -163,7 +190,7 @@ class SettingsSurface(Surface):
         if not self.is_active:
             return
 
-        self.surface.blit(self.background, (0, 0))
+        self.surface.blit(self.backdrop, (0, 0))
         self.heading.draw(self.surface)
         self.back_button.draw(self.surface)
         self.sfx_label.draw(self.surface)

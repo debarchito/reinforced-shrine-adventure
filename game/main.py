@@ -3,6 +3,7 @@ import pygame
 from game.assets import Assets
 from game.surface import SurfaceManager
 from game.surfaces.root import RootSurface
+from game.surfaces.pause import PauseSurface
 from game.surfaces.settings import SettingsSurface
 from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
 
@@ -43,6 +44,7 @@ def main():
     manager = SurfaceManager(surface, assets)
     manager.surfaces["root"] = RootSurface(surface, assets, manager)
     manager.surfaces["settings"] = SettingsSurface(surface, assets, manager)
+    manager.surfaces["pause"] = PauseSurface(surface, assets, manager)
     manager.surfaces["summer_break_choice"] = SummerBreakChoiceSurface(
         surface, assets, manager
     )

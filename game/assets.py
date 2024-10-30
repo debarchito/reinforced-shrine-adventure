@@ -88,6 +88,15 @@ class UI:
             "assets/images/ui/button_arrow_left_active.png", namehint
         )
 
+    def button_play(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/button_play.png", namehint)
+
+    def button_play_hover(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/button_play_hover.png", namehint)
+
+    def button_play_active(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/button_play_active.png", namehint)
+
     def banner_dialogue_wood(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("assets/images/ui/banner_dialogue_wood.png", namehint)
 

@@ -76,7 +76,7 @@ class SurfaceManager:
         self.display_surface = display_surface
         self.assets = assets
         self.surfaces: dict[str, Surface] = {}
-        self.last_active_surface: Optional[Surface] = None
+        self.last_active_surface: Optional[str] = None
         self.active_surface: Optional[Surface] = None
         self.current_global_sfx_volume = 1.0
         self.sfx_sound_objects: list[pygame.mixer.Sound] = []
@@ -88,7 +88,11 @@ class SurfaceManager:
 
         if self.active_surface:
             self.active_surface.deactivate()
-            self.last_active_surface = self.active_surface
+            self.last_active_surface = (
+                re.sub(r"(?<!^)(?=[A-Z])", "_", self.active_surface.__class__.__name__)
+                .lower()
+                .replace("_surface", "")
+            )
         self.active_surface = self.surfaces.get(name)
         surface = cast(Surface, self.active_surface)
         surface.hook()
