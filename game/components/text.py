@@ -20,6 +20,7 @@ class Text:
         self.font = font
         self.position = position
         self.color = color
+        self.center = center
         self.on_draw = on_draw
         self.image = self.font.render(content, True, color)
         if center:
