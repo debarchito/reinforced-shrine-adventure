@@ -89,10 +89,12 @@ class SummerBreakChoiceSurface(Surface):
             choices = self.story.get_current_choices()
             for i, choice in enumerate(choices):  # type: ignore
                 y_offset = 0.55 + (i * 0.08)  # Start lower and stack more compactly
+                # Add number prefix to choice text
+                numbered_choice = f"{i+1}. {choice}"
                 banner = ChoiceBanner(
                     surface=self.surface,
                     banner_image=self.assets.images.ui.banner_choice_wood(),
-                    text_content=choice,
+                    text_content=numbered_choice,
                     font=self.assets.fonts.monogram_extended(40),
                     y_offset=y_offset,
                     text_color=(42, 0, 30),
@@ -104,7 +106,9 @@ class SummerBreakChoiceSurface(Surface):
             self.update_choices()
             return
 
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1) or (
+            event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE
+        ):
             if self.story.can_continue():
                 # Skip empty dialogues
                 next_text = ""
@@ -132,6 +136,38 @@ class SummerBreakChoiceSurface(Surface):
                     else self.dialogue_banner.max_lines
                 )
                 if next_page_start >= len(self.dialogue_banner.full_text_lines):
+                    # Check for number key presses (1-9)
+                    if event.type == pygame.KEYDOWN:
+                        if pygame.K_1 <= event.key <= pygame.K_9:
+                            choice_num = (
+                                event.key - pygame.K_1
+                            )  # Convert to 0-based index
+                            if choice_num < len(self.choice_banners):
+                                self.story.choose_choice_index(choice_num)
+                                if self.story.can_continue():
+                                    # Skip empty dialogues after choice
+                                    next_text = ""
+                                    while self.story.can_continue():
+                                        text = self.story.cont()
+                                        if text.strip():  # Only use non-empty text
+                                            next_text = text
+                                            break
+                                    if (
+                                        next_text
+                                    ):  # Only update if we found non-empty text
+                                        # Parse text for character name
+                                        char_name = None
+                                        dialogue_text = next_text
+                                        if next_text.startswith("@"):
+                                            parts = next_text.split(":", 1)
+                                            if len(parts) == 2:
+                                                char_name = parts[0][1:].strip()
+                                                dialogue_text = parts[1].strip()
+                                        self.dialogue_banner.update_text(
+                                            dialogue_text, char_name
+                                        )
+                                    self.update_choices()
+                    # Keep existing mouse click handling
                     for banner, choice_idx in self.choice_banners:
                         if banner.handle_event(event):
                             self.story.choose_choice_index(choice_idx)

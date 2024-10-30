@@ -139,9 +139,10 @@ class DialogueBanner:
             )
 
     def handle_event(self, event: pygame.event.Event):
-        """Handle mouse click to advance text."""
-
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        """Handle mouse click or spacebar to advance text."""
+        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1) or (
+            event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE
+        ):
             next_page_start = (self.current_page + 1) * (
                 self.max_lines - 1 if self.character_name else self.max_lines
             )
