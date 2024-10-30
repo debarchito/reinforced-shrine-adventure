@@ -16,6 +16,8 @@ class DialogueBanner:
         text_content: str,
         font: pygame.font.Font,
         text_color: tuple[int, int, int] = (255, 255, 255),
+        character_name: Optional[str] = None,
+        character_name_color: tuple[int, int, int] = (255, 255, 255),
         on_draw: Optional[Callable] = None,
     ):
         screen_width = surface.get_width()
@@ -38,6 +40,7 @@ class DialogueBanner:
 
         self.font = font
         self.text_color = text_color
+        self.character_name_color = character_name_color
         self.text_start_x = screen_width * 0.15
         self.text_start_y = screen_height * 0.78
         self.text_end_x = screen_width * 0.85
@@ -45,6 +48,7 @@ class DialogueBanner:
         self.max_lines = 3
 
         # Text buffer system
+        self.character_name = character_name
         self.full_text_lines = self._wrap_text(text_content)
         self.current_page = 0
         self.texts = []
@@ -78,23 +82,47 @@ class DialogueBanner:
 
     def _update_visible_texts(self):
         """Update the visible text objects based on current page."""
-        start_idx = self.current_page * self.max_lines
-        visible_lines = self.full_text_lines[start_idx : start_idx + self.max_lines]
+        start_idx = self.current_page * (
+            self.max_lines - 1 if self.character_name else self.max_lines
+        )
+        visible_lines = self.full_text_lines[
+            start_idx : start_idx
+            + (self.max_lines - 1 if self.character_name else self.max_lines)
+        ]
 
         self.texts = []
+
+        # Add character name if present
+        if self.character_name:
+            self.texts.append(
+                Text(
+                    content=self.character_name,
+                    font=self.font,
+                    position=(
+                        self.text_start_x + (self.text_end_x - self.text_start_x) / 2,
+                        self.text_start_y,
+                    ),  # type: ignore
+                    color=self.character_name_color,
+                    center=True,
+                )
+            )
+
         for i, line in enumerate(visible_lines):
             # Add ellipsis at start if not first page and first line
             if self.current_page > 0 and i == 0:
                 line = "..." + line
 
             # Add ellipsis at end if more pages exist and last line
-            next_page_start = (self.current_page + 1) * self.max_lines
+            next_page_start = (self.current_page + 1) * (
+                self.max_lines - 1 if self.character_name else self.max_lines
+            )
             if (
                 next_page_start < len(self.full_text_lines)
                 and i == len(visible_lines) - 1
             ):
                 line = line + "..."
 
+            y_offset = 1 if self.character_name else 0
             self.texts.append(
                 Text(
                     content=line,
@@ -102,7 +130,8 @@ class DialogueBanner:
                     position=(
                         self.text_start_x,
                         self.text_start_y
-                        + i * (self.font.get_height() + self.line_spacing),
+                        + (i + y_offset)
+                        * (self.font.get_height() + self.line_spacing / 2),
                     ),  # type: ignore
                     color=self.text_color,
                     center=False,
@@ -113,15 +142,18 @@ class DialogueBanner:
         """Handle mouse click to advance text."""
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            next_page_start = (self.current_page + 1) * self.max_lines
+            next_page_start = (self.current_page + 1) * (
+                self.max_lines - 1 if self.character_name else self.max_lines
+            )
             if next_page_start < len(self.full_text_lines):
                 self.current_page += 1
                 self._update_visible_texts()
                 return True
         return False
 
-    def update_text(self, new_text: str):
+    def update_text(self, new_text: str, character_name: Optional[str] = None):
         """Update the dialogue text content."""
+        self.character_name = character_name
         self.full_text_lines = self._wrap_text(new_text)
         self.current_page = 0
         self._update_visible_texts()
