@@ -80,7 +80,7 @@ class PauseSurface(Surface):
         )
 
         self.exit_text = Text(
-            content="Exit",
+            content="Quit",
             font=assets.fonts.monogram_extended(70),
             position=(center_x, center_y + 120),
         )
