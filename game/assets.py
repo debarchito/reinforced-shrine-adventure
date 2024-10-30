@@ -104,6 +104,42 @@ class UI:
         return pygame.image.load("assets/images/ui/banner_choice_wood.png", namehint)
 
 
+class Characters:
+    """
+    Load and provide type-safe access to character sprites.
+    """
+
+    def boy_1_standing(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load(
+            "assets/images/characters/boy_1_standing.png", namehint
+        )
+
+    def boy_2_standing(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load(
+            "assets/images/characters/boy_2_standing.png", namehint
+        )
+
+    def boy_3_standing(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load(
+            "assets/images/characters/boy_3_standing.png", namehint
+        )
+
+    def girl_1_standing(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load(
+            "assets/images/characters/girl_1_standing.png", namehint
+        )
+
+    def girl_2_standing(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load(
+            "assets/images/characters/girl_2_standing.png", namehint
+        )
+
+    def girl_3_standing(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load(
+            "assets/images/characters/girl_3_standing.png", namehint
+        )
+
+
 class Images:
     """
     Load and provide type-safe access to images.
@@ -112,6 +148,7 @@ class Images:
     def __init__(self):
         self.backgrounds = Backgrounds()
         self.ui = UI()
+        self.characters = Characters()
 
 
 class Sounds:

@@ -1,8 +1,7 @@
 import pygame
 from game.assets import Assets
+from game.utils import SceneDynamics
 from game.surface import Surface, SurfaceManager
-from game.components.choice_banner import ChoiceBanner
-from game.components.dialogue_banner import DialogueBanner
 
 
 class SummerBreakChoiceSurface(Surface):
@@ -18,53 +17,16 @@ class SummerBreakChoiceSurface(Surface):
     ):
         super().__init__(surface)
         self.assets = assets
-        self.story = self.assets.story
         self.manager = manager
         self.info = pygame.display.Info()
-        self.choice_banners = []
-        self.button_click_1 = pygame.mixer.Sound(self.assets.sounds.button_click_1())
-        self.manager.sfx_sound_objects.append(self.button_click_1)
-        self.__setup_background()
-        self.__setup_initial_dialogue()
-        self.__update_choices()
-
-    def __setup_background(self) -> None:
+        self.scene = SceneDynamics(surface, assets)
+        self.manager.sfx_sound_objects.append(self.scene.button_click_1)
         self.background_image = pygame.transform.scale(
             self.assets.images.backgrounds.empty_classroom(),
             (self.info.current_w, self.info.current_h),
         )
-
-    def __setup_initial_dialogue(self) -> None:
-        initial_text = self.__get_next_dialogue()
-        char_name, dialogue_text = self.__parse_dialogue(initial_text)
-        self.dialogue_banner = DialogueBanner(
-            surface=self.surface,
-            banner_image=self.assets.images.ui.banner_dialogue_wood(),
-            text_content=dialogue_text,
-            text_color=(42, 0, 30),
-            font=self.assets.fonts.monogram_extended(50),
-            character_name=char_name,
-            character_name_color=(255, 215, 0),
-            on_advance=self.button_click_1,
-        )
-
-    def __get_next_dialogue(self) -> str:
-        while self.story.can_continue():
-            text = self.story.cont()
-            if text.strip():
-                return text
-
-        return ""
-
-    def __parse_dialogue(self, text: str) -> tuple[str | None, str]:
-        if not text.startswith("@"):
-            return None, text
-
-        parts = text.split(":", 1)
-        if len(parts) != 2:
-            return None, text
-
-        return parts[0][1:].strip(), parts[1].strip()
+        self.scene.setup_initial_dialogue()
+        self.scene.update_choices()
 
     def fade_transition(
         self,
@@ -72,7 +34,9 @@ class SummerBreakChoiceSurface(Surface):
         color: tuple[int, int, int] = (0, 0, 0),
         duration: int = 1000,
     ) -> None:
-        """Fade transition between surfaces."""
+        """
+        Fade transition between surfaces.
+        """
 
         fade_surface = pygame.Surface(surface.get_size())
         fade_surface.fill(color)
@@ -93,48 +57,6 @@ class SummerBreakChoiceSurface(Surface):
 
             clock.tick(60)
 
-    def __update_choices(self) -> None:
-        """Update available choice banners."""
-
-        self.choice_banners.clear()
-
-        next_page_start = (self.dialogue_banner.current_page + 1) * (
-            self.dialogue_banner.max_lines - 1
-            if self.dialogue_banner.character_name
-            else self.dialogue_banner.max_lines
-        )
-
-        if next_page_start < len(self.dialogue_banner.full_text_lines):
-            return
-
-        choices = self.story.get_current_choices()
-        for i, choice in enumerate(choices):  # type: ignore
-            y_offset = 0.55 + (i * 0.08)
-            banner = ChoiceBanner(
-                surface=self.surface,
-                banner_image=self.assets.images.ui.banner_choice_wood(),
-                text_content=f"{i+1}. {choice}",
-                font=self.assets.fonts.monogram_extended(40),
-                y_offset=y_offset,
-                text_color=(42, 0, 30),
-            )
-            self.choice_banners.append((banner, i))
-
-    def __handle_choice_selection(self, choice_idx: int) -> None:
-        """Handle selection of a choice option."""
-
-        self.story.choose_choice_index(choice_idx)
-        if not self.story.can_continue():
-            return
-
-        next_text = self.__get_next_dialogue()
-        if not next_text:
-            return
-
-        char_name, dialogue_text = self.__parse_dialogue(next_text)
-        self.dialogue_banner.update_text(dialogue_text, char_name)
-        self.__update_choices()
-
     def hook(self) -> None:
         """
         Hook up any necessary components for this surface.
@@ -144,32 +66,22 @@ class SummerBreakChoiceSurface(Surface):
         pygame.mixer.music.play(-1)
 
     def handle_event(self, event: pygame.event.Event) -> None:
-        """Handle input events for dialogue and choices."""
+        """
+        Handle input events for dialogue and choices.
+        """
 
-        if not self.is_active:
+        if not self.is_active or not self.scene.dialogue_banner:
             return
 
-        if self.dialogue_banner.handle_event(event):
-            self.__update_choices()
+        if self.scene.dialogue_banner.handle_event(event):
+            self.scene.update_choices()
             return
 
         if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1) or (
             event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE
         ):
-            if self.story.can_continue():
-                next_text = self.__get_next_dialogue()
-                if next_text:
-                    char_name, dialogue_text = self.__parse_dialogue(next_text)
-                    self.dialogue_banner.update_text(dialogue_text, char_name)
-                self.__update_choices()
-                return
-
-            next_page_start = (self.dialogue_banner.current_page + 1) * (
-                self.dialogue_banner.max_lines - 1
-                if self.dialogue_banner.character_name
-                else self.dialogue_banner.max_lines
-            )
-            if next_page_start < len(self.dialogue_banner.full_text_lines):
+            self.scene.handle_dialogue_advance()
+            if self.scene.should_show_next_page():
                 return
 
         if event.type == pygame.KEYDOWN:
@@ -181,27 +93,36 @@ class SummerBreakChoiceSurface(Surface):
             elif event.key == pygame.K_ESCAPE:
                 self.manager.set_active_surface("pause")
 
-            if choice_num is not None and choice_num < len(self.choice_banners):
-                self.__handle_choice_selection(choice_num)
+            if choice_num is not None and choice_num < len(self.scene.choice_banners):
+                self.scene.handle_choice_selection(choice_num)
                 return
 
-        for banner, choice_idx in self.choice_banners:
+        for banner, choice_idx in self.scene.choice_banners:
             if banner.handle_event(event):
-                self.__handle_choice_selection(choice_idx)
+                self.scene.handle_choice_selection(choice_idx)
                 break
 
     def update(self) -> None:
-        """Update the state of surface components."""
+        """
+        Update the state of surface components.
+        """
 
         ...
 
     def draw(self) -> None:
-        """Render the surface components."""
+        """
+        Render the surface components.
+        """
 
         if not self.is_active:
             return
 
         self.surface.blit(self.background_image, (0, 0))
-        self.dialogue_banner.draw(self.surface)
-        for banner, _ in self.choice_banners:
+        if self.scene.dialogue_banner:
+            self.scene.dialogue_banner.draw(self.surface)
+        if self.scene.character_sprite:
+            sprite_x = self.surface.get_width() * 0.05
+            sprite_y = self.surface.get_height() * 0.43
+            self.surface.blit(self.scene.character_sprite, (sprite_x, sprite_y))
+        for banner, _ in self.scene.choice_banners:
             banner.draw(self.surface)
