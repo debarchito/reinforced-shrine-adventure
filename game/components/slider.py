@@ -1,59 +1,64 @@
 import pygame
+from typing import Callable
 
 
 class Slider:
-    def __init__(self, rect, min_value, max_value, start_value, on_change):
+    """
+    A slider component for adjusting numeric values.
+    """
+
+    def __init__(
+        self,
+        rect: tuple[int, int, int, int],
+        min_value: float,
+        max_value: float,
+        start_value: float,
+        on_change: Callable[[float], None],
+    ):
         self.rect = pygame.Rect(rect)
         self.min_value = min_value
         self.max_value = max_value
         self.value = start_value
         self.on_change = on_change
-        self.handle = pygame.Rect(
-            self.rect.x
-            + (self.rect.width * ((start_value - min_value) / (max_value - min_value))),
-            self.rect.y,
-            20,
-            self.rect.height,
+        handle_x = self.rect.x + (
+            self.rect.width * ((start_value - min_value) / (max_value - min_value))
         )
+        self.handle = pygame.Rect(handle_x, self.rect.y, 20, self.rect.height)
         self.dragging = False
 
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.handle.collidepoint(event.pos):
-                self.dragging = True
-        elif event.type == pygame.MOUSEBUTTONUP:
-            self.dragging = False
-        elif event.type == pygame.MOUSEMOTION and self.dragging:
-            self.handle.x = max(
-                self.rect.x, min(event.pos[0], self.rect.right - self.handle.width)
-            )
-            self.value = self.min_value + (self.max_value - self.min_value) * (
-                (self.handle.x - self.rect.x) / self.rect.width
-            )
-            self.on_change(self.value)
+    def handle_event(self, event: pygame.event.Event) -> None:
+        """
+        Handle mouse events for dragging the slider handle.
+        """
 
-    def draw(self, surface):
-        # Draw the background bar
-        pygame.draw.rect(
-            surface, (41, 78, 103), self.rect, border_radius=2
-        )  # Background bar
+        match event.type:
+            case pygame.MOUSEBUTTONDOWN:
+                if self.handle.collidepoint(event.pos):
+                    self.dragging = True
+            case pygame.MOUSEBUTTONUP:
+                self.dragging = False
+            case pygame.MOUSEMOTION if self.dragging:
+                self.handle.x = max(
+                    self.rect.x, min(event.pos[0], self.rect.right - self.handle.width)
+                )
+                self.value = self.min_value + (self.max_value - self.min_value) * (
+                    (self.handle.x - self.rect.x) / self.rect.width
+                )
+                self.on_change(self.value)
 
-        # Calculate filled width based on the current value
-        fill_width = (
-            (self.value - self.min_value)
-            / (self.max_value - self.min_value)
-            * self.rect.width
-        )
+    def draw(self, surface: pygame.Surface) -> None:
+        """
+        Draw the slider background, filled portion and handle.
+        """
 
-        # Draw the filled part (left side)
         filled_rect = pygame.Rect(
-            self.rect.x, self.rect.y, fill_width, self.rect.height
+            self.rect.x,
+            self.rect.y,
+            self.rect.width
+            * ((self.value - self.min_value) / (self.max_value - self.min_value)),
+            self.rect.height,
         )
-        pygame.draw.rect(
-            surface, (70, 130, 180), filled_rect, border_radius=2
-        )  # Change color as needed
 
-        # Draw the handle on top of the filled part
-        pygame.draw.rect(
-            surface, (208, 239, 243), self.handle, border_radius=2
-        )  # Handle
+        pygame.draw.rect(surface, (41, 78, 103), self.rect, border_radius=2)
+        pygame.draw.rect(surface, (70, 130, 180), filled_rect, border_radius=2)
+        pygame.draw.rect(surface, (208, 239, 243), self.handle, border_radius=2)

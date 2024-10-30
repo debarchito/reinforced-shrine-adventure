@@ -1,60 +1,75 @@
 import pygame
-from game.components.dialogue_banner import DialogueBanner
-from game.components.choice_banner import ChoiceBanner
+from game.assets import Assets
 from game.surface import Surface, SurfaceManager
-from game.asset import Assets
-from bink.story import Story
+from game.components.choice_banner import ChoiceBanner
+from game.components.dialogue_banner import DialogueBanner
 
 
 class SummerBreakChoiceSurface(Surface):
+    """
+    First game scene surface that handles dialogue and choices.
+    """
+
     def __init__(
         self,
         surface: pygame.Surface,
         assets: Assets,
         manager: SurfaceManager,
-        story: Story,
     ):
         super().__init__(surface)
         self.assets = assets
-        self.story = story
+        self.story = self.assets.story
         self.manager = manager
-        self.background_image = assets.images.backgrounds.empty_classroom()
+        self.info = pygame.display.Info()
+        self.choice_banners = []
+        self.__setup_background()
+        self.__setup_initial_dialogue()
+        self.__update_choices()
+
+    def __setup_background(self) -> None:
         self.background_image = pygame.transform.scale(
-            self.background_image,
-            (pygame.display.Info().current_w, pygame.display.Info().current_h),
+            self.assets.images.backgrounds.empty_classroom(),
+            (self.info.current_w, self.info.current_h),
         )
 
-        initial_text = ""
-        while self.story.can_continue():
-            next_text = self.story.cont()
-            if next_text.strip():  # Only use non-empty text
-                initial_text = next_text
-                break
-
-        # Parse initial text for character name
-        char_name = None
-        dialogue_text = initial_text
-        if initial_text.startswith("@"):
-            parts = initial_text.split(":", 1)
-            if len(parts) == 2:
-                char_name = parts[0][1:].strip()  # Remove @ and whitespace
-                dialogue_text = parts[1].strip()
-
+    def __setup_initial_dialogue(self) -> None:
+        initial_text = self.__get_next_dialogue()
+        char_name, dialogue_text = self.__parse_dialogue(initial_text)
         self.dialogue_banner = DialogueBanner(
-            surface=surface,
-            banner_image=assets.images.ui.banner_dialogue_wood(),
+            surface=self.surface,
+            banner_image=self.assets.images.ui.banner_dialogue_wood(),
             text_content=dialogue_text,
             text_color=(42, 0, 30),
             font=self.assets.fonts.monogram_extended(50),
             character_name=char_name,
-            character_name_color=(255, 215, 0),  # Golden yellow
+            character_name_color=(255, 215, 0),
         )
 
-        self.choice_banners = []
-        self.update_choices()
+    def __get_next_dialogue(self) -> str:
+        while self.story.can_continue():
+            text = self.story.cont()
+            if text.strip():
+                return text
 
-    def fade_transition(self, surface, color=(0, 0, 0), duration=1000):
-        """Fades from the start menu to the game surface over a specified duration."""
+        return ""
+
+    def __parse_dialogue(self, text: str) -> tuple[str | None, str]:
+        if not text.startswith("@"):
+            return None, text
+
+        parts = text.split(":", 1)
+        if len(parts) != 2:
+            return None, text
+
+        return parts[0][1:].strip(), parts[1].strip()
+
+    def fade_transition(
+        self,
+        surface: pygame.Surface,
+        color: tuple[int, int, int] = (0, 0, 0),
+        duration: int = 1000,
+    ) -> None:
+        """Fade transition between surfaces."""
 
         fade_surface = pygame.Surface(surface.get_size())
         fade_surface.fill(color)
@@ -75,127 +90,104 @@ class SummerBreakChoiceSurface(Surface):
 
             clock.tick(60)
 
-    def update_choices(self):
-        """Update the choice banners based on current story choices"""
+    def __update_choices(self) -> None:
+        """Update available choice banners."""
+
         self.choice_banners.clear()
 
-        # Only show choices if there's no more text to display
         next_page_start = (self.dialogue_banner.current_page + 1) * (
             self.dialogue_banner.max_lines - 1
             if self.dialogue_banner.character_name
             else self.dialogue_banner.max_lines
         )
-        if next_page_start >= len(self.dialogue_banner.full_text_lines):
-            choices = self.story.get_current_choices()
-            for i, choice in enumerate(choices):  # type: ignore
-                y_offset = 0.55 + (i * 0.08)  # Start lower and stack more compactly
-                # Add number prefix to choice text
-                numbered_choice = f"{i+1}. {choice}"
-                banner = ChoiceBanner(
-                    surface=self.surface,
-                    banner_image=self.assets.images.ui.banner_choice_wood(),
-                    text_content=numbered_choice,
-                    font=self.assets.fonts.monogram_extended(40),
-                    y_offset=y_offset,
-                    text_color=(42, 0, 30),
-                )
-                self.choice_banners.append((banner, i))
+
+        if next_page_start < len(self.dialogue_banner.full_text_lines):
+            return
+
+        choices = self.story.get_current_choices()
+        for i, choice in enumerate(choices):  # type: ignore
+            y_offset = 0.55 + (i * 0.08)
+            banner = ChoiceBanner(
+                surface=self.surface,
+                banner_image=self.assets.images.ui.banner_choice_wood(),
+                text_content=f"{i+1}. {choice}",
+                font=self.assets.fonts.monogram_extended(40),
+                y_offset=y_offset,
+                text_color=(42, 0, 30),
+            )
+            self.choice_banners.append((banner, i))
+
+    def __handle_choice_selection(self, choice_idx: int) -> None:
+        """Handle selection of a choice option."""
+
+        self.story.choose_choice_index(choice_idx)
+        if not self.story.can_continue():
+            return
+
+        next_text = self.__get_next_dialogue()
+        if not next_text:
+            return
+
+        char_name, dialogue_text = self.__parse_dialogue(next_text)
+        self.dialogue_banner.update_text(dialogue_text, char_name)
+        self.__update_choices()
 
     def handle_event(self, event: pygame.event.Event) -> None:
+        """Handle input events for dialogue and choices."""
+
+        if not self.is_active:
+            return
+
         if self.dialogue_banner.handle_event(event):
-            self.update_choices()
+            self.__update_choices()
             return
 
         if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1) or (
             event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE
         ):
             if self.story.can_continue():
-                # Skip empty dialogues
-                next_text = ""
-                while self.story.can_continue():
-                    text = self.story.cont()
-                    if text.strip():  # Only use non-empty text
-                        next_text = text
-                        break
-                if next_text:  # Only update if we found non-empty text
-                    # Parse text for character name
-                    char_name = None
-                    dialogue_text = next_text
-                    if next_text.startswith("@"):
-                        parts = next_text.split(":", 1)
-                        if len(parts) == 2:
-                            char_name = parts[0][1:].strip()  # Remove @ and whitespace
-                            dialogue_text = parts[1].strip()
+                next_text = self.__get_next_dialogue()
+                if next_text:
+                    char_name, dialogue_text = self.__parse_dialogue(next_text)
                     self.dialogue_banner.update_text(dialogue_text, char_name)
-                self.update_choices()
-            else:
-                # Handle choice selection only if all text is shown
-                next_page_start = (self.dialogue_banner.current_page + 1) * (
-                    self.dialogue_banner.max_lines - 1
-                    if self.dialogue_banner.character_name
-                    else self.dialogue_banner.max_lines
-                )
-                if next_page_start >= len(self.dialogue_banner.full_text_lines):
-                    # Check for number key presses (1-9)
-                    if event.type == pygame.KEYDOWN:
-                        if pygame.K_1 <= event.key <= pygame.K_9:
-                            choice_num = (
-                                event.key - pygame.K_1
-                            )  # Convert to 0-based index
-                            if choice_num < len(self.choice_banners):
-                                self.story.choose_choice_index(choice_num)
-                                if self.story.can_continue():
-                                    # Skip empty dialogues after choice
-                                    next_text = ""
-                                    while self.story.can_continue():
-                                        text = self.story.cont()
-                                        if text.strip():  # Only use non-empty text
-                                            next_text = text
-                                            break
-                                    if (
-                                        next_text
-                                    ):  # Only update if we found non-empty text
-                                        # Parse text for character name
-                                        char_name = None
-                                        dialogue_text = next_text
-                                        if next_text.startswith("@"):
-                                            parts = next_text.split(":", 1)
-                                            if len(parts) == 2:
-                                                char_name = parts[0][1:].strip()
-                                                dialogue_text = parts[1].strip()
-                                        self.dialogue_banner.update_text(
-                                            dialogue_text, char_name
-                                        )
-                                    self.update_choices()
-                    # Keep existing mouse click handling
-                    for banner, choice_idx in self.choice_banners:
-                        if banner.handle_event(event):
-                            self.story.choose_choice_index(choice_idx)
-                            if self.story.can_continue():
-                                # Skip empty dialogues after choice
-                                next_text = ""
-                                while self.story.can_continue():
-                                    text = self.story.cont()
-                                    if text.strip():  # Only use non-empty text
-                                        next_text = text
-                                        break
-                                if next_text:  # Only update if we found non-empty text
-                                    # Parse text for character name
-                                    char_name = None
-                                    dialogue_text = next_text
-                                    if next_text.startswith("@"):
-                                        parts = next_text.split(":", 1)
-                                        if len(parts) == 2:
-                                            char_name = parts[0][1:].strip()
-                                            dialogue_text = parts[1].strip()
-                                    self.dialogue_banner.update_text(
-                                        dialogue_text, char_name
-                                    )
-                                self.update_choices()
+                self.__update_choices()
+                return
 
-    def update(self) -> None: ...
+            next_page_start = (self.dialogue_banner.current_page + 1) * (
+                self.dialogue_banner.max_lines - 1
+                if self.dialogue_banner.character_name
+                else self.dialogue_banner.max_lines
+            )
+            if next_page_start < len(self.dialogue_banner.full_text_lines):
+                return
+
+        if event.type == pygame.KEYDOWN:
+            choice_num = None
+            if pygame.K_1 <= event.key <= pygame.K_9:
+                choice_num = event.key - pygame.K_1
+            elif pygame.K_KP1 <= event.key <= pygame.K_KP9:
+                choice_num = event.key - pygame.K_KP1
+
+            if choice_num is not None and choice_num < len(self.choice_banners):
+                self.__handle_choice_selection(choice_num)
+                return
+
+        for banner, choice_idx in self.choice_banners:
+            if banner.handle_event(event):
+                self.__handle_choice_selection(choice_idx)
+                break
+
+    def update(self) -> None:
+        """Update the state of surface components."""
+
+        ...
 
     def draw(self) -> None:
+        """Render the surface components."""
+
+        if not self.is_active:
+            return
+
         self.surface.blit(self.background_image, (0, 0))
         self.dialogue_banner.draw(self.surface)
         for banner, _ in self.choice_banners:

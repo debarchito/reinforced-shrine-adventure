@@ -22,26 +22,34 @@ class Text:
         self.color = color
         self.center = center
         self.on_draw = on_draw
-        self.image = self.font.render(content, True, color)
-        if center:
-            self.rect = self.image.get_rect(center=position)
-        else:
-            self.rect = self.image.get_rect(topleft=position)
+        self.__update_image()
 
-    def update_content(self, new_content: str):
+    def __update_image(self) -> None:
+        """
+        Update the rendered text image and rect.
+        """
+
+        self.image = self.font.render(self.content, True, self.color)
+        if self.center:
+            self.rect = self.image.get_rect(center=self.position)
+        else:
+            self.rect = self.image.get_rect(topleft=self.position)
+
+    def update_content(self, new_content: str) -> None:
         """
         Update the content of the text component with new_content.
         """
 
+        if self.content == new_content:
+            return
         self.content = new_content
-        self.image = self.font.render(new_content, True, self.color)
-        self.rect = self.image.get_rect(center=self.position)
+        self.__update_image()
 
-    def draw(self, surface: pygame.Surface):
+    def draw(self, surface: pygame.Surface) -> None:
         """
         Draw the text onto the given surface.
         """
 
-        surface.blit(self.image, self.rect.topleft)
+        surface.blit(self.image, self.rect)
         if self.on_draw:
             self.on_draw(self, surface)

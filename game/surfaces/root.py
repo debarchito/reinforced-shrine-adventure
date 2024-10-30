@@ -1,13 +1,17 @@
 import pygame
 from typing import cast
-from game.surface import Surface, SurfaceManager
-from game.asset import Assets
-from game.components.button import Button
+from game.assets import Assets
 from game.components.text import Text
+from game.components.button import Button
+from game.surface import Surface, SurfaceManager
 from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
 
 
 class RootSurface(Surface):
+    """
+    Main menu surface that handles the game's initial screen.
+    """
+
     def __init__(
         self,
         surface: pygame.Surface,
@@ -18,64 +22,92 @@ class RootSurface(Surface):
         self.assets = assets
         self.manager = manager
         self.info = pygame.display.Info()
+        self.__setup_background()
+        self.__setup_heading(surface)
+        self.__setup_buttons(surface)
+        self.__setup_audio()
+
+    def __setup_background(self) -> None:
         self.background = pygame.transform.scale(
-            assets.images.backgrounds.moon_sky(),
+            self.assets.images.backgrounds.moon_sky(),
             (self.info.current_w, self.info.current_h),
         )
+
+    def __setup_heading(self, surface: pygame.Surface) -> None:
         self.heading = Text(
             content="Reinforced Shrine Adventure",
-            font=assets.fonts.monogram_extended(130),
+            font=self.assets.fonts.monogram_extended(130),
             position=(surface.get_width() // 2, int(surface.get_height() * 0.3)),
         )
-        self.button_click_1 = pygame.mixer.Sound(assets.sounds.button_click_1())
+
+    def __setup_buttons(self, surface: pygame.Surface) -> None:
+        self.button_click_1 = pygame.mixer.Sound(self.assets.sounds.button_click_1())
         self.manager.sfx_sound_objects.append(self.button_click_1)
+
         self.start_button = Button(
             normal_image=pygame.transform.scale(
-                assets.images.ui.button_start(), (200, 100)
+                self.assets.images.ui.button_start(), (200, 100)
             ),
             hover_image=pygame.transform.scale(
-                assets.images.ui.button_start_hover(), (200, 100)
+                self.assets.images.ui.button_start_hover(), (200, 100)
             ),
             active_image=pygame.transform.scale(
-                assets.images.ui.button_start_active(), (200, 100)
+                self.assets.images.ui.button_start_active(), (200, 100)
             ),
             position=(surface.get_width() // 2, int(surface.get_height() * 0.6)),
-            on_click=lambda _button, _event: self.start_game(),
+            on_click=lambda _, __: self.__start_game(),
             sound_on_click=self.button_click_1,
         )
 
         self.cog_button = Button(
             normal_image=pygame.transform.scale(
-                assets.images.ui.button_cog(), (100, 100)
+                self.assets.images.ui.button_cog(), (100, 100)
             ),
             hover_image=pygame.transform.scale(
-                assets.images.ui.button_cog_hover(), (100, 100)
+                self.assets.images.ui.button_cog_hover(), (100, 100)
             ),
             active_image=pygame.transform.scale(
-                assets.images.ui.button_cog_active(), (100, 100)
+                self.assets.images.ui.button_cog_active(), (100, 100)
             ),
             position=(surface.get_width() // 2 - 50, int(surface.get_height() * 0.73)),
-            on_click=lambda _button, _event: manager.set_active_surface("settings"),
+            on_click=lambda _, __: self.manager.set_active_surface("settings"),
             sound_on_click=self.button_click_1,
         )
+
         self.quit_button = Button(
             normal_image=pygame.transform.scale(
-                assets.images.ui.button_quit(), (100, 100)
+                self.assets.images.ui.button_quit(), (100, 100)
             ),
             hover_image=pygame.transform.scale(
-                assets.images.ui.button_quit_hover(), (100, 100)
+                self.assets.images.ui.button_quit_hover(), (100, 100)
             ),
             active_image=pygame.transform.scale(
-                assets.images.ui.button_quit_active(), (100, 100)
+                self.assets.images.ui.button_quit_active(), (100, 100)
             ),
             position=(surface.get_width() // 2 + 50, int(surface.get_height() * 0.73)),
-            on_click=lambda _button, _event: pygame.quit(),
+            on_click=lambda _, __: pygame.quit(),
             sound_on_click=self.button_click_1,
         )
-        pygame.mixer.music.load(assets.sounds.ambient_evening())
+
+    def __setup_audio(self) -> None:
+        pygame.mixer.music.load(self.assets.sounds.ambient_evening())
         pygame.mixer.music.play(-1)
 
+    def __start_game(self) -> None:
+        """
+        Transition to the first game scene.
+        """
+        summer_break_surface = cast(
+            SummerBreakChoiceSurface, self.manager.surfaces["summer_break_choice"]
+        )
+        summer_break_surface.fade_transition(self.surface)
+        self.manager.set_active_surface("summer_break_choice")
+
     def handle_event(self, event: pygame.event.Event) -> None:
+        """
+        Handle input events for the main menu.
+        """
+
         if not self.is_active:
             return
 
@@ -84,6 +116,10 @@ class RootSurface(Surface):
         self.quit_button.handle_event(event)
 
     def update(self) -> None:
+        """
+        Update the state of menu components.
+        """
+
         if not self.is_active:
             return
 
@@ -92,6 +128,10 @@ class RootSurface(Surface):
         self.quit_button.update()
 
     def draw(self) -> None:
+        """
+        Render the menu components to the surface.
+        """
+
         if not self.is_active:
             return
 
@@ -100,10 +140,3 @@ class RootSurface(Surface):
         self.start_button.draw(self.surface)
         self.cog_button.draw(self.surface)
         self.quit_button.draw(self.surface)
-
-    def start_game(self):
-        gs = cast(
-            SummerBreakChoiceSurface, self.manager.surfaces["summer_break_choice"]
-        )
-        gs.fade_transition(self.surface)
-        self.manager.set_active_surface("summer_break_choice")

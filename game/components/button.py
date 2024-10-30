@@ -22,12 +22,27 @@ class Button:
         self.active_image = active_image
         self.position = position
         self.on_click = on_click
-        self.current_image = self.normal_image
-        self.rect = self.current_image.get_rect(center=position)
+        self.sound_on_click = sound_on_click
+        self.on_draw = on_draw
         self.is_hovered = False
         self.is_active = False
-        self.on_draw = on_draw
-        self.sound_on_click = sound_on_click
+        self.current_image = normal_image
+        self.rect = normal_image.get_rect(center=position)
+
+    def handle_event(self, event: pygame.event.Event) -> None:
+        """
+        Handle events of interest.
+        """
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.is_hovered:
+                self.is_active = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if self.is_active and self.is_hovered and self.on_click:
+                self.on_click(self, event)
+                if self.sound_on_click:
+                    self.sound_on_click.play()
+            self.is_active = False
 
     def update(self) -> None:
         """
@@ -35,27 +50,13 @@ class Button:
         """
 
         self.is_hovered = self.rect.collidepoint(pygame.mouse.get_pos())
-        if self.is_active:
-            self.current_image = self.active_image
-        else:
-            self.current_image = (
-                self.hover_image if self.is_hovered else self.normal_image
-            )
-
-    def handle_event(self, event: pygame.event.Event) -> None:
-        """
-        Handle events of interest.
-        """
-
-        if event.type == pygame.MOUSEBUTTONDOWN and self.is_hovered:
-            self.is_active = True
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if self.is_active and self.is_hovered:
-                if self.on_click:
-                    self.on_click(self, event)
-                if self.sound_on_click:
-                    self.sound_on_click.play()
-            self.is_active = False
+        self.current_image = (
+            self.active_image
+            if self.is_active
+            else self.hover_image
+            if self.is_hovered
+            else self.normal_image
+        )
 
     def draw(self, surface: pygame.Surface) -> None:
         """

@@ -1,12 +1,16 @@
 """
-Initialize pygame and load assets.
+Load assets and story (special asset) while providing a type-safe interface to access them.
 """
 
 import pygame
-import json
+from bink.story import story_from_file
 
 
 class Fonts:
+    """
+    Load and provide type-safe access to fonts.
+    """
+
     def monogram_extended(self, size: int) -> pygame.font.Font:
         return pygame.font.Font("assets/fonts/truetype/monogram_extended.ttf", size)
 
@@ -17,13 +21,12 @@ class Fonts:
 
 
 class Backgrounds:
+    """
+    Load and provide type-safe access to background images.
+    """
+
     def moon_sky(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("assets/images/backgrounds/moon_sky.png", namehint)
-
-    def empty_evening_classroom(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/backgrounds/empty_evening_classroom.jpg", namehint
-        )
 
     def empty_classroom(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load(
@@ -32,6 +35,10 @@ class Backgrounds:
 
 
 class UI:
+    """
+    Load and provide type-safe access to UI elements.
+    """
+
     def button_start(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("assets/images/ui/button_start.png", namehint)
 
@@ -89,12 +96,20 @@ class UI:
 
 
 class Images:
+    """
+    Load and provide type-safe access to images.
+    """
+
     def __init__(self):
         self.backgrounds = Backgrounds()
         self.ui = UI()
 
 
 class Sounds:
+    """
+    Load and provide type-safe access to sound effects and music.
+    """
+
     def ambient_evening(self) -> str:
         return "assets/sounds/music/ambient_evening.mp3"
 
@@ -103,8 +118,12 @@ class Sounds:
 
 
 class Assets:
+    """
+    Load and provide type-safe access to assets.
+    """
+
     def __init__(self):
         self.fonts = Fonts()
         self.images = Images()
         self.sounds = Sounds()
-        self.story = json.load(open("story/json/story.ink.json"))
+        self.story = story_from_file("story/json/story.ink.json")
