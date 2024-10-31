@@ -21,6 +21,18 @@ class SceneDynamics:
         self.walking_timer = 0
         self.animation_state = "standing"
         self.state_timer = 0
+        self.animation_sequence = [
+            "standing",
+            "walking",
+            "standing",
+            "standing_left",
+            "walking_left",
+            "standing_left",
+            "standing_right",
+            "walking_right",
+            "standing_right",
+        ]
+        self.sequence_index = 0
 
     def get_next_dialogue(self) -> str:
         """
@@ -114,27 +126,59 @@ class SceneDynamics:
                         self.assets.images.characters.boy_2_walking_front_left_first()
                     )
             case "Ryu":
-                if self.animation_state == "standing":
-                    return self.assets.images.characters.boy_3_standing()
-                elif self.walking_frame == 0:
-                    return (
-                        self.assets.images.characters.boy_3_walking_front_right_first()
-                    )
-                else:
-                    return (
-                        self.assets.images.characters.boy_3_walking_front_left_first()
-                    )
+                if "standing" in self.animation_state:
+                    if self.animation_state == "standing_left":
+                        return self.assets.images.characters.boy_3_standing_left()
+                    elif self.animation_state == "standing_right":
+                        return self.assets.images.characters.boy_3_standing_right()
+                    else:
+                        return self.assets.images.characters.boy_3_standing()
+                elif "walking" in self.animation_state:
+                    if self.animation_state == "walking_left":
+                        return (
+                            self.assets.images.characters.boy_3_walking_left_right_first()
+                            if self.walking_frame == 0
+                            else self.assets.images.characters.boy_3_walking_left_left_first()
+                        )
+                    elif self.animation_state == "walking_right":
+                        return (
+                            self.assets.images.characters.boy_3_walking_right_right_first()
+                            if self.walking_frame == 0
+                            else self.assets.images.characters.boy_3_walking_right_left_first()
+                        )
+                    else:
+                        return (
+                            self.assets.images.characters.boy_3_walking_front_right_first()
+                            if self.walking_frame == 0
+                            else self.assets.images.characters.boy_3_walking_front_left_first()
+                        )
             case "Kaori":
-                if self.animation_state == "standing":
-                    return self.assets.images.characters.girl_1_standing()
-                elif self.walking_frame == 0:
-                    return (
-                        self.assets.images.characters.girl_1_walking_front_right_first()
-                    )
-                else:
-                    return (
-                        self.assets.images.characters.girl_1_walking_front_left_first()
-                    )
+                if "standing" in self.animation_state:
+                    if self.animation_state == "standing_left":
+                        return self.assets.images.characters.girl_1_standing_left()
+                    elif self.animation_state == "standing_right":
+                        return self.assets.images.characters.girl_1_standing_right()
+                    else:
+                        return self.assets.images.characters.girl_1_standing()
+                elif "walking" in self.animation_state:
+                    if self.animation_state == "walking_left":
+                        return (
+                            self.assets.images.characters.girl_1_walking_left_right_first()
+                            if self.walking_frame == 0
+                            else self.assets.images.characters.girl_1_walking_left_left_first()
+                        )
+                    elif self.animation_state == "walking_right":
+                        return (
+                            self.assets.images.characters.girl_1_walking_right_right_first()
+                            if self.walking_frame == 0
+                            else self.assets.images.characters.girl_1_walking_right_left_first()
+                        )
+                    else:
+                        return (
+                            self.assets.images.characters.girl_1_walking_front_right_first()
+                            if self.walking_frame == 0
+                            else self.assets.images.characters.girl_1_walking_front_left_first()
+                        )
             case "Airi":
                 if self.animation_state == "standing":
                     return self.assets.images.characters.girl_2_standing()
@@ -241,23 +285,25 @@ class SceneDynamics:
 
         if self.dialogue_banner and self.dialogue_banner.character_name:
             current_time = pygame.time.get_ticks()
+
+            # Generic animation sequence for all characters
             if current_time - self.state_timer > (
-                1000 if self.animation_state == "standing" else 3000
+                1000 if "standing" in self.animation_state else 3000
             ):
-                self.animation_state = (
-                    "walking" if self.animation_state == "standing" else "standing"
+                self.sequence_index = (self.sequence_index + 1) % len(
+                    self.animation_sequence
                 )
+                self.animation_state = self.animation_sequence[self.sequence_index]
                 self.state_timer = current_time
                 self.walking_frame = 0
                 self.walking_timer = current_time
                 self.update_character_sprite(self.dialogue_banner.character_name)
-            elif (
-                self.animation_state == "walking"
-                and current_time - self.walking_timer > 500
-            ):
-                self.walking_frame = 1 - self.walking_frame
-                self.walking_timer = current_time
-                self.update_character_sprite(self.dialogue_banner.character_name)
+
+            elif "walking" in self.animation_state:
+                if current_time - self.walking_timer > 500:  # Animation frame timing
+                    self.walking_frame = 1 - self.walking_frame
+                    self.walking_timer = current_time
+                    self.update_character_sprite(self.dialogue_banner.character_name)
 
     def setup_initial_dialogue(self) -> None:
         """
