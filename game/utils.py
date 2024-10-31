@@ -17,6 +17,10 @@ class SceneDynamics:
         self.dialogue_banner: DialogueBanner | None = None
         self.character_sprite: pygame.Surface | None = None
         self.button_click_1 = pygame.mixer.Sound(assets.sounds.button_click_1())
+        self.walking_frame = 0
+        self.walking_timer = 0
+        self.animation_state = "standing"
+        self.state_timer = 0
 
     def get_next_dialogue(self) -> str:
         """
@@ -57,7 +61,11 @@ class SceneDynamics:
             text_color=(42, 0, 30),
             font=self.assets.fonts.monogram_extended(50),
             character_name=char_name,
-            character_name_color=(255, 215, 0),
+            character_name_color=(
+                255,
+                255,
+                255,
+            ),  # Pure white is very visible against wood
             on_advance=self.button_click_1,
         )
 
@@ -84,17 +92,71 @@ class SceneDynamics:
 
         match char_name:
             case "Aie":
-                return self.assets.images.characters.boy_1_standing()
+                if self.animation_state == "standing":
+                    return self.assets.images.characters.boy_1_standing()
+                elif self.walking_frame == 0:
+                    return (
+                        self.assets.images.characters.boy_1_walking_front_right_first()
+                    )
+                else:
+                    return (
+                        self.assets.images.characters.boy_1_walking_front_left_first()
+                    )
             case "Haruto":
-                return self.assets.images.characters.boy_2_standing()
+                if self.animation_state == "standing":
+                    return self.assets.images.characters.boy_2_standing()
+                elif self.walking_frame == 0:
+                    return (
+                        self.assets.images.characters.boy_2_walking_front_right_first()
+                    )
+                else:
+                    return (
+                        self.assets.images.characters.boy_2_walking_front_left_first()
+                    )
             case "Ryu":
-                return self.assets.images.characters.boy_3_standing()
+                if self.animation_state == "standing":
+                    return self.assets.images.characters.boy_3_standing()
+                elif self.walking_frame == 0:
+                    return (
+                        self.assets.images.characters.boy_3_walking_front_right_first()
+                    )
+                else:
+                    return (
+                        self.assets.images.characters.boy_3_walking_front_left_first()
+                    )
             case "Kaori":
-                return self.assets.images.characters.girl_1_standing()
+                if self.animation_state == "standing":
+                    return self.assets.images.characters.girl_1_standing()
+                elif self.walking_frame == 0:
+                    return (
+                        self.assets.images.characters.girl_1_walking_front_right_first()
+                    )
+                else:
+                    return (
+                        self.assets.images.characters.girl_1_walking_front_left_first()
+                    )
             case "Airi":
-                return self.assets.images.characters.girl_2_standing()
+                if self.animation_state == "standing":
+                    return self.assets.images.characters.girl_2_standing()
+                elif self.walking_frame == 0:
+                    return (
+                        self.assets.images.characters.girl_2_walking_front_right_first()
+                    )
+                else:
+                    return (
+                        self.assets.images.characters.girl_2_walking_front_left_first()
+                    )
             case "Kanae":
-                return self.assets.images.characters.girl_3_standing()
+                if self.animation_state == "standing":
+                    return self.assets.images.characters.girl_3_standing()
+                elif self.walking_frame == 0:
+                    return (
+                        self.assets.images.characters.girl_3_walking_front_right_first()
+                    )
+                else:
+                    return (
+                        self.assets.images.characters.girl_3_walking_front_left_first()
+                    )
             case _:
                 return None
 
@@ -171,6 +233,31 @@ class SceneDynamics:
             self.character_sprite = pygame.transform.scale(sprite, (200, 270))
         else:
             self.character_sprite = None
+
+    def update_character_animation(self) -> None:
+        """
+        Update character animation frames.
+        """
+
+        if self.dialogue_banner and self.dialogue_banner.character_name:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.state_timer > (
+                1000 if self.animation_state == "standing" else 3000
+            ):
+                self.animation_state = (
+                    "walking" if self.animation_state == "standing" else "standing"
+                )
+                self.state_timer = current_time
+                self.walking_frame = 0
+                self.walking_timer = current_time
+                self.update_character_sprite(self.dialogue_banner.character_name)
+            elif (
+                self.animation_state == "walking"
+                and current_time - self.walking_timer > 500
+            ):
+                self.walking_frame = 1 - self.walking_frame
+                self.walking_timer = current_time
+                self.update_character_sprite(self.dialogue_banner.character_name)
 
     def setup_initial_dialogue(self) -> None:
         """
