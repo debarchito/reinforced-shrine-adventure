@@ -87,7 +87,7 @@ class SettingsSurface(Surface):
             ),
             min_value=0.0,
             max_value=1.0,
-            start_value=self.manager.current_global_sfx_volume - 0.1,
+            start_value=self.manager.current_global_sfx_volume - 0.04,
             on_change=self.manager.set_global_sfx_volume,
         )
         self.music_slider = Slider(
@@ -103,7 +103,7 @@ class SettingsSurface(Surface):
             ),
             min_value=0.0,
             max_value=1.0,
-            start_value=pygame.mixer.music.get_volume() - 0.1,
+            start_value=pygame.mixer.music.get_volume() - 0.03,
             on_change=pygame.mixer.music.set_volume,
         )
 
@@ -132,7 +132,7 @@ class SettingsSurface(Surface):
         """
 
         zero_text = self.number_font.render("0", True, (255, 255, 255))
-        hundred_text = self.number_font.render("100", True, (255, 255, 255))
+        hundred_text = self.number_font.render("100%", True, (255, 255, 255))
 
         self.surface.blit(
             zero_text,

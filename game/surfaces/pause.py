@@ -22,6 +22,29 @@ class PauseSurface(Surface):
         self.blur_surface = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
         self.button_click_1 = pygame.mixer.Sound(assets.sounds.button_click_1())
         manager.sfx_sound_objects.append(self.button_click_1)
+
+        self.home_button = Button(
+            normal_image=pygame.transform.scale(
+                assets.images.ui.button_arrow_left(), (100, 100)
+            ),
+            hover_image=pygame.transform.scale(
+                assets.images.ui.button_arrow_left_hover(), (100, 100)
+            ),
+            active_image=pygame.transform.scale(
+                assets.images.ui.button_arrow_left_active(), (100, 100)
+            ),
+            position=(90, 90),
+            on_click=self.__on_quit_click,
+            sound_on_click=self.button_click_1,
+        )
+
+        self.quit_text = Text(
+            content="Save & Return",
+            center=False,
+            font=assets.fonts.monogram_extended(70),
+            position=(180, 60),
+        )
+
         self.resume_button = Button(
             normal_image=pygame.transform.scale(
                 assets.images.ui.button_play(), (100, 100)
@@ -32,7 +55,7 @@ class PauseSurface(Surface):
             active_image=pygame.transform.scale(
                 assets.images.ui.button_play_active(), (100, 100)
             ),
-            position=(center_x - 130, center_y - 120),
+            position=(center_x - 130, center_y),
             on_click=self.__on_resume_click,
             sound_on_click=self.button_click_1,
         )
@@ -40,28 +63,7 @@ class PauseSurface(Surface):
         self.resume_text = Text(
             content="Continue",
             font=assets.fonts.monogram_extended(70),
-            position=(center_x + 50, center_y - 120),
-        )
-
-        self.quit_button = Button(
-            normal_image=pygame.transform.scale(
-                assets.images.ui.button_home(), (100, 100)
-            ),
-            hover_image=pygame.transform.scale(
-                assets.images.ui.button_home_hover(), (100, 100)
-            ),
-            active_image=pygame.transform.scale(
-                assets.images.ui.button_home_active(), (100, 100)
-            ),
-            position=(center_x - 130, center_y),
-            on_click=self.__on_quit_click,
-            sound_on_click=self.button_click_1,
-        )
-
-        self.quit_text = Text(
-            content="Home",
-            font=assets.fonts.monogram_extended(70),
-            position=(center_x, center_y),
+            position=(center_x + 50, center_y),
         )
 
         self.exit_button = Button(
@@ -129,7 +131,7 @@ class PauseSurface(Surface):
             self.__on_resume_click(self.resume_button, event)
 
         self.resume_button.handle_event(event)
-        self.quit_button.handle_event(event)
+        self.home_button.handle_event(event)
         self.exit_button.handle_event(event)
 
     def update(self) -> None:
@@ -138,7 +140,7 @@ class PauseSurface(Surface):
         """
 
         self.resume_button.update()
-        self.quit_button.update()
+        self.home_button.update()
         self.exit_button.update()
 
     def draw(self) -> None:
@@ -149,7 +151,7 @@ class PauseSurface(Surface):
         self.surface.blit(self.backdrop, (0, 0))
         self.resume_button.draw(self.surface)
         self.resume_text.draw(self.surface)
-        self.quit_button.draw(self.surface)
+        self.home_button.draw(self.surface)
         self.quit_text.draw(self.surface)
         self.exit_button.draw(self.surface)
         self.exit_text.draw(self.surface)

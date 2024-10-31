@@ -1,10 +1,11 @@
 import pygame
-from typing import cast
+
+# from typing import cast
 from game.assets import Assets
 from game.components.text import Text
 from game.components.button import Button
 from game.surface import Surface, SurfaceManager
-from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
+# from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
 
 
 class RootSurface(Surface):
@@ -92,10 +93,10 @@ class RootSurface(Surface):
         """
         Transition to the first game scene.
         """
-        summer_break_surface = cast(
-            SummerBreakChoiceSurface, self.manager.surfaces["summer_break_choice"]
-        )
-        summer_break_surface.fade_transition(self.surface)
+        # summer_break_surface = cast(
+        #     SummerBreakChoiceSurface, self.manager.surfaces["summer_break_choice"]
+        # )
+        # summer_break_surface.fade_transition(self.surface)
         self.manager.set_active_surface("summer_break_choice")
 
     def hook(self) -> None:
@@ -103,8 +104,10 @@ class RootSurface(Surface):
         Hook up any necessary components for this surface.
         """
 
-        pygame.mixer.music.load(self.assets.sounds.ambient_evening())
-        pygame.mixer.music.play(-1)
+        current_music = pygame.mixer.music.get_busy()
+        if not current_music or pygame.mixer.music.get_pos() == -1:
+            pygame.mixer.music.load(self.assets.sounds.ambient_evening())
+            pygame.mixer.music.play(-1)
 
     def handle_event(self, event: pygame.event.Event) -> None:
         """
