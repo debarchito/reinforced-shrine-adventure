@@ -28,34 +28,34 @@ class SummerBreakChoiceSurface(Surface):
         self.scene.setup_initial_dialogue()
         self.scene.update_choices()
 
-    # def fade_transition(
-    #     self,
-    #     surface: pygame.Surface,
-    #     color: tuple[int, int, int] = (0, 0, 0),
-    #     duration: int = 1000,
-    # ) -> None:
-    #     """
-    #     Fade transition between surfaces.
-    #     """
+    def fade_transition(
+        self,
+        surface: pygame.Surface,
+        color: tuple[int, int, int] = (0, 0, 0),
+        duration: int = 1000,
+    ) -> None:
+        """
+        Fade transition between surfaces.
+        """
 
-    #     fade_surface = pygame.Surface(surface.get_size())
-    #     fade_surface.fill(color)
-    #     fade_surface.set_alpha(255)
-    #     clock = pygame.time.Clock()
-    #     start_time = pygame.time.get_ticks()
+        fade_surface = pygame.Surface(surface.get_size())
+        fade_surface.fill(color)
+        fade_surface.set_alpha(255)
+        clock = pygame.time.Clock()
+        start_time = pygame.time.get_ticks()
 
-    #     while True:
-    #         elapsed_time = pygame.time.get_ticks() - start_time
-    #         alpha = max(0, 255 - (255 * elapsed_time // duration))
-    #         fade_surface.set_alpha(alpha)
-    #         surface.blit(self.background_image, (0, 0))
-    #         surface.blit(fade_surface, (0, 0))
-    #         pygame.display.flip()
+        while True:
+            elapsed_time = pygame.time.get_ticks() - start_time
+            alpha = max(0, 255 - (255 * elapsed_time // duration))
+            fade_surface.set_alpha(alpha)
+            surface.blit(self.background_image, (0, 0))
+            surface.blit(fade_surface, (0, 0))
+            pygame.display.flip()
 
-    #         if alpha == 0:
-    #             break
+            if alpha == 0:
+                break
 
-    #         clock.tick(60)
+            clock.tick(60)
 
     def hook(self) -> None:
         """

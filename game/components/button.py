@@ -39,9 +39,9 @@ class Button:
                 self.is_active = True
         elif event.type == pygame.MOUSEBUTTONUP:
             if self.is_active and self.is_hovered and self.on_click:
-                self.on_click(self, event)
                 if self.sound_on_click:
                     self.sound_on_click.play()
+                self.on_click(self, event)
             self.is_active = False
 
     def update(self) -> None:
