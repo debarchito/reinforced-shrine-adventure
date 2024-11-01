@@ -103,161 +103,38 @@ class UI:
     def banner_choice_wood(self, namehint: str = "") -> pygame.Surface:
         return pygame.image.load("assets/images/ui/banner_choice_wood.png", namehint)
 
+    def border_character_wood(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/border_character_wood.png", namehint)
+
+    def border_dialogue_wood(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/border_dialogue_wood.png", namehint)
+
+    def border_choice_wood(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/ui/border_choice_wood.png", namehint)
+
 
 class Characters:
     """
     Load and provide type-safe access to character sprites.
     """
 
-    def boy_1_standing(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_1_standing.png", namehint
-        )
+    def aie(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/characters/aie.png", namehint)
 
-    def boy_1_walking_front_right_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_1_walking_front_right_first.png", namehint
-        )
+    def haruto(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/characters/haruto.png", namehint)
 
-    def boy_1_walking_front_left_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_1_walking_front_left_first.png", namehint
-        )
+    def ryu(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/characters/ryu.png", namehint)
 
-    def boy_2_standing(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_2_standing.png", namehint
-        )
+    def airi(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/characters/airi.png", namehint)
 
-    def boy_2_walking_front_right_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_2_walking_front_right_first.png", namehint
-        )
+    def kanae(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/characters/kanae.png", namehint)
 
-    def boy_2_walking_front_left_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_2_walking_front_left_first.png", namehint
-        )
-
-    def boy_3_standing(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_3_standing.png", namehint
-        )
-
-    def boy_3_standing_right(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_3_standing_right.png", namehint
-        )
-
-    def boy_3_standing_left(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_3_standing_left.png", namehint
-        )
-
-    def boy_3_walking_front_right_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_3_walking_front_right_first.png", namehint
-        )
-
-    def boy_3_walking_front_left_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_3_walking_front_left_first.png", namehint
-        )
-
-    def boy_3_walking_right_right_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_3_walking_right_right_first.png", namehint
-        )
-
-    def boy_3_walking_right_left_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_3_walking_right_left_first.png", namehint
-        )
-
-    def boy_3_walking_left_right_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_3_walking_left_right_first.png", namehint
-        )
-
-    def boy_3_walking_left_left_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/boy_3_walking_left_left_first.png", namehint
-        )
-
-    def girl_1_standing(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_1_standing.png", namehint
-        )
-
-    def girl_1_standing_right(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_1_standing_right.png", namehint
-        )
-
-    def girl_1_standing_left(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_1_standing_left.png", namehint
-        )
-
-    def girl_1_walking_front_right_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_1_walking_front_right_first.png", namehint
-        )
-
-    def girl_1_walking_front_left_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_1_walking_front_left_first.png", namehint
-        )
-
-    def girl_1_walking_right_right_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_1_walking_right_right_first.png", namehint
-        )
-
-    def girl_1_walking_right_left_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_1_walking_right_left_first.png", namehint
-        )
-
-    def girl_1_walking_left_right_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_1_walking_left_right_first.png", namehint
-        )
-
-    def girl_1_walking_left_left_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_1_walking_left_left_first.png", namehint
-        )
-
-    def girl_2_standing(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_2_standing.png", namehint
-        )
-
-    def girl_2_walking_front_right_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_2_walking_front_right_first.png", namehint
-        )
-
-    def girl_2_walking_front_left_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_2_walking_front_left_first.png", namehint
-        )
-
-    def girl_3_standing(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_3_standing.png", namehint
-        )
-
-    def girl_3_walking_front_right_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_3_walking_front_right_first.png", namehint
-        )
-
-    def girl_3_walking_front_left_first(self, namehint: str = "") -> pygame.Surface:
-        return pygame.image.load(
-            "assets/images/characters/girl_3_walking_front_left_first.png", namehint
-        )
+    def kaori(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/characters/kaori.png", namehint)
 
 
 class Images:

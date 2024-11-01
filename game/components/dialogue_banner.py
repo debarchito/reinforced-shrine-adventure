@@ -20,17 +20,26 @@ class DialogueBanner:
         character_name_color: tuple[int, int, int] = (255, 255, 255),
         on_draw: Optional[Callable[["DialogueBanner", pygame.Surface], Any]] = None,
         on_advance: Optional[pygame.mixer.Sound] = None,
+        x_offset: int = 0,
+        y_offset: int = 0,
     ):
         screen_width = surface.get_width()
         screen_height = surface.get_height()
 
-        self.banner_width = int(screen_width * 0.9)
+        # Add equal padding on all sides
+        padding = 50
+        self.banner_width = min(
+            int(screen_width * 0.9), screen_width - x_offset - padding * 2
+        )
         self.banner_height = int(screen_height * 0.3)
+
+        # Scale banner image to full width
         self.banner_image = pygame.transform.scale(
             banner_image, (self.banner_width, self.banner_height)
         )
-        banner_x = (screen_width - self.banner_width) // 2
-        banner_y = screen_height - self.banner_height
+
+        banner_x = x_offset
+        banner_y = screen_height - self.banner_height - y_offset
         self.position = (banner_x, banner_y)
         self.rect = pygame.Rect(
             self.position[0], self.position[1], self.banner_width, self.banner_height
@@ -38,9 +47,10 @@ class DialogueBanner:
         self.font = font
         self.text_color = text_color
         self.character_name_color = character_name_color
-        self.text_start_x = screen_width * 0.15
-        self.text_start_y = screen_height * 0.78
-        self.text_end_x = screen_width * 0.85
+        self.text_padding = int(self.banner_width * 0.08)
+        self.text_start_x = x_offset + self.text_padding
+        self.text_start_y = banner_y + self.text_padding - 27
+        self.text_end_x = x_offset + self.banner_width - self.text_padding
         self.line_spacing = 10
         self.max_lines = 3
         self.character_name = character_name
@@ -98,9 +108,9 @@ class DialogueBanner:
                     content=self.character_name,
                     font=self.font,
                     position=(
-                        self.text_start_x + (self.text_end_x - self.text_start_x) / 2,
+                        self.text_start_x + (self.text_end_x - self.text_start_x) / 2,  # type: ignore
                         self.text_start_y,
-                    ),  # type: ignore
+                    ),
                     color=self.character_name_color,
                     center=True,
                 )
@@ -128,8 +138,8 @@ class DialogueBanner:
                         self.text_start_x,
                         self.text_start_y
                         + (i + y_offset)
-                        * (self.font.get_height() + self.line_spacing / 2),
-                    ),  # type: ignore
+                        * (self.font.get_height() + self.line_spacing / 2),  # type: ignore
+                    ),
                     color=self.text_color,
                     center=False,
                 )

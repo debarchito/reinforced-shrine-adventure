@@ -20,8 +20,13 @@ class ChoiceBanner:
     ):
         screen_width = surface.get_width()
         screen_height = surface.get_height()
-        text_width = font.size(text_content)[0]
-        self.banner_width = text_width + (text_width * 0.6)
+        text_content = f" {text_content} "
+        average_char_width = font.size("M")[
+            0
+        ]  # Assuming 'M' as an average character width
+        self.banner_width = (
+            len(text_content) * average_char_width + 40
+        )  # Adding padding of 20 on each side
         self.banner_height = int(screen_height * 0.05)
         self.banner_image = pygame.transform.scale(
             banner_image, (self.banner_width, self.banner_height)
@@ -38,8 +43,8 @@ class ChoiceBanner:
             content=text_content,
             font=self.font,
             position=(
-                self.position[0] + (self.banner_width * 0.1),  # type: ignore
-                self.position[1] + (self.banner_height * 0.15),
+                self.position[0] + 20,
+                self.position[1] + (self.banner_height * 0.15),  # type: ignore
             ),
             color=self.text_color,
             center=False,
