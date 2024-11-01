@@ -16,7 +16,8 @@ class SummerBreakChoiceSurface(Surface):
         assets: Assets,
         manager: SurfaceManager,
     ):
-        super().__init__(surface)
+        super().__init__()
+        self.surface = surface
         self.assets = assets
         self.manager = manager
         self.info = pygame.display.Info()
@@ -36,7 +37,7 @@ class SummerBreakChoiceSurface(Surface):
 
         packing_surface = cast(PackingSurface, self.manager.surfaces["packing"])
         packing_surface.fade_transition(self.surface)
-        self.manager.set_active_surface("packing")
+        self.manager.set_active_surface_by_name("packing")
 
     def fade_transition(
         self,
@@ -102,7 +103,7 @@ class SummerBreakChoiceSurface(Surface):
             elif pygame.K_KP1 <= event.key <= pygame.K_KP9:
                 choice_num = event.key - pygame.K_KP1
             elif event.key == pygame.K_ESCAPE:
-                self.manager.set_active_surface("pause")
+                self.manager.set_active_surface_by_name("pause")
 
             if choice_num is not None and choice_num < len(self.scene.choice_banners):
                 self.scene.handle_choice_selection(choice_num)

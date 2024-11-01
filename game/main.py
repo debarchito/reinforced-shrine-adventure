@@ -20,6 +20,7 @@ def setup_surface_patcher():
             if file.endswith(".py"):
                 path = os.path.join(root, file)
                 last_modified[path] = os.path.getmtime(path)
+
     return last_modified
 
 
@@ -42,6 +43,7 @@ def main():
         (info.current_w, info.current_h), pygame.FULLSCREEN
     )
 
+    # Initialize the surface manager and surfaces
     manager = SurfaceManager(surface, assets)
     manager.surfaces["root"] = RootSurface(surface, assets, manager)
     manager.surfaces["settings"] = SettingsSurface(surface, assets, manager)
@@ -50,8 +52,9 @@ def main():
         surface, assets, manager
     )
     manager.surfaces["packing"] = PackingSurface(surface, assets, manager)
-    manager.set_active_surface("root")
+    manager.set_active_surface_by_name("root")
 
+    # Game loop variables
     running = True
     clock = pygame.time.Clock()
     last_modified = setup_surface_patcher()

@@ -14,7 +14,9 @@ class PauseSurface(Surface):
     def __init__(
         self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager
     ):
-        super().__init__(surface)
+        super().__init__()
+        self.surface = surface
+        self.assets = assets
         self.manager = manager
         center_x = self.surface.get_width() // 2
         center_y = self.surface.get_height() // 2
@@ -109,10 +111,10 @@ class PauseSurface(Surface):
         self.backdrop.blit(self.blur_surface, (0, 0))
 
     def __on_resume_click(self, button: Button, event: pygame.event.Event) -> None:
-        self.manager.set_active_surface(self.manager.last_active_surface)  # type: ignore
+        self.manager.set_active_surface_by_name(self.manager.last_active_surface_name)  # type: ignore
 
     def __on_quit_click(self, button: Button, event: pygame.event.Event) -> None:
-        self.manager.set_active_surface("root")
+        self.manager.set_active_surface_by_name("root")
 
     def __on_exit_click(self, button: Button, event: pygame.event.Event) -> None:
         pygame.quit()

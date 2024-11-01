@@ -17,7 +17,7 @@ The project is structured as follows:
 >   - Methods executed within the game loop are hot-patched.
 >   - State updates stay stagnant during hot-patching. A restart is required to update the state.
 
-[game/surface.py](game/surface.py) contains the base class `Surface` which all surfaces should inherit from. It expects a blank surface to be passed as an argument during initialization. The class provides a set of abstract methods that must be implemented by all surfaces. They are:
+[game/surface.py](game/surface.py) contains the base class `Surface` which all surfaces should inherit from. The class provides a set of abstract methods that must be implemented by all surfaces. They are:
 
 - `on_event(event: pygame.event.Event)`: This method is how the surface listens to and handles events.
 - `update()`: This method is called every frame. It is used to update the state of the surface.
@@ -44,8 +44,9 @@ from game.surface import Surface
 
 class MyCustomSurface(Surface):
     def __init__(self, surface: pygame.Surface, **kwargs):
-        super().__init__(surface)
+        super().__init__()
         # State goes here
+        self.surface = surface
         self.frame_count = 0
         self.component = MyTextComponent()
     

@@ -18,7 +18,8 @@ class RootSurface(Surface):
         assets: Assets,
         manager: SurfaceManager,
     ):
-        super().__init__(surface)
+        super().__init__()
+        self.surface = surface
         self.assets = assets
         self.manager = manager
         self.info = pygame.display.Info()
@@ -69,7 +70,7 @@ class RootSurface(Surface):
                 self.assets.images.ui.button_cog_active(), (100, 100)
             ),
             position=(surface.get_width() // 2 - 50, int(surface.get_height() * 0.73)),
-            on_click=lambda _, __: self.manager.set_active_surface("settings"),
+            on_click=lambda _, __: self.manager.set_active_surface_by_name("settings"),
             sound_on_click=self.button_click_1,
         )
 
@@ -97,7 +98,7 @@ class RootSurface(Surface):
             SummerBreakChoiceSurface, self.manager.surfaces["summer_break_choice"]
         )
         summer_break_surface.fade_transition(self.surface)
-        self.manager.set_active_surface("summer_break_choice")
+        self.manager.set_active_surface_by_name("summer_break_choice")
 
     def hook(self) -> None:
         """

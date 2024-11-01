@@ -17,7 +17,8 @@ class SettingsSurface(Surface):
         assets: Assets,
         manager: SurfaceManager,
     ):
-        super().__init__(surface)
+        super().__init__()
+        self.surface = surface
         self.assets = assets
         self.manager = manager
         self.info = pygame.display.Info()
@@ -73,7 +74,7 @@ class SettingsSurface(Surface):
                 self.assets.images.ui.button_arrow_left_active(), (100, 100)
             ),
             position=(90, 90),
-            on_click=lambda _, __: self.manager.set_active_surface("root"),
+            on_click=lambda _, __: self.manager.set_active_surface_by_name("root"),
             sound_on_click=self.button_click_1,
         )
 
@@ -165,7 +166,7 @@ class SettingsSurface(Surface):
             return
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.manager.set_active_surface("root")
+            self.manager.set_active_surface_by_name("root")
             return
 
         self.back_button.on_event(event)
