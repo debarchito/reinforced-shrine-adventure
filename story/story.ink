@@ -1,5 +1,6 @@
 INCLUDE 1_summer_break_choice.ink
 INCLUDE 2_packing.ink
+INCLUDE 3_walk_to_shore.ink
 
 // Details
 VAR player_name = "Aie"
@@ -7,16 +8,10 @@ VAR player_name = "Aie"
 VAR curiosity = 0
 VAR social = 0
 VAR caution = 0
-VAR agnostic = 0
 VAR supernatural = 0
 // Items
 VAR has_talisman = false
 VAR has_snacks = false
+VAR has_first_aid_kit = false
 
--> summer_break_choice_tunnel -> 2_packing
-
-=== summer_break_choice_tunnel ===
--> 1_summer_break_choice ->->
-
-=== packing ===
--> 2_packing
+-> 1_summer_break_choice
