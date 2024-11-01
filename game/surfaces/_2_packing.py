@@ -1,11 +1,9 @@
 import pygame
-from typing import cast
 from game.assets import Assets
 from game.surface import Surface, SurfaceManager
-from game.surfaces._2_packing import PackingSurface
 
 
-class SummerBreakChoiceSurface(Surface):
+class PackingSurface(Surface):
     """
     First game scene surface that handles dialogue and choices.
     """
@@ -23,20 +21,11 @@ class SummerBreakChoiceSurface(Surface):
         self.scene = self.manager.scene
         self.manager.sfx_sound_objects.append(self.scene.button_click_1)
         self.background_image = pygame.transform.scale(
-            self.assets.images.backgrounds.empty_classroom(),
+            self.assets.images.backgrounds.moon_sky(),
             (self.info.current_w, self.info.current_h),
         )
         self.scene.setup_initial_dialogue()
         self.scene.update_choices()
-
-    def __next_scene(self) -> None:
-        """
-        Transition to the first game scene.
-        """
-
-        packing_surface = cast(PackingSurface, self.manager.surfaces["packing"])
-        packing_surface.fade_transition(self.surface)
-        self.manager.set_active_surface("packing")
 
     def fade_transition(
         self,
@@ -72,8 +61,7 @@ class SummerBreakChoiceSurface(Surface):
         Hook up any necessary components for this surface.
         """
 
-        self.scene.on_scene_complete = self.__next_scene
-        pygame.mixer.music.load(self.assets.sounds.empty_classroom())
+        pygame.mixer.music.load(self.assets.sounds.ambient_evening())
         pygame.mixer.music.play(-1)
 
     def handle_event(self, event: pygame.event.Event) -> None:

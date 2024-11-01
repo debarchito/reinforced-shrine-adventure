@@ -10,6 +10,7 @@ import importlib
 from game.assets import Assets
 from typing import Optional, cast
 from abc import ABC, abstractmethod
+from game.utils import SceneDynamics
 
 
 class Surface(ABC):
@@ -72,9 +73,10 @@ class SurfaceManager:
     Manages different game surfaces, handling their activation and transitions.
     """
 
-    def __init__(self, display_surface: pygame.Surface, assets: Assets):
-        self.display_surface = display_surface
+    def __init__(self, surface: pygame.Surface, assets: Assets):
+        self.surface = surface
         self.assets = assets
+        self.scene = SceneDynamics(surface, assets)
         self.surfaces: dict[str, Surface] = {}
         self.last_active_surface: Optional[str] = None
         self.active_surface: Optional[Surface] = None
@@ -146,9 +148,7 @@ class SurfaceManager:
             class_name = "".join(part.title() for part in surface_name.split("_"))
             surface_class = getattr(sys.modules[module_name], f"{class_name}Surface")
 
-            self.surfaces[surface_name] = surface_class(
-                self.display_surface, self.assets, self
-            )
+            self.surfaces[surface_name] = surface_class(self.surface, self.assets, self)
             print(f"[?] Reinitialized {surface_class.__name__} surface")
 
             if (

@@ -196,6 +196,7 @@ As your friends chatter excitedly about tomorrow's adventure, you feel a mix of 
 The group disperses, leaving you with your thoughts about the upcoming test of courage.
 
 // Group ending leads to packing
+$jump
 -> 2_packing
 
 === solo_ending ===

@@ -5,6 +5,7 @@ from game.surface import SurfaceManager
 from game.surfaces.root import RootSurface
 from game.surfaces.pause import PauseSurface
 from game.surfaces.settings import SettingsSurface
+from game.surfaces._2_packing import PackingSurface
 from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
 
 
@@ -48,6 +49,7 @@ def main():
     manager.surfaces["summer_break_choice"] = SummerBreakChoiceSurface(
         surface, assets, manager
     )
+    manager.surfaces["packing"] = PackingSurface(surface, assets, manager)
     manager.set_active_surface("root")
 
     running = True

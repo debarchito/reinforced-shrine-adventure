@@ -1,5 +1,6 @@
 import pygame
 from game.assets import Assets
+from typing import Optional, Callable
 from game.components.choice_banner import ChoiceBanner
 from game.components.dialogue_banner import DialogueBanner
 
@@ -8,6 +9,8 @@ class SceneDynamics:
     """
     Handles core scene dynamics like choices, dialogue and transitions.
     """
+
+    jump_callback = None  # Static property to hold the jump callback function
 
     def __init__(self, surface: pygame.Surface, assets: Assets):
         self.surface = surface
@@ -18,6 +21,7 @@ class SceneDynamics:
         self.character_sprite: pygame.Surface | None = None
         self.character_border = self.assets.images.ui.border_character_wood()
         self.button_click_1 = pygame.mixer.Sound(assets.sounds.button_click_1())
+        self.on_scene_complete: Optional[Callable] = None
 
     def get_next_dialogue(self) -> str:
         """
@@ -122,9 +126,7 @@ class SceneDynamics:
 
         choices = self.story.get_current_choices()
         for i, choice in enumerate(choices):  # type: ignore
-            y_offset = 0.45 + (
-                i * 0.08
-            )
+            y_offset = 0.45 + (i * 0.08)
             banner = self.create_choice_banner(choice, i, y_offset)
             self.choice_banners.append((banner, i))
 
@@ -169,10 +171,14 @@ class SceneDynamics:
 
         if self.story.can_continue():
             next_text = self.get_next_dialogue()
-            if next_text and self.dialogue_banner:
-                char_name, dialogue_text = self.parse_dialogue(next_text)
-                self.dialogue_banner.update_text(dialogue_text, char_name)
-                self.update_character_sprite(char_name)
+            if next_text:
+                if next_text.strip() == "$jump":
+                    if self.on_scene_complete:
+                        self.on_scene_complete()
+                elif self.dialogue_banner:
+                    char_name, dialogue_text = self.parse_dialogue(next_text)
+                    self.dialogue_banner.update_text(dialogue_text, char_name)
+                    self.update_character_sprite(char_name)
             self.update_choices()
 
     def update_character_sprite(self, char_name: str | None) -> None:
