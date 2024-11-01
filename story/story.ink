@@ -1,6 +1,6 @@
 INCLUDE 1_summer_break_choice.ink
 INCLUDE 2_packing.ink
-INCLUDE 3_walk_to_shore.ink
+INCLUDE 3_walk_to_gate.ink
 
 // Details
 VAR player_name = "Aie"

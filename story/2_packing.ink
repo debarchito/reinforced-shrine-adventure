@@ -81,4 +81,5 @@ As darkness settles, you perform one final inventory check, mentally walking thr
 
 Sleep proves elusive as your mind traces the path you'll take tomorrow - from the weathered steps at the shore's edge to the mysterious heights of the ancient shrine.
 
--> 3_walk_to_shore
+$jump
+-> 3_walk_to_gate

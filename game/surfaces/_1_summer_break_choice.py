@@ -133,7 +133,7 @@ class SummerBreakChoiceSurface(Surface):
         if self.scene.dialogue_banner:
             self.scene.dialogue_banner.draw(self.surface)
         if self.scene.character_sprite:
-            sprite_x = self.surface.get_width() * 0.02
+            sprite_x = self.surface.get_width() * 0.05
             sprite_y = self.surface.get_height() * 0.58
             self.surface.blit(self.scene.character_sprite, (sprite_x, sprite_y))
         for banner, _ in self.scene.choice_banners:

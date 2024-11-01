@@ -72,7 +72,7 @@ class SceneDynamics:
                 118,
             ),
             on_advance=self.button_click_1,
-            x_offset=400,
+            x_offset=500,
             y_offset=75,
         )
 
