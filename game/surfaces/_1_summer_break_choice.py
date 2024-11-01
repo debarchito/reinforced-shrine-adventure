@@ -76,7 +76,7 @@ class SummerBreakChoiceSurface(Surface):
         pygame.mixer.music.load(self.assets.sounds.empty_classroom())
         pygame.mixer.music.play(-1)
 
-    def handle_event(self, event: pygame.event.Event) -> None:
+    def on_event(self, event: pygame.event.Event) -> None:
         """
         Handle input events for dialogue and choices.
         """
@@ -84,7 +84,7 @@ class SummerBreakChoiceSurface(Surface):
         if not self.is_active or not self.scene.dialogue_banner:
             return
 
-        if self.scene.dialogue_banner.handle_event(event):
+        if self.scene.dialogue_banner.on_event(event):
             self.scene.update_choices()
             return
 
@@ -109,7 +109,7 @@ class SummerBreakChoiceSurface(Surface):
                 return
 
         for banner, choice_idx in self.scene.choice_banners:
-            if banner.handle_event(event):
+            if banner.on_event(event):
                 self.scene.handle_choice_selection(choice_idx)
                 break
 

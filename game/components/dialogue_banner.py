@@ -145,7 +145,7 @@ class DialogueBanner:
                 )
             )
 
-    def handle_event(self, event: pygame.event.Event) -> bool:
+    def on_event(self, event: pygame.event.Event) -> bool:
         """
         Handle mouse click or spacebar to advance text.
         """

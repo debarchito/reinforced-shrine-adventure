@@ -109,7 +109,7 @@ class RootSurface(Surface):
             pygame.mixer.music.load(self.assets.sounds.ambient_evening())
             pygame.mixer.music.play(-1)
 
-    def handle_event(self, event: pygame.event.Event) -> None:
+    def on_event(self, event: pygame.event.Event) -> None:
         """
         Handle input events for the main menu.
         """
@@ -117,9 +117,9 @@ class RootSurface(Surface):
         if not self.is_active:
             return
 
-        self.start_button.handle_event(event)
-        self.cog_button.handle_event(event)
-        self.quit_button.handle_event(event)
+        self.start_button.on_event(event)
+        self.cog_button.on_event(event)
+        self.quit_button.on_event(event)
 
     def update(self) -> None:
         """

@@ -29,7 +29,7 @@ class Button:
         self.current_image = normal_image
         self.rect = normal_image.get_rect(center=position)
 
-    def handle_event(self, event: pygame.event.Event) -> None:
+    def on_event(self, event: pygame.event.Event) -> None:
         """
         Handle events of interest.
         """

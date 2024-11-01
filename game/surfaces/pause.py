@@ -122,7 +122,7 @@ class PauseSurface(Surface):
         pygame.mixer.music.stop()
         self.__glass_overlay()
 
-    def handle_event(self, event: pygame.event.Event) -> None:
+    def on_event(self, event: pygame.event.Event) -> None:
         """
         Handle input events for the pause menu.
         """
@@ -130,9 +130,9 @@ class PauseSurface(Surface):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             self.__on_resume_click(self.resume_button, event)
 
-        self.resume_button.handle_event(event)
-        self.home_button.handle_event(event)
-        self.exit_button.handle_event(event)
+        self.resume_button.on_event(event)
+        self.home_button.on_event(event)
+        self.exit_button.on_event(event)
 
     def update(self) -> None:
         """

@@ -26,7 +26,7 @@ class Slider:
         self.handle = pygame.Rect(handle_x, self.rect.y, 20, self.rect.height)
         self.dragging = False
 
-    def handle_event(self, event: pygame.event.Event) -> None:
+    def on_event(self, event: pygame.event.Event) -> None:
         """
         Handle mouse events for dragging the slider handle.
         """

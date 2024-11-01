@@ -156,7 +156,7 @@ class SettingsSurface(Surface):
 
         self.__glass_overlay()
 
-    def handle_event(self, event: pygame.event.Event) -> None:
+    def on_event(self, event: pygame.event.Event) -> None:
         """
         Handle input events for the settings menu.
         """
@@ -168,9 +168,9 @@ class SettingsSurface(Surface):
             self.manager.set_active_surface("root")
             return
 
-        self.back_button.handle_event(event)
-        self.sfx_slider.handle_event(event)
-        self.music_slider.handle_event(event)
+        self.back_button.on_event(event)
+        self.sfx_slider.on_event(event)
+        self.music_slider.on_event(event)
 
     def update(self) -> None:
         """

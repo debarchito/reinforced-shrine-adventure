@@ -44,7 +44,7 @@ class Surface(ABC):
         ...
 
     @abstractmethod
-    def handle_event(self, event: pygame.event.Event) -> None:
+    def on_event(self, event: pygame.event.Event) -> None:
         """
         Handle events specific to this surface.
         """
@@ -100,13 +100,13 @@ class SurfaceManager:
         surface.hook()
         surface.activate()
 
-    def handle_event(self, event: pygame.event.Event) -> None:
+    def on_event(self, event: pygame.event.Event) -> None:
         """
         Pass event handling to the active surface only.
         """
 
         if self.active_surface and self.active_surface.is_active:
-            self.active_surface.handle_event(event)
+            self.active_surface.on_event(event)
 
     def update(self) -> None:
         """

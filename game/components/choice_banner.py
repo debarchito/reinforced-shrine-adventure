@@ -51,7 +51,7 @@ class ChoiceBanner:
         )
         self.on_draw = on_draw
 
-    def handle_event(self, event: pygame.event.Event) -> bool:
+    def on_event(self, event: pygame.event.Event) -> bool:
         """
         Handle mouse click events on the choice banner.
         """

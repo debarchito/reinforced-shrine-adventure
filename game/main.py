@@ -62,7 +62,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            manager.handle_event(event)
+            manager.on_event(event)
 
         manager.update()
         manager.draw()
