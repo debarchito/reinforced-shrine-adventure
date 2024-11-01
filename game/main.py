@@ -6,6 +6,7 @@ from game.surfaces.root import RootSurface
 from game.surfaces.pause import PauseSurface
 from game.surfaces.settings import SettingsSurface
 from game.surfaces._2_packing import PackingSurface
+from game.surfaces._3_walk_to_gate import WalkToGateSurface
 from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
 
 
@@ -52,6 +53,7 @@ def main():
         surface, assets, manager
     )
     manager.surfaces["packing"] = PackingSurface(surface, assets, manager)
+    manager.surfaces["walk_to_gate"] = WalkToGateSurface(surface, assets, manager)
     manager.set_active_surface_by_name("root")
 
     # Game loop variables

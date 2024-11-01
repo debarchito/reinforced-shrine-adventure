@@ -33,6 +33,14 @@ class Backgrounds:
             "assets/images/backgrounds/empty_classroom.jpg", namehint
         )
 
+    def bedroom(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load("assets/images/backgrounds/bedroom.png", namehint)
+
+    def abandoned_amusement_park(self, namehint: str = "") -> pygame.Surface:
+        return pygame.image.load(
+            "assets/images/backgrounds/abandoned_amusement_park.png", namehint
+        )
+
 
 class UI:
     """
