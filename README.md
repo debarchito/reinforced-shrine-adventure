@@ -40,6 +40,8 @@ pixi shell
 pixi run game
 ```
 
+Additionally, check the [HOWTO.md](HOWTO.md) file for more information on how to work with the project.
+
 ## How do I work on the story?
 
 The story is written using the [Ink](https://github.com/inkle/ink) scripting language and [Inky](https://github.com/inkle/inky) editor for real-time feedback. You can find the story in the [story](story) directory. To load the story in the game, you need to export it as `JSON` (functionality available in the `Inky` editor). Check [story.ink.json](story/json/story.ink.json) for the exported version of the complete story (as it stands).
