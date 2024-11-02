@@ -149,7 +149,7 @@ class SceneDynamics:
 
     __slots__ = (
         "surface",
-        "assets",
+        "assets", 
         "story",
         "choice_banners",
         "dialogue_banner",
@@ -157,15 +157,13 @@ class SceneDynamics:
         "character_border",
         "button_click_1",
         "on_scene_complete",
+        "screen_width",
+        "screen_height",
     )
 
     CHARACTER_SPRITES = {
-        "Aie": lambda assets: assets.images.characters.aie(),
-        "Haruto": lambda assets: assets.images.characters.haruto(),
-        "Ryu": lambda assets: assets.images.characters.ryu(),
-        "Kaori": lambda assets: assets.images.characters.kaori(),
-        "Airi": lambda assets: assets.images.characters.airi(),
-        "Kanae": lambda assets: assets.images.characters.kanae(),
+        name: staticmethod(lambda assets, n=name: getattr(assets.images.characters, n.lower())())
+        for name in ["Aie", "Haruto", "Ryu", "Kaori", "Airi", "Kanae"]
     }
 
     def __init__(self, surface: pygame.Surface, assets: Assets) -> None:
@@ -178,11 +176,13 @@ class SceneDynamics:
         self.character_border = self.assets.images.ui.border_character_wood()
         self.button_click_1 = pygame.mixer.Sound(assets.sounds.button_click_1())
         self.on_scene_complete: Optional[Callable] = None
+        self.screen_width = surface.get_width()
+        self.screen_height = surface.get_height()
 
     def get_next_dialogue(self) -> str:
         """Get next line of dialogue from story."""
         while self.story.can_continue():
-            if text := self.story.cont():
+            if text := self.story.cont().strip():
                 return text
         return ""
 
@@ -191,33 +191,27 @@ class SceneDynamics:
         if not text.startswith("@"):
             return None, text
 
-        parts = text.split(":", 1)
-        if len(parts) != 2:
+        try:
+            name, content = text[1:].split(":", 1)
+            return name.strip(), content.strip()
+        except ValueError:
             return None, text
-
-        return parts[0][1:].strip(), parts[1].strip()
 
     def create_dialogue_banner(
         self, text: str, char_name: Optional[str]
     ) -> DialogueBanner:
         """Create a dialogue banner with the given parameters."""
-        banner_width = self.surface.get_width() - 400
-        banner_height = int(self.surface.get_height() * 0.3)
-        banner_image = pygame.transform.scale(
-            self.assets.images.ui.border_dialogue_wood(), (banner_width, banner_height)
-        )
-
         return DialogueBanner(
             surface=self.surface,
-            banner_image=banner_image,
+            banner_image=self.assets.images.ui.border_dialogue_wood(),
             text_content=text,
             text_color=(255, 255, 255),
             font=self.assets.fonts.monogram_extended(50),
             character_name=char_name,
             character_name_color=(182, 160, 118),
             on_advance=self.button_click_1,
-            x_offset=500,
-            y_offset=75,
+            x_offset=int(self.screen_width * 0.25),
+            y_offset=int(self.screen_height * 0.07),
         )
 
     def should_show_next_dialogue_page(self) -> bool:
@@ -241,7 +235,9 @@ class SceneDynamics:
             if next_text.strip() == "$jump":
                 if self.on_scene_complete:
                     self.on_scene_complete()
-            elif self.dialogue_banner:
+                return
+                
+            if self.dialogue_banner:
                 char_name, dialogue_text = self.parse_dialogue(next_text)
                 self.dialogue_banner.update_text(dialogue_text, char_name)
                 self.update_character_sprite(char_name)
@@ -268,11 +264,11 @@ class SceneDynamics:
         if self.should_show_next_dialogue_page():
             return
 
-        choices = [choice for choice in self.story.get_current_choices()]
-        for i, choice in enumerate(choices):
-            y_offset = 0.45 + (i * 0.08)
-            banner = self.create_choice_banner(choice, i, y_offset)
-            self.choice_banners.append((banner, i))
+        choices = list(self.story.get_current_choices()) # type: ignore
+        self.choice_banners.extend(
+            (self.create_choice_banner(choice, i, 0.45 + (i * 0.08)), i)
+            for i, choice in enumerate(choices)
+        )
 
     def handle_choice_selection(self, choice_idx: int) -> None:
         """Handle selection of a choice option."""
@@ -284,8 +280,8 @@ class SceneDynamics:
             char_name, dialogue_text = self.parse_dialogue(next_text)
             if self.dialogue_banner:
                 self.dialogue_banner.update_text(dialogue_text, char_name)
-            self.update_character_sprite(char_name)
-            self.update_choices()
+                self.update_character_sprite(char_name)
+                self.update_choices()
 
     def get_character_sprite(
         self, char_name: Optional[str]
@@ -298,23 +294,24 @@ class SceneDynamics:
 
     def update_character_sprite(self, char_name: Optional[str]) -> None:
         """Update the character sprite based on who is speaking."""
-        sprite = self.get_character_sprite(char_name)
-        if not sprite:
+        if not (sprite := self.get_character_sprite(char_name)):
             self.character_sprite = None
             return
-
-        border_height = int(self.surface.get_height() * 0.4)
-        border_surface = pygame.Surface((350, border_height), pygame.SRCALPHA)
+        
+        border_width = int(self.screen_width * 0.18)
+        border_height = int(self.screen_height * 0.4)
+        
+        border_surface = pygame.Surface((border_width, border_height), pygame.SRCALPHA)
         border_surface.blit(
-            pygame.transform.scale(self.character_border, (350, border_height)), (0, 0)
+            pygame.transform.scale(self.character_border, (border_width, border_height)), (0, 0)
         )
 
         sprite_height = int(border_height * 0.8)
         sprite_width = int(sprite_height * sprite.get_width() / sprite.get_height())
         scaled_sprite = pygame.transform.scale(sprite, (sprite_width, sprite_height))
 
-        sprite_x = (350 - sprite_width) // 1.6
-        sprite_y = border_height - sprite_height - 70
+        sprite_x = int((border_width - sprite_width) / 1.6)
+        sprite_y = int(border_height - sprite_height - (border_height * 0.175))
         border_surface.blit(scaled_sprite, (sprite_x, sprite_y))
         self.character_sprite = border_surface
 

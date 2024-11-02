@@ -88,7 +88,7 @@ class SummerBreakChoiceSurface(Surface):
 
     def on_event(self, event: pygame.event.Event) -> None:
         """Handle input events for dialogue and choices."""
-        if not self.is_active or not self.scene.dialogue_banner:
+        if not self.scene.dialogue_banner:
             return
 
         if self.scene.dialogue_banner.on_event(event):
@@ -117,9 +117,6 @@ class SummerBreakChoiceSurface(Surface):
 
     def draw(self) -> None:
         """Render the surface components."""
-        if not self.is_active:
-            return
-
         self.surface.blit(self.background_image, (0, 0))
 
         if self.scene.dialogue_banner:
