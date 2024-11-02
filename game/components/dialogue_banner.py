@@ -46,27 +46,33 @@ class DialogueBanner:
     ) -> None:
         screen_width = surface.get_width()
         screen_height = surface.get_height()
-        padding = 50
+        padding = 30
+
+        # Set the banner width to cover about 40% of the screen width for a professional look
         self.banner_width = min(
-            int(screen_width * 0.9), screen_width - x_offset - padding * 2
+            int(screen_width * 0.74 - 20), screen_width - padding * 2
         )
-        self.banner_height = int(screen_height * 0.3)
-        self.banner_image = pygame.transform.scale(
-            banner_image, (self.banner_width, self.banner_height)
-        )
-        banner_x = x_offset
-        banner_y = screen_height - self.banner_height - y_offset
+        self.banner_height = int(screen_height * 0.28)  # Height for balance
+
+        # Define margins for the banner position
+        right_margin = screen_width * 0.02  # Distance from the right edge
+        bottom_margin = screen_height * 0.05  # Distance from the bottom edge
+
+        # Calculate the banner position relative to the right side
+        banner_x = screen_width - self.banner_width - right_margin
+        banner_y = screen_height - self.banner_height - bottom_margin
         self.position = (banner_x, banner_y)
-        self.rect = pygame.Rect(
-            self.position[0], self.position[1], self.banner_width, self.banner_height
-        )
+        self.rect = pygame.Rect(banner_x, banner_y, self.banner_width, self.banner_height)
+
+        # Initialize the remaining attributes as before
+        self.banner_image = pygame.transform.scale(banner_image, (self.banner_width, self.banner_height))
         self.font = font
         self.text_color = text_color
         self.character_name_color = character_name_color
         self.text_padding = int(self.banner_width * 0.08)
-        self.text_start_x = x_offset + self.text_padding
-        self.text_start_y = banner_y + self.text_padding - 27
-        self.text_end_x = x_offset + self.banner_width - self.text_padding
+        self.text_start_x = banner_x + self.text_padding
+        self.text_start_y = banner_y + self.text_padding
+        self.text_end_x = banner_x + self.banner_width - self.text_padding
         self.line_spacing = 10
         self.max_lines = 3
         self.character_name = character_name
