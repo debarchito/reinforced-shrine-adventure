@@ -10,11 +10,8 @@ from game.surfaces._3_walk_to_gate import WalkToGateSurface
 from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
 
 
-def setup_surface_patcher():
-    """
-    Set up hmr patching by tracking file modifications in the game/surfaces directory.
-    """
-
+def setup_surface_patcher() -> dict[str, float]:
+    """Set up hmr patching by tracking file modifications in the game/surfaces directory."""
     last_modified = {}
     for root, _, files in os.walk("game/surfaces"):
         for file in files:
@@ -25,18 +22,19 @@ def setup_surface_patcher():
     return last_modified
 
 
-def patch_surface_on_hmr(manager, last_modified):
-    """
-    Check for file changes in the game/surfaces directory and reinitialize modified surfaces.
-    """
-
+def patch_surface_on_hmr(
+    manager: SurfaceManager, last_modified: dict[str, float]
+) -> None:
+    """Check for file changes in the game/surfaces directory and reinitialize modified surfaces."""
     for path, mtime in last_modified.items():
-        if os.path.getmtime(path) > mtime:
+        current_mtime = os.path.getmtime(path)
+        if current_mtime > mtime:
             manager.reinitialize_surface_from_path(path)
-            last_modified[path] = os.path.getmtime(path)
+            last_modified[path] = current_mtime
 
 
-def main():
+def main() -> None:
+    """Initialize and run the game loop."""
     pygame.init()
     assets = Assets()
     info = pygame.display.Info()
@@ -46,14 +44,20 @@ def main():
 
     # Initialize the surface manager and surfaces
     manager = SurfaceManager(surface, assets)
-    manager.surfaces["root"] = RootSurface(surface, assets, manager)
-    manager.surfaces["settings"] = SettingsSurface(surface, assets, manager)
-    manager.surfaces["pause"] = PauseSurface(surface, assets, manager)
-    manager.surfaces["summer_break_choice"] = SummerBreakChoiceSurface(
-        surface, assets, manager
-    )
-    manager.surfaces["packing"] = PackingSurface(surface, assets, manager)
-    manager.surfaces["walk_to_gate"] = WalkToGateSurface(surface, assets, manager)
+    surfaces = {
+        "root": RootSurface,
+        "settings": SettingsSurface,
+        "pause": PauseSurface,
+        "summer_break_choice": SummerBreakChoiceSurface,
+        "packing": PackingSurface,
+        "walk_to_gate": WalkToGateSurface,
+    }
+
+    # Initialize all surfaces at once
+    manager.surfaces = {
+        name: surface_class(surface, assets, manager)
+        for name, surface_class in surfaces.items()
+    }
     manager.set_active_surface_by_name("root")
 
     # Game loop variables
@@ -67,6 +71,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                break
             manager.on_event(event)
 
         manager.update()

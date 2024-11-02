@@ -4,10 +4,31 @@ from game.components.text import Text
 
 
 class DialogueBanner:
-    """
-    A declarative dialogue banner component that displays text content at the bottom of the screen.
-    Supports text buffering and pagination.
-    """
+    """A declarative dialogue banner component that displays text content at the bottom of the screen.
+    Supports text buffering and pagination."""
+
+    __slots__ = (
+        "banner_width",
+        "banner_height",
+        "banner_image",
+        "position",
+        "rect",
+        "font",
+        "text_color",
+        "character_name_color",
+        "text_padding",
+        "text_start_x",
+        "text_start_y",
+        "text_end_x",
+        "line_spacing",
+        "max_lines",
+        "character_name",
+        "full_text_lines",
+        "current_page",
+        "texts",
+        "on_draw",
+        "on_advance",
+    )
 
     def __init__(
         self,
@@ -22,22 +43,17 @@ class DialogueBanner:
         on_advance: Optional[pygame.mixer.Sound] = None,
         x_offset: int = 0,
         y_offset: int = 0,
-    ):
+    ) -> None:
         screen_width = surface.get_width()
         screen_height = surface.get_height()
-
-        # Add equal padding on all sides
         padding = 50
         self.banner_width = min(
             int(screen_width * 0.9), screen_width - x_offset - padding * 2
         )
         self.banner_height = int(screen_height * 0.3)
-
-        # Scale banner image to full width
         self.banner_image = pygame.transform.scale(
             banner_image, (self.banner_width, self.banner_height)
         )
-
         banner_x = x_offset
         banner_y = screen_height - self.banner_height - y_offset
         self.position = (banner_x, banner_y)
@@ -56,26 +72,24 @@ class DialogueBanner:
         self.character_name = character_name
         self.full_text_lines = self.__wrap_text(text_content)
         self.current_page = 0
-        self.texts = []
+        self.texts: list[Text] = []
         self.on_draw = on_draw
         self.on_advance = on_advance
         self.__update_visible_texts()
 
     def __wrap_text(self, text_content: str) -> list[str]:
-        """
-        Wrap text to fit within the dialogue banner width.
-        """
-
+        """Wrap text to fit within the dialogue banner width."""
         words = text_content.split()
         lines = []
         current_line = []
         current_width = 0
+        max_width = self.text_end_x - self.text_start_x
 
         for word in words:
             word_surface = self.font.render(word + " ", True, self.text_color)
             word_width = word_surface.get_width()
 
-            if current_width + word_width <= self.text_end_x - self.text_start_x:
+            if current_width + word_width <= max_width:
                 current_line.append(word)
                 current_width += word_width
             else:
@@ -89,18 +103,11 @@ class DialogueBanner:
         return lines
 
     def __update_visible_texts(self) -> None:
-        """
-        Update the visible text objects based on current page.
-        """
-
-        start_idx = self.current_page * (
-            self.max_lines - 1 if self.character_name else self.max_lines
-        )
-        visible_lines = self.full_text_lines[
-            start_idx : start_idx
-            + (self.max_lines - 1 if self.character_name else self.max_lines)
-        ]
-        self.texts = []
+        """Update the visible text objects based on current page."""
+        max_lines = self.max_lines - 1 if self.character_name else self.max_lines
+        start_idx = self.current_page * max_lines
+        visible_lines = self.full_text_lines[start_idx : start_idx + max_lines]
+        self.texts.clear()
 
         if self.character_name:
             self.texts.append(
@@ -108,7 +115,10 @@ class DialogueBanner:
                     content=self.character_name,
                     font=self.font,
                     position=(
-                        self.text_start_x + (self.text_end_x - self.text_start_x) / 2,  # type: ignore
+                        int(
+                            self.text_start_x
+                            + (self.text_end_x - self.text_start_x) / 2
+                        ),
                         self.text_start_y,
                     ),
                     color=self.character_name_color,
@@ -116,29 +126,27 @@ class DialogueBanner:
                 )
             )
 
+        y_offset = 1 if self.character_name else 0
+        line_height = self.font.get_height() + self.line_spacing / 2
+
         for i, line in enumerate(visible_lines):
             if self.current_page > 0 and i == 0:
                 line = "..." + line
 
-            next_page_start = (self.current_page + 1) * (
-                self.max_lines - 1 if self.character_name else self.max_lines
-            )
+            next_page_start = (self.current_page + 1) * max_lines
             if (
                 next_page_start < len(self.full_text_lines)
                 and i == len(visible_lines) - 1
             ):
                 line = line + "..."
 
-            y_offset = 1 if self.character_name else 0
             self.texts.append(
                 Text(
                     content=line,
                     font=self.font,
                     position=(
                         self.text_start_x,
-                        self.text_start_y
-                        + (i + y_offset)
-                        * (self.font.get_height() + self.line_spacing / 2),  # type: ignore
+                        int(self.text_start_y + (i + y_offset) * line_height),
                     ),
                     color=self.text_color,
                     center=False,
@@ -146,18 +154,16 @@ class DialogueBanner:
             )
 
     def on_event(self, event: pygame.event.Event) -> bool:
-        """
-        Handle mouse click or spacebar to advance text.
-        """
-
+        """Handle mouse click or spacebar to advance text."""
         if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1) or (
             event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE
         ):
             if self.on_advance:
                 self.on_advance.play()
-            next_page_start = (self.current_page + 1) * (
-                self.max_lines - 1 if self.character_name else self.max_lines
-            )
+
+            max_lines = self.max_lines - 1 if self.character_name else self.max_lines
+            next_page_start = (self.current_page + 1) * max_lines
+
             if next_page_start < len(self.full_text_lines):
                 self.current_page += 1
                 self.__update_visible_texts()
@@ -166,20 +172,14 @@ class DialogueBanner:
         return False
 
     def update_text(self, new_text: str, character_name: Optional[str] = None) -> None:
-        """
-        Update the dialogue text content.
-        """
-
+        """Update the dialogue text content."""
         self.character_name = character_name
         self.full_text_lines = self.__wrap_text(new_text)
         self.current_page = 0
         self.__update_visible_texts()
 
     def draw(self, surface: pygame.Surface) -> None:
-        """
-        Draw the banner and text onto the given surface.
-        """
-
+        """Draw the banner and text onto the given surface."""
         surface.blit(self.banner_image, self.position)
         for text in self.texts:
             text.draw(surface)

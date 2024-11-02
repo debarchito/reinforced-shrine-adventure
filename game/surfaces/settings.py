@@ -7,16 +7,31 @@ from game.surface import Surface, SurfaceManager
 
 
 class SettingsSurface(Surface):
-    """
-    Settings menu surface that handles game settings like audio volumes.
-    """
+    """Settings menu surface that handles game settings like audio volumes."""
+
+    __slots__ = (
+        "surface",
+        "assets",
+        "manager",
+        "info",
+        "backdrop",
+        "blur_surface",
+        "heading",
+        "button_click_1",
+        "back_button",
+        "sfx_slider",
+        "music_slider",
+        "sfx_label",
+        "music_label",
+        "number_font",
+    )
 
     def __init__(
         self,
         surface: pygame.Surface,
         assets: Assets,
         manager: SurfaceManager,
-    ):
+    ) -> None:
         super().__init__()
         self.surface = surface
         self.assets = assets
@@ -29,31 +44,28 @@ class SettingsSurface(Surface):
         self.__setup_labels()
 
     def __setup_background(self) -> None:
-        self.backdrop = pygame.Surface(self.surface.get_size())
-        self.blur_surface = pygame.Surface(self.surface.get_size(), pygame.SRCALPHA)
+        """Initialize background surfaces."""
+        surface_size = self.surface.get_size()
+        self.backdrop = pygame.Surface(surface_size)
+        self.blur_surface = pygame.Surface(surface_size, pygame.SRCALPHA)
 
     def __glass_overlay(self) -> None:
-        """
-        Create frosted glass effect over the current display
-        """
+        """Create frosted glass effect over the current display."""
+        width = self.surface.get_width()
+        height = self.surface.get_height()
 
         self.backdrop.blit(self.surface, (0, 0))
         self.blur_surface.fill((0, 0, 0, 180))
+
         scale_factor = 0.05
         small = pygame.transform.scale(
-            self.backdrop,
-            (
-                int(self.surface.get_width() * scale_factor),
-                int(self.surface.get_height() * scale_factor),
-            ),
+            self.backdrop, (int(width * scale_factor), int(height * scale_factor))
         )
-        blurred = pygame.transform.scale(
-            small, (self.surface.get_width(), self.surface.get_height())
-        )
-        self.backdrop = blurred
+        self.backdrop = pygame.transform.scale(small, (width, height))
         self.backdrop.blit(self.blur_surface, (0, 0))
 
     def __setup_heading(self) -> None:
+        """Initialize heading text."""
         self.heading = Text(
             content="Settings",
             font=self.assets.fonts.monogram_extended(80),
@@ -61,6 +73,7 @@ class SettingsSurface(Surface):
         )
 
     def __setup_buttons(self) -> None:
+        """Initialize back button and sound effects."""
         self.button_click_1 = pygame.mixer.Sound(self.assets.sounds.button_click_1())
         self.manager.sfx_objects.append(self.button_click_1)
         self.back_button = Button(
@@ -79,29 +92,21 @@ class SettingsSurface(Surface):
         )
 
     def __setup_sliders(self) -> None:
+        """Initialize volume control sliders."""
+        width = self.surface.get_width()
+        height = self.surface.get_height()
+        base_y = int(height // 2 - height // 3.83)
+
         self.sfx_slider = Slider(
-            rect=(
-                self.surface.get_width() // 2,
-                int(self.surface.get_height() // 2 - self.surface.get_height() // 3.83),
-                480,
-                30,
-            ),
+            rect=(width // 2, base_y, 480, 30),
             min_value=0.0,
             max_value=1.0,
             start_value=self.manager.current_global_sfx_volume - 0.04,
             on_change=self.manager.set_global_sfx_volume,
         )
+
         self.music_slider = Slider(
-            rect=(
-                self.surface.get_width() // 2,
-                int(
-                    self.surface.get_height() // 2
-                    - self.surface.get_height() // 3.83
-                    + 120
-                ),
-                480,
-                30,
-            ),
+            rect=(width // 2, base_y + 120, 480, 30),
             min_value=0.0,
             max_value=1.0,
             start_value=pygame.mixer.music.get_volume() - 0.03,
@@ -109,62 +114,41 @@ class SettingsSurface(Surface):
         )
 
     def __setup_labels(self) -> None:
-        self.sfx_label = Text(
-            content="SFX",
-            font=self.assets.fonts.monogram_extended(50),
-            position=(
-                self.surface.get_width() // 2 - self.surface.get_width() // 9 - 55,
-                self.surface.get_height() // 2 - self.surface.get_height() // 4,
-            ),
-        )
+        """Initialize text labels."""
+        width = self.surface.get_width()
+        height = self.surface.get_height()
+        base_x = width // 2 - width // 9 - 55
+        base_y = height // 2 - height // 4
+
+        font = self.assets.fonts.monogram_extended(50)
+        self.sfx_label = Text(content="SFX", font=font, position=(base_x, base_y))
         self.music_label = Text(
-            content="Background Music",
-            font=self.assets.fonts.monogram_extended(50),
-            position=(
-                self.surface.get_width() // 2 - self.surface.get_width() // 9 - 55,
-                self.surface.get_height() // 2 - self.surface.get_height() // 4 + 120,
-            ),
+            content="Background Music", font=font, position=(base_x, base_y + 120)
         )
         self.number_font = self.assets.fonts.monogram_extended(30)
 
     def __draw_slider_numbers(self, slider: Slider, y_position: int) -> None:
-        """
-        Helper method to draw '0' and '100' at the start and end of each slider.
-        """
-
+        """Draw '0' and '100' at the start and end of each slider."""
         zero_text = self.number_font.render("0", True, (255, 255, 255))
         hundred_text = self.number_font.render("100%", True, (255, 255, 255))
+        zero_width = zero_text.get_width()
+        zero_height = zero_text.get_height()
 
         self.surface.blit(
             zero_text,
-            (
-                slider.rect.x - (zero_text.get_width() * 2),
-                y_position - (zero_text.get_height() / 8),
-            ),
+            (slider.rect.x - (zero_width * 2), y_position - (zero_height / 8)),
         )
         self.surface.blit(
             hundred_text,
-            (
-                slider.rect.right + (zero_text.get_width() / 1.1),
-                y_position - (zero_text.get_height() / 8),
-            ),
+            (slider.rect.right + (zero_width / 1.1), y_position - (zero_height / 8)),
         )
 
     def hook(self) -> None:
-        """
-        Hook up any necessary components for this surface.
-        """
-
+        """Hook up necessary components for this surface."""
         self.__glass_overlay()
 
     def on_event(self, event: pygame.event.Event) -> None:
-        """
-        Handle input events for the settings menu.
-        """
-
-        if not self.is_active:
-            return
-
+        """Handle input events for the settings menu."""
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             self.manager.set_active_surface_by_name("root")
             return
@@ -174,23 +158,11 @@ class SettingsSurface(Surface):
         self.music_slider.on_event(event)
 
     def update(self) -> None:
-        """
-        Update the state of settings components.
-        """
-
-        if not self.is_active:
-            return
-
+        """Update the state of settings components."""
         self.back_button.update()
 
     def draw(self) -> None:
-        """
-        Render the settings components to the surface.
-        """
-
-        if not self.is_active:
-            return
-
+        """Render the settings components to the surface."""
         self.surface.blit(self.backdrop, (0, 0))
         self.heading.draw(self.surface)
         self.back_button.draw(self.surface)
@@ -198,13 +170,8 @@ class SettingsSurface(Surface):
         self.sfx_slider.draw(self.surface)
         self.music_label.draw(self.surface)
         self.music_slider.draw(self.surface)
-        self.__draw_slider_numbers(
-            self.sfx_slider,
-            int(self.surface.get_height() // 2 - self.surface.get_height() // 3.83 + 5),
-        )
-        self.__draw_slider_numbers(
-            self.music_slider,
-            int(
-                self.surface.get_height() // 2 - self.surface.get_height() // 3.83 + 125
-            ),
-        )
+
+        height = self.surface.get_height()
+        base_y = int(height // 2 - height // 3.83)
+        self.__draw_slider_numbers(self.sfx_slider, base_y + 5)
+        self.__draw_slider_numbers(self.music_slider, base_y + 125)

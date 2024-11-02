@@ -8,41 +8,61 @@ from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
 
 
 class RootSurface(Surface):
-    """
-    Main menu surface that handles the game's initial screen.
-    """
+    """Main menu surface that handles the game's initial screen."""
+
+    __slots__ = (
+        "surface",
+        "assets",
+        "manager",
+        "info",
+        "background",
+        "heading",
+        "button_click_1",
+        "start_button",
+        "cog_button",
+        "quit_button",
+    )
 
     def __init__(
         self,
         surface: pygame.Surface,
         assets: Assets,
         manager: SurfaceManager,
-    ):
+    ) -> None:
         super().__init__()
         self.surface = surface
         self.assets = assets
         self.manager = manager
         self.info = pygame.display.Info()
         self.__setup_background()
-        self.__setup_heading(surface)
-        self.__setup_buttons(surface)
+        self.__setup_heading()
+        self.__setup_buttons()
 
     def __setup_background(self) -> None:
+        """Initialize background surface."""
         self.background = pygame.transform.scale(
             self.assets.images.backgrounds.moon_sky(),
             (self.info.current_w, self.info.current_h),
         )
 
-    def __setup_heading(self, surface: pygame.Surface) -> None:
+    def __setup_heading(self) -> None:
+        """Initialize heading text."""
         self.heading = Text(
             content="Reinforced Shrine Adventure",
             font=self.assets.fonts.monogram_extended(130),
-            position=(surface.get_width() // 2, int(surface.get_height() * 0.3)),
+            position=(
+                self.surface.get_width() // 2,
+                int(self.surface.get_height() * 0.3),
+            ),
         )
 
-    def __setup_buttons(self, surface: pygame.Surface) -> None:
+    def __setup_buttons(self) -> None:
+        """Initialize menu buttons and sound effects."""
         self.button_click_1 = pygame.mixer.Sound(self.assets.sounds.button_click_1())
         self.manager.sfx_objects.append(self.button_click_1)
+
+        width = self.surface.get_width()
+        height = self.surface.get_height()
 
         self.start_button = Button(
             normal_image=pygame.transform.scale(
@@ -54,7 +74,7 @@ class RootSurface(Surface):
             active_image=pygame.transform.scale(
                 self.assets.images.ui.button_start_active(), (200, 100)
             ),
-            position=(surface.get_width() // 2, int(surface.get_height() * 0.6)),
+            position=(width // 2, int(height * 0.6)),
             on_click=lambda _, __: self.__start_game(),
             sound_on_click=self.button_click_1,
         )
@@ -69,7 +89,7 @@ class RootSurface(Surface):
             active_image=pygame.transform.scale(
                 self.assets.images.ui.button_cog_active(), (100, 100)
             ),
-            position=(surface.get_width() // 2 - 50, int(surface.get_height() * 0.73)),
+            position=(width // 2 - 50, int(height * 0.73)),
             on_click=lambda _, __: self.manager.set_active_surface_by_name("settings"),
             sound_on_click=self.button_click_1,
         )
@@ -84,16 +104,13 @@ class RootSurface(Surface):
             active_image=pygame.transform.scale(
                 self.assets.images.ui.button_quit_active(), (100, 100)
             ),
-            position=(surface.get_width() // 2 + 50, int(surface.get_height() * 0.73)),
+            position=(width // 2 + 50, int(height * 0.73)),
             on_click=lambda _, __: pygame.quit(),
             sound_on_click=self.button_click_1,
         )
 
     def __start_game(self) -> None:
-        """
-        Transition to the first game scene.
-        """
-
+        """Transition to the first game scene."""
         summer_break_surface = cast(
             SummerBreakChoiceSurface, self.manager.surfaces["summer_break_choice"]
         )
@@ -101,47 +118,26 @@ class RootSurface(Surface):
         self.manager.set_active_surface_by_name("summer_break_choice")
 
     def hook(self) -> None:
-        """
-        Hook up any necessary components for this surface.
-        """
-
+        """Hook up necessary components for this surface."""
         current_music = pygame.mixer.music.get_busy()
         if not current_music or pygame.mixer.music.get_pos() == -1:
             pygame.mixer.music.load(self.assets.sounds.ambient_evening())
             pygame.mixer.music.play(-1)
 
     def on_event(self, event: pygame.event.Event) -> None:
-        """
-        Handle input events for the main menu.
-        """
-
-        if not self.is_active:
-            return
-
+        """Handle input events for the main menu."""
         self.start_button.on_event(event)
         self.cog_button.on_event(event)
         self.quit_button.on_event(event)
 
     def update(self) -> None:
-        """
-        Update the state of menu components.
-        """
-
-        if not self.is_active:
-            return
-
+        """Update the state of menu components."""
         self.start_button.update()
         self.cog_button.update()
         self.quit_button.update()
 
     def draw(self) -> None:
-        """
-        Render the menu components to the surface.
-        """
-
-        if not self.is_active:
-            return
-
+        """Render the menu components to the surface."""
         self.surface.blit(self.background, (0, 0))
         self.heading.draw(self.surface)
         self.start_button.draw(self.surface)
