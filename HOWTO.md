@@ -74,7 +74,7 @@ You can also add custom methods to make code within the surface more organized a
 
 ## 3. (game) Managing surfaces
 
-This is where the `SurfaceManager` class in [game/surface.py](game/surface.py) comes in. This class is responsible for managing the surfaces in the game. It provides methods for activating, deactivating, and setting surfaces surfaces.
+This is where the `SurfaceManager` class in [game/surface.py](game/surface.py) comes in. This class is responsible for managing the surfaces in the game. It provides methods for activating, deactivating, and setting surfaces active.
 
 e.g.
 
@@ -126,9 +126,9 @@ For sounds loaded using `pygame.mixer.music`, you can simply use the existing `s
 
 Components are reusable building blocks that encapsulate specific UI elements and their behaviors. Unlike the `Surface` class which enforces a strict protocol, components are flexible and can implement only the methods they need. Common methods include:
 
-- `on_event()` - Handle user input and interactions
-- `update()` - Update internal state 
-- `draw()` - Render the component visually
+- `on_event()` - Handle user input and interactions.
+- `update()` - Update internal state.
+- `draw()` - Draw the component.
 
 While there's no required interface, following these common patterns makes components more maintainable and easier to use consistently across the codebase. The goal is to break down complex UI into smaller, focused pieces that can be composed together.
 
