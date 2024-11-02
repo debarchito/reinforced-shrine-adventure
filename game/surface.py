@@ -81,10 +81,11 @@ class SurfaceManager:
         self.surfaces: dict[str, Surface] = {}
         self.last_active_surface_name: Optional[str] = None
         self.active_surface: Optional[Surface] = None
+        self.active_surface_name: Optional[str] = None
 
         # Audio (SFX) management stuff
         self.current_global_sfx_volume = 1.0
-        self.sfx_sound_objects: list[pygame.mixer.Sound] = []
+        self.sfx_objects: list[pygame.mixer.Sound] = []
 
     def on_event(self, event: pygame.event.Event) -> None:
         """
@@ -125,6 +126,7 @@ class SurfaceManager:
             )
 
         self.active_surface = self.surfaces.get(name)
+        self.active_surface_name = name
 
         if self.active_surface:
             self.active_surface.hook()
@@ -171,5 +173,5 @@ class SurfaceManager:
 
         self.current_global_sfx_volume = volume
 
-        for sound in self.sfx_sound_objects:
+        for sound in self.sfx_objects:
             sound.set_volume(volume)

@@ -42,7 +42,7 @@ class RootSurface(Surface):
 
     def __setup_buttons(self, surface: pygame.Surface) -> None:
         self.button_click_1 = pygame.mixer.Sound(self.assets.sounds.button_click_1())
-        self.manager.sfx_sound_objects.append(self.button_click_1)
+        self.manager.sfx_objects.append(self.button_click_1)
 
         self.start_button = Button(
             normal_image=pygame.transform.scale(

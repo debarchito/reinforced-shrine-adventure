@@ -23,7 +23,7 @@ class PauseSurface(Surface):
         self.backdrop = pygame.Surface(surface.get_size())
         self.blur_surface = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
         self.button_click_1 = pygame.mixer.Sound(assets.sounds.button_click_1())
-        manager.sfx_sound_objects.append(self.button_click_1)
+        manager.sfx_objects.append(self.button_click_1)
 
         self.home_button = Button(
             normal_image=pygame.transform.scale(

@@ -20,7 +20,7 @@ class WalkToGateSurface(Surface):
         self.manager = manager
         self.info = pygame.display.Info()
         self.scene = self.manager.scene
-        self.manager.sfx_sound_objects.append(self.scene.button_click_1)
+        self.manager.sfx_objects.append(self.scene.button_click_1)
         self.background_image = pygame.transform.scale(
             self.assets.images.backgrounds.abandoned_amusement_park(),
             (self.info.current_w, self.info.current_h),
