@@ -22,8 +22,6 @@ class WalkToGateSurface(Surface):
         self.scene = self.manager.scene
         self.manager.sfx_objects.append(self.scene.button_click_1)
         self.__setup_background()
-        self.scene.setup()
-        self.scene.update_choices()
 
     def __setup_background(self) -> None:
         """Initialize and scale background image."""
@@ -74,6 +72,8 @@ class WalkToGateSurface(Surface):
 
     def hook(self) -> None:
         """Hook up necessary components for this surface."""
+        self.scene.setup()
+        self.scene.update_choices()
         pygame.mixer.music.load(self.assets.sounds.ambient_evening())
         pygame.mixer.music.play(-1)
 

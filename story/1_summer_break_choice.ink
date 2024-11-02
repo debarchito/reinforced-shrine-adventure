@@ -1,5 +1,6 @@
 === 1_summer_break_choice ===
 The final bell of the semester rings, signaling the start of summer break.
+
 As your classmates burst into excited chatter, you, {player_name}, quietly pack your bag, ready to slip away unnoticed.
 
 @Kaori: GUUUUYYYYYS! YOU WON'T BELIEVE WHAT I FOUND! IT'S THE PERFECT OF THE PERFECT-EST (?) PLACE!

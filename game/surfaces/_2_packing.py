@@ -24,8 +24,6 @@ class PackingSurface(Surface):
         self.scene = self.manager.scene
         self.manager.sfx_objects.append(self.scene.button_click_1)
         self.__setup_background()
-        self.scene.setup()
-        self.scene.update_choices()
 
     def __setup_background(self) -> None:
         """Initialize and scale background image."""
@@ -70,6 +68,8 @@ class PackingSurface(Surface):
 
     def hook(self) -> None:
         """Hook up necessary components for this surface."""
+        self.scene.setup()
+        self.scene.update_choices()
         self.scene.on_scene_complete = self.__next_scene
         pygame.mixer.music.load(self.assets.sounds.ambient_evening())
         pygame.mixer.music.play(-1)

@@ -182,7 +182,7 @@ class SceneDynamics:
     def get_next_dialogue(self) -> str:
         """Get next line of dialogue from story."""
         while self.story.can_continue():
-            if text := self.story.cont().strip():
+            if text := self.story.cont():
                 return text
         return ""
 
@@ -191,11 +191,11 @@ class SceneDynamics:
         if not text.startswith("@"):
             return None, text
 
-        try:
-            name, content = text[1:].split(":", 1)
-            return name.strip(), content.strip()
-        except ValueError:
+        parts = text.split(":", 1)
+        if len(parts) != 2:
             return None, text
+
+        return parts[0][1:].strip(), parts[1].strip()
 
     def create_dialogue_banner(
         self, text: str, char_name: Optional[str]
@@ -225,12 +225,11 @@ class SceneDynamics:
         if not self.dialogue_banner:
             return False
 
-        max_lines = (
+        next_page_start = (self.dialogue_banner.current_page + 1) * (
             self.dialogue_banner.max_lines - 1
             if self.dialogue_banner.character_name
             else self.dialogue_banner.max_lines
         )
-        next_page_start = (self.dialogue_banner.current_page + 1) * max_lines
         return next_page_start < len(self.dialogue_banner.full_text_lines)
 
     def handle_dialogue_advance(self) -> None:
@@ -246,7 +245,8 @@ class SceneDynamics:
                 char_name, dialogue_text = self.parse_dialogue(next_text)
                 self.dialogue_banner.update_text(dialogue_text, char_name)
                 self.update_character_sprite(char_name)
-            self.update_choices()
+
+        self.update_choices()
 
     def create_choice_banner(
         self, choice: str, index: int, y_offset: float
