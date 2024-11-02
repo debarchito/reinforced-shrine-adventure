@@ -232,9 +232,10 @@ class SceneDynamics:
             return
 
         if next_text := self.get_next_dialogue():
-            if next_text.strip() == "$jump":
+            next_text = next_text.strip()
+            if next_text.startswith("$jump"):
                 if self.on_scene_complete:
-                    self.on_scene_complete()
+                    self.on_scene_complete(next_text.removeprefix("$jump").strip())
                 return
                 
             if self.dialogue_banner:

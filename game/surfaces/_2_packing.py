@@ -32,7 +32,7 @@ class PackingSurface(Surface):
             (self.info.current_w, self.info.current_h),
         )
 
-    def __next_scene(self) -> None:
+    def __next_scene(self, _) -> None:
         """Transition to the walk to gate scene."""
         walk_to_gate_surface = cast(
             WalkToGateSurface, self.manager.surfaces["walk_to_gate"]

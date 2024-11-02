@@ -32,7 +32,7 @@ class SummerBreakChoiceSurface(Surface):
             (self.info.current_w, self.info.current_h),
         )
 
-    def __next_scene(self) -> None:
+    def __next_scene(self, _) -> None:
         """Transition to the packing scene."""
         packing_surface = cast(PackingSurface, self.manager.surfaces["packing"])
         packing_surface.fade_transition(self.surface)
