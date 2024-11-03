@@ -223,7 +223,7 @@ class SceneDynamics:
             surface=self.surface,
             banner_image=self.assets.images.ui.border_dialogue_wood(),
             text_content=text,
-            text_color=(182, 160, 118) if char_name else (255, 255, 255),
+            text_color=(255, 255, 255),
             font=self.assets.fonts.monogram_extended(50),
             character_name=char_name,
             character_name_color=(182, 160, 118),
@@ -377,29 +377,52 @@ class SceneDynamics:
         self, surface: pygame.Surface
     ) -> tuple[pygame.Surface, int, int, int]:
         """Set up the history window surface and return key dimensions."""
-        overlay = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 180))
-        surface.blit(overlay, (0, 0))
-
+        width = surface.get_width()
+        height = surface.get_height()
         padding = 40
-        width = surface.get_width() - (padding * 2)
-        height = surface.get_height() - (padding * 2)
-        window = pygame.Surface((width, height), pygame.SRCALPHA)
-        window.fill((40, 40, 40, 255))
-        pygame.draw.rect(window, (182, 160, 118), (0, 0, width, height), 2)
+        window_width = width - (padding * 2)
+        window_height = height - (padding * 2)
+        backdrop = pygame.Surface((width, height))
+        backdrop.blit(surface, (0, 0))
+        scale_factor = 0.05
+        small = pygame.transform.scale(
+            backdrop,
+            (int(width * scale_factor), int(height * scale_factor)),
+        )
+        blurred = pygame.transform.scale(small, (width, height))
+        overlay = pygame.Surface((width, height), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 180))
+        blurred.blit(overlay, (0, 0))
+        surface.blit(blurred, (0, 0))
+        window = pygame.Surface((window_width, window_height), pygame.SRCALPHA)
+        window.fill((0, 0, 0, 25))
 
-        return window, width, height, padding
+        gradient = pygame.Surface((window_width, window_height), pygame.SRCALPHA)
+        for i in range(window_height):
+            alpha = int(15 * (1 - i / window_height))
+            gradient.fill((255, 255, 255, alpha), (0, i, window_width, 1))
+        window.blit(gradient, (0, 0))
+
+        return window, window_width, window_height, padding
 
     def __draw_history_title(self, window: pygame.Surface, width: int) -> None:
         """Draw the history title on the window."""
+        title_height = 60
+        title_surface = pygame.Surface((width, title_height), pygame.SRCALPHA)
+        title_surface.fill((182, 160, 118, 25))
+        window.blit(title_surface, (0, 0))
+
         title = Text(
             content="History",
             font=self.assets.fonts.monogram_extended(50),
-            position=(width // 2, 30),
+            position=(width // 2, 20),
             color=(182, 160, 118),
             center=True,
         )
         title.draw(window)
+        pygame.draw.line(
+            window, (182, 160, 118), (20, title_height), (width - 20, title_height), 1
+        )
 
     def __calculate_total_lines(
         self, font: pygame.font.Font, max_width: int, padding: int
@@ -456,7 +479,7 @@ class SceneDynamics:
         window, width, height, padding = self.__setup_history_window(surface)
         self.__draw_history_title(window, width)
 
-        font = self.assets.fonts.monogram_extended(45)
+        font = self.assets.fonts.monogram_extended(50)
         line_height = 35
         text_color = (255, 255, 255)
         choice_color = (182, 160, 118)
@@ -464,9 +487,7 @@ class SceneDynamics:
 
         total_lines = self.__calculate_total_lines(font, max_width, padding)
         content_height = max(height, total_lines * line_height + 100)
-        content = pygame.Surface(
-            (width, content_height + padding), pygame.SRCALPHA
-        )  # Added padding to content height
+        content = pygame.Surface((width, content_height + padding), pygame.SRCALPHA)
         y_offset = 80
 
         for entry in self.history:
@@ -594,9 +615,7 @@ class SceneDynamics:
                         )
                         y_offset += line_height
 
-        max_scroll = max(
-            0, content_height - height + padding * 2
-        )  # Added padding to max scroll
+        max_scroll = max(0, content_height - height + padding * 2)
         self.history_scroll_position = min(
             max_scroll, max(0, self.history_scroll_position)
         )
@@ -639,12 +658,8 @@ class SceneDynamics:
         max_width = window_width - (padding * 2)
 
         total_lines = self.__count_history_lines(max_width)
-        content_height = (
-            total_lines * line_height + 100 + padding
-        )  # Added padding to content height
-        return max(
-            0, content_height - window_height + padding
-        )  # Added padding to max scroll
+        content_height = total_lines * line_height + 100 + padding
+        return max(0, content_height - window_height + padding)
 
     def __count_history_lines(self, max_width: int) -> int:
         """Count total lines needed to display history entries."""
