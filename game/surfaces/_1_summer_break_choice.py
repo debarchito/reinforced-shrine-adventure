@@ -74,14 +74,17 @@ class SummerBreakChoiceSurface(Surface):
 
     def __handle_choice_input(self, event: pygame.event.Event) -> None:
         """Handle keyboard/mouse input for choices."""
+        if event.key == pygame.K_h:
+            self.scene.show_history = not self.scene.show_history
+            return
+        elif event.key == pygame.K_ESCAPE:
+            self.manager.set_active_surface_by_name("pause")
+            return
         choice_num = None
         if pygame.K_1 <= event.key <= pygame.K_9:
             choice_num = event.key - pygame.K_1
         elif pygame.K_KP1 <= event.key <= pygame.K_KP9:
             choice_num = event.key - pygame.K_KP1
-        elif event.key == pygame.K_ESCAPE:
-            self.manager.set_active_surface_by_name("pause")
-            return
 
         if choice_num is not None and choice_num < len(self.scene.choice_banners):
             self.scene.handle_choice_selection(choice_num)
@@ -132,3 +135,6 @@ class SummerBreakChoiceSurface(Surface):
 
         for banner, _ in self.scene.choice_banners:
             banner.draw(self.surface)
+
+        if self.scene.show_history:
+            self.scene.render_history(self.surface)

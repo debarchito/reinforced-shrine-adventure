@@ -134,3 +134,6 @@ class PackingSurface(Surface):
 
         for banner, _ in self.scene.choice_banners:
             banner.draw(self.surface)
+
+        if self.scene.show_history:
+            self.scene.render_history(self.surface)
