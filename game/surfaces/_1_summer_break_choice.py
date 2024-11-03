@@ -82,6 +82,9 @@ class SummerBreakChoiceSurface(Surface):
                 self.scene.history_scroll_position = 0
             return
         elif event.key == pygame.K_ESCAPE:
+            if self.scene.show_history:
+                self.scene.show_history = False
+                return
             self.manager.set_active_surface_by_name("pause")
             return
 

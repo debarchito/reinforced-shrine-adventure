@@ -143,7 +143,7 @@ class PauseSurface(Surface):
         scale_factor = 0.05
 
         self.backdrop.blit(self.surface, (0, 0))
-        self.blur_surface.fill((0, 0, 0, 180))
+        self.blur_surface.fill((0, 0, 0, 215))
 
         small = pygame.transform.scale(
             self.backdrop,
