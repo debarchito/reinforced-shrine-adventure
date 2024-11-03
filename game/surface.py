@@ -12,6 +12,7 @@ from game.assets import Assets
 from abc import ABC, abstractmethod
 from game.components.choice_banner import ChoiceBanner
 from game.components.dialogue_banner import DialogueBanner
+from game.components.text import Text
 
 
 class Surface(ABC):
@@ -157,6 +158,8 @@ class SceneDynamics:
         "character_border",
         "button_click_1",
         "on_scene_complete",
+        "scene_history",
+        "show_history",
         "screen_width",
         "screen_height",
     )
@@ -176,6 +179,8 @@ class SceneDynamics:
         self.character_border = self.assets.images.ui.border_character_wood()
         self.button_click_1 = pygame.mixer.Sound(assets.sounds.button_click_1())
         self.on_scene_complete: Optional[Callable] = None
+        self.scene_history: list[tuple[Optional[str], str]] = []
+        self.show_history = False
         self.screen_width = surface.get_width()
         self.screen_height = surface.get_height()
 
@@ -242,6 +247,9 @@ class SceneDynamics:
                 char_name, dialogue_text = self.parse_dialogue(next_text)
                 self.dialogue_banner.update_text(dialogue_text, char_name)
                 self.update_character_sprite(char_name)
+                # Add to history
+                history_text = f"{char_name}: {dialogue_text}" if char_name else dialogue_text
+                self.add_to_history(history_text)
 
         self.update_choices()
 
@@ -273,6 +281,11 @@ class SceneDynamics:
 
     def handle_choice_selection(self, choice_idx: int) -> None:
         """Handle selection of a choice option."""
+        choices = self.story.get_current_choices()
+        if choice_idx < len(choices):
+            # Add choice to history
+            self.add_to_history(choices[choice_idx], True)
+            
         self.story.choose_choice_index(choice_idx)
         if not self.story.can_continue():
             return
@@ -282,6 +295,8 @@ class SceneDynamics:
             if self.dialogue_banner:
                 self.dialogue_banner.update_text(dialogue_text, char_name)
                 self.update_character_sprite(char_name)
+                history_text = f"{char_name}: {dialogue_text}" if char_name else dialogue_text
+                self.add_to_history(history_text)
                 self.update_choices()
 
     def get_character_sprite(
@@ -322,3 +337,61 @@ class SceneDynamics:
             char_name, dialogue_text = self.parse_dialogue(initial_text)
             self.dialogue_banner = self.create_dialogue_banner(dialogue_text, char_name)
             self.update_character_sprite(char_name)
+
+    def add_to_history(self, text: str, is_choice: bool = False) -> None:
+        """Add a new entry to the scene history."""
+        if not text.strip():
+            return
+            
+        entry = {
+            'text': text,
+            'is_choice': is_choice,
+            'timestamp': pygame.time.get_ticks()
+        }
+        self.scene_history.append(entry)
+
+    def render_history(self, surface: pygame.Surface) -> None:
+        """Render the scene history popup."""
+        overlay = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 180))
+        surface.blit(overlay, (0, 0))
+        padding = 40
+        width = surface.get_width() - (padding * 2)
+        height = surface.get_height() - (padding * 2)
+        window = pygame.Surface((width, height), pygame.SRCALPHA)
+        window.fill((40, 40, 40, 255))
+        pygame.draw.rect(window, (182, 160, 118), (0, 0, width, height), 2)
+
+        font = self.assets.fonts.monogram_extended(30)
+        y_offset = 20
+        line_height = 35
+        text_color = (255, 255, 255)
+        choice_color = (182, 160, 118)
+
+        title = Text(
+            content="Scene History",
+            font=self.assets.fonts.monogram_extended(50),
+            position=(width // 2, y_offset),
+            color=(182, 160, 118),
+            center=True
+        )
+        title.draw(window)
+        y_offset += 60
+
+        for entry in self.scene_history:
+            color = choice_color if entry['is_choice'] else text_color
+            prefix = "» " if entry['is_choice'] else ""
+            text = Text(
+                content=f"{prefix}{entry['text']}",
+                font=font,
+                position=(padding, y_offset),
+                color=color,
+                center=False
+            )
+            text.draw(window)
+            y_offset += line_height
+            
+            if y_offset > height - line_height:
+                break
+        
+        surface.blit(window, (padding, padding))
