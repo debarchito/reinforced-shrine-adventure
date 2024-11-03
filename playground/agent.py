@@ -19,7 +19,7 @@ class TextQNetwork(nn.Module):
             param.requires_grad = False
             
         self.feature_combiner = nn.Sequential(
-            nn.Linear(768 + 7, hidden_size, bias=False),  # Removed bias for efficiency
+            nn.Linear(768 + 7, hidden_size),  # Removed bias for efficiency
             nn.ReLU(),
             nn.Dropout(0.1)
         )
