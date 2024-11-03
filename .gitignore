@@ -14,3 +14,6 @@ wheels/
 # pixi environments
 .pixi
 *.egg-info
+
+# training stuff
+playground/results/*
