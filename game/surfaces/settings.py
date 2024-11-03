@@ -55,7 +55,7 @@ class SettingsSurface(Surface):
         height = self.surface.get_height()
 
         self.backdrop.blit(self.surface, (0, 0))
-        self.blur_surface.fill((0, 0, 0, 180))
+        self.blur_surface.fill((0, 0, 0, 215))
 
         scale_factor = 0.05
         small = pygame.transform.scale(
