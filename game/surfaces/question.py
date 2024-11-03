@@ -66,7 +66,7 @@ class QuestionSurface(Surface):
     def __setup_help_texts(self) -> None:
         """Initialize help text content."""
         center_x = self.surface.get_width() // 2
-        base_y = int(self.surface.get_height() * 0.185)
+        base_y = int(self.surface.get_height() * 0.15)
         line_height = int(self.surface.get_height() * 0.111)
         title_color = (182, 160, 118)
         text_color = (255, 255, 255)
@@ -102,30 +102,44 @@ class QuestionSurface(Surface):
                 color=text_color,
             ),
             Text(
-                content="SPACE",
+                content="↑/↓",
                 font=self.font,
                 position=(center_x - key_offset, base_y + line_height * 3 + 30),
                 center=True,
                 color=title_color,
             ),
             Text(
-                content="Dialogue Advance",
+                content="History Navigation",
                 font=self.font,
                 position=(center_x + desc_offset, base_y + line_height * 3),
                 center=False,
                 color=text_color,
             ),
             Text(
-                content="1-9",
+                content="SPACE",
                 font=self.font,
                 position=(center_x - key_offset, base_y + line_height * 4 + 30),
                 center=True,
                 color=title_color,
             ),
             Text(
-                content="Choice Selection",
+                content="Dialogue Advance",
                 font=self.font,
                 position=(center_x + desc_offset, base_y + line_height * 4),
+                center=False,
+                color=text_color,
+            ),
+            Text(
+                content="1-9",
+                font=self.font,
+                position=(center_x - key_offset, base_y + line_height * 5 + 30),
+                center=True,
+                color=title_color,
+            ),
+            Text(
+                content="Choice Selection",
+                font=self.font,
+                position=(center_x + desc_offset, base_y + line_height * 5),
                 center=False,
                 color=text_color,
             ),
