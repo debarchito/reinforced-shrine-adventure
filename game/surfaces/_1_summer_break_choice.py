@@ -76,10 +76,15 @@ class SummerBreakChoiceSurface(Surface):
         """Handle keyboard/mouse input for choices."""
         if event.key == pygame.K_h:
             self.scene.show_history = not self.scene.show_history
+            if self.scene.show_history:
+                self.scene.auto_scroll_history()  # Auto-scroll when opening history
+            else:
+                self.scene.history_scroll_position = 0  # Reset only when closing
             return
         elif event.key == pygame.K_ESCAPE:
             self.manager.set_active_surface_by_name("pause")
             return
+        
         choice_num = None
         if pygame.K_1 <= event.key <= pygame.K_9:
             choice_num = event.key - pygame.K_1
@@ -91,7 +96,19 @@ class SummerBreakChoiceSurface(Surface):
 
     def on_event(self, event: pygame.event.Event) -> None:
         """Handle input events for dialogue and choices."""
-        if not self.is_active or not self.scene.dialogue_banner:
+        if not self.is_active:
+            return
+
+        # Handle history scroll events first
+        if self.scene.show_history and event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                self.scene.history_scroll_position -= self.scene.history_scroll_speed
+                return
+            elif event.key == pygame.K_DOWN:
+                self.scene.history_scroll_position += self.scene.history_scroll_speed
+                return
+
+        if not self.scene.dialogue_banner:
             return
 
         if self.scene.dialogue_banner.on_event(event):
