@@ -1,6 +1,7 @@
 import pygame
 from typing import cast
 from game.assets import Assets
+from game.components.button import Button
 from game.surface import Surface, SurfaceManager
 from game.surfaces._2_packing import PackingSurface
 
@@ -8,7 +9,15 @@ from game.surfaces._2_packing import PackingSurface
 class SummerBreakChoiceSurface(Surface):
     """First game scene surface that handles dialogue and choices."""
 
-    __slots__ = ("surface", "assets", "manager", "info", "scene", "background_image")
+    __slots__ = (
+        "surface",
+        "assets",
+        "manager",
+        "info",
+        "scene",
+        "background_image",
+        "question_button",
+    )
 
     def __init__(
         self,
@@ -23,6 +32,20 @@ class SummerBreakChoiceSurface(Surface):
         self.info = pygame.display.Info()
         self.scene = self.manager.scene
         self.manager.sfx_objects.append(self.scene.button_click_1)
+        self.question_button = Button(
+            normal_image=pygame.transform.scale(
+                self.assets.images.ui.button_question(), (50, 50)
+            ),
+            hover_image=pygame.transform.scale(
+                self.assets.images.ui.button_question_hover(), (50, 50)
+            ),
+            active_image=pygame.transform.scale(
+                self.assets.images.ui.button_question_active(), (50, 50)
+            ),
+            on_click=lambda _, __: self.manager.set_active_surface_by_name("question"),
+            position=(50, 50),
+            sound_on_click=self.scene.button_click_1,
+        )
         self.__setup_background()
 
     def __setup_background(self) -> None:
@@ -66,8 +89,9 @@ class SummerBreakChoiceSurface(Surface):
 
     def hook(self) -> None:
         """Hook up necessary components for this surface."""
-        self.scene.setup()
-        self.scene.update_choices()
+        if self.manager.last_active_surface_name not in [None, "pause", "question"]:
+            self.scene.setup()
+            self.scene.update_choices()
         self.scene.on_scene_complete = self.__next_scene
         pygame.mixer.music.load(self.assets.sounds.empty_classroom())
         pygame.mixer.music.play(-1)
@@ -84,8 +108,8 @@ class SummerBreakChoiceSurface(Surface):
         elif event.key == pygame.K_ESCAPE:
             if self.scene.show_history:
                 self.scene.show_history = False
-                return
-            self.manager.set_active_surface_by_name("pause")
+            else:
+                self.manager.set_active_surface_by_name("pause")
             return
 
         choice_num = None
@@ -99,6 +123,8 @@ class SummerBreakChoiceSurface(Surface):
 
     def on_event(self, event: pygame.event.Event) -> None:
         """Handle input events for dialogue and choices."""
+        self.question_button.on_event(event)
+
         if self.scene.show_history and event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 self.scene.history_scroll_position -= self.scene.history_scroll_speed
@@ -114,9 +140,7 @@ class SummerBreakChoiceSurface(Surface):
             self.scene.update_choices()
             return
 
-        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1) or (
-            event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE
-        ):
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             self.scene.handle_dialogue_advance()
             if self.scene.should_show_next_dialogue_page():
                 return
@@ -132,11 +156,12 @@ class SummerBreakChoiceSurface(Surface):
 
     def update(self) -> None:
         """Update the state of surface components."""
-        pass
+        self.question_button.update()
 
     def draw(self) -> None:
         """Render the surface components."""
         self.surface.blit(self.background_image, (0, 0))
+        self.question_button.draw(self.surface)
 
         if self.scene.dialogue_banner:
             self.scene.dialogue_banner.draw(self.surface)

@@ -127,6 +127,20 @@ class UI:
         """Load play button active state."""
         return pygame.image.load("assets/images/ui/button_play_active.png", namehint)
 
+    def button_question(self, namehint: str = "") -> pygame.Surface:
+        """Load question button."""
+        return pygame.image.load("assets/images/ui/button_question.png", namehint)
+
+    def button_question_hover(self, namehint: str = "") -> pygame.Surface:
+        """Load question button hover state."""
+        return pygame.image.load("assets/images/ui/button_question_hover.png", namehint)
+
+    def button_question_active(self, namehint: str = "") -> pygame.Surface:
+        """Load question button active state."""
+        return pygame.image.load(
+            "assets/images/ui/button_question_active.png", namehint
+        )
+
     def banner_dialogue_wood(self, namehint: str = "") -> pygame.Surface:
         """Load wooden dialogue banner."""
         return pygame.image.load("assets/images/ui/banner_dialogue_wood.png", namehint)

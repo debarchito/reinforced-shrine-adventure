@@ -155,9 +155,7 @@ class DialogueBanner:
 
     def on_event(self, event: pygame.event.Event) -> bool:
         """Handle mouse click or spacebar to advance text."""
-        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1) or (
-            event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE
-        ):
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             if self.on_advance:
                 self.on_advance.play()
 

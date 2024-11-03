@@ -43,7 +43,6 @@ class PauseSurface(Surface):
         self.__setup_home_button()
         self.__setup_resume_button(center_x, center_y)
         self.__setup_exit_button(center_x, center_y)
-        self.__setup_text_labels(center_x, center_y)
 
     def __setup_home_button(self) -> None:
         """Initialize home button."""
@@ -107,27 +106,6 @@ class PauseSurface(Surface):
             position=(center_x - 130, center_y + 120),
             on_click=self.__on_exit_click,
             sound_on_click=self.button_click_1,
-        )
-
-        self.exit_text = Text(
-            content="Quit",
-            font=self.font,
-            position=(center_x, center_y + 120),
-        )
-
-    def __setup_text_labels(self, center_x: int, center_y: int) -> None:
-        """Initialize text labels."""
-        self.quit_text = Text(
-            content="Save & Return",
-            center=False,
-            font=self.font,
-            position=(180, 60),
-        )
-
-        self.resume_text = Text(
-            content="Continue",
-            font=self.font,
-            position=(center_x + 50, center_y),
         )
 
         self.exit_text = Text(

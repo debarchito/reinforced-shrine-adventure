@@ -294,6 +294,7 @@ class SceneDynamics:
 
     def handle_choice_selection(self, choice_idx: int) -> None:
         """Handle the selection of a choice."""
+        self.button_click_1.play()
         choices = self.story.get_current_choices()
         if choice_idx < len(choices):
             choice_text = choices[choice_idx]

@@ -5,6 +5,7 @@ from game.surface import SurfaceManager
 from game.surfaces.root import RootSurface
 from game.surfaces.pause import PauseSurface
 from game.surfaces.settings import SettingsSurface
+from game.surfaces.question import QuestionSurface
 from game.surfaces._2_packing import PackingSurface
 from game.surfaces._3_walk_to_gate import WalkToGateSurface
 from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
@@ -51,6 +52,7 @@ def main() -> None:
         "summer_break_choice": SummerBreakChoiceSurface,
         "packing": PackingSurface,
         "walk_to_gate": WalkToGateSurface,
+        "question": QuestionSurface,
     }
 
     # Initialize all surfaces at once
