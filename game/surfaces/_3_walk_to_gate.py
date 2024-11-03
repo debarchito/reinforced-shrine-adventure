@@ -87,10 +87,6 @@ class WalkToGateSurface(Surface):
 
     def on_event(self, event: pygame.event.Event) -> None:
         """Handle input events for dialogue and choices."""
-        if not self.is_active:
-            return
-
-        # Handle history scroll events first
         if self.scene.show_history and event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 self.scene.history_scroll_position -= self.scene.history_scroll_speed
@@ -128,9 +124,6 @@ class WalkToGateSurface(Surface):
 
     def draw(self) -> None:
         """Render the surface components."""
-        if not self.is_active:
-            return
-
         self.surface.blit(self.background_image, (0, 0))
 
         if self.scene.dialogue_banner:

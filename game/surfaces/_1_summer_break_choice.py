@@ -32,7 +32,7 @@ class SummerBreakChoiceSurface(Surface):
             (self.info.current_w, self.info.current_h),
         )
 
-    def __next_scene(self) -> None:
+    def __next_scene(self, _) -> None:
         """Transition to the packing scene."""
         packing_surface = cast(PackingSurface, self.manager.surfaces["packing"])
         packing_surface.fade_transition(self.surface)
@@ -96,10 +96,6 @@ class SummerBreakChoiceSurface(Surface):
 
     def on_event(self, event: pygame.event.Event) -> None:
         """Handle input events for dialogue and choices."""
-        if not self.is_active:
-            return
-
-        # Handle history scroll events first
         if self.scene.show_history and event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 self.scene.history_scroll_position -= self.scene.history_scroll_speed
@@ -137,9 +133,6 @@ class SummerBreakChoiceSurface(Surface):
 
     def draw(self) -> None:
         """Render the surface components."""
-        if not self.is_active:
-            return
-
         self.surface.blit(self.background_image, (0, 0))
 
         if self.scene.dialogue_banner:

@@ -32,7 +32,7 @@ class PackingSurface(Surface):
             (self.info.current_w, self.info.current_h),
         )
 
-    def __next_scene(self) -> None:
+    def __next_scene(self, _) -> None:
         """Transition to the walk to gate scene."""
         walk_to_gate_surface = cast(
             WalkToGateSurface, self.manager.surfaces["walk_to_gate"]
@@ -98,10 +98,6 @@ class PackingSurface(Surface):
 
     def on_event(self, event: pygame.event.Event) -> None:
         """Handle input events for dialogue and choices."""
-        if not self.is_active:
-            return
-
-        # Handle history scroll events first
         if self.scene.show_history and event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 self.scene.history_scroll_position -= self.scene.history_scroll_speed
@@ -109,7 +105,7 @@ class PackingSurface(Surface):
             elif event.key == pygame.K_DOWN:
                 self.scene.history_scroll_position += self.scene.history_scroll_speed
                 return
-
+ 
         if not self.scene.dialogue_banner:
             return
 
@@ -139,9 +135,6 @@ class PackingSurface(Surface):
 
     def draw(self) -> None:
         """Render the surface components."""
-        if not self.is_active:
-            return
-
         self.surface.blit(self.background_image, (0, 0))
 
         if self.scene.dialogue_banner:

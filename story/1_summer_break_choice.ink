@@ -29,7 +29,7 @@ Kaori bursts into the classroom like a whirlwind, her eyes practically sparkling
 
 @Kaori: It's like, BOOM - mountains! SPLASH - ocean! And right there, this amazing old shrine just sitting at the top of this hill! And get this - it's TOTALLY haunted!
 
-* [Show enthusiasm] 
+* [Share the enthusiasm] 
     ~ curiosity += 1
     ~ supernatural += 2
     You lean forward, completely hooked.
