@@ -202,6 +202,10 @@ class Sounds:
         """Get empty classroom music path."""
         return "assets/sounds/music/empty_classroom.mp3"
 
+    def cicada(self) -> str:
+        """Get cicada music path."""
+        return "assets/sounds/music/cicada.mp3"
+
     def button_click_1(self) -> str:
         """Get button click sound effect path."""
         return "assets/sounds/sfx/button_click_1.mp3"

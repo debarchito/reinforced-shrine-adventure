@@ -391,7 +391,7 @@ class SceneDynamics:
         )
         blurred = pygame.transform.scale(small, (width, height))
         overlay = pygame.Surface((width, height), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 180))
+        overlay.fill((0, 0, 0, 230))
         blurred.blit(overlay, (0, 0))
         surface.blit(blurred, (0, 0))
         window = pygame.Surface((window_width, window_height), pygame.SRCALPHA)

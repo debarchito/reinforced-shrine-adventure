@@ -71,7 +71,7 @@ class PackingSurface(Surface):
         self.scene.setup()
         self.scene.update_choices()
         self.scene.on_scene_complete = self.__next_scene
-        pygame.mixer.music.load(self.assets.sounds.ambient_evening())
+        pygame.mixer.music.load(self.assets.sounds.cicada())
         pygame.mixer.music.play(-1)
 
     def __handle_choice_input(self, event: pygame.event.Event) -> None:
