@@ -150,7 +150,7 @@ class SceneDynamics:
 
     __slots__ = (
         "surface",
-        "assets", 
+        "assets",
         "story",
         "choice_banners",
         "dialogue_banner",
@@ -167,7 +167,9 @@ class SceneDynamics:
     )
 
     CHARACTER_SPRITES = {
-        name: staticmethod(lambda assets, n=name: getattr(assets.images.characters, n.lower())())
+        name: staticmethod(
+            lambda assets, n=name: getattr(assets.images.characters, n.lower())()
+        )
         for name in ["Aie", "Haruto", "Ryu", "Kaori", "Airi", "Kanae"]
     }
 
@@ -246,13 +248,15 @@ class SceneDynamics:
                 if self.on_scene_complete:
                     self.on_scene_complete(next_text.removeprefix("$jump").strip())
                 return
-                
+
             if self.dialogue_banner:
                 char_name, dialogue_text = self.parse_dialogue(next_text)
                 self.dialogue_banner.update_text(dialogue_text, char_name)
                 self.update_character_sprite(char_name)
                 # Add to history
-                history_text = f"{char_name}: {dialogue_text}" if char_name else dialogue_text
+                history_text = (
+                    f"{char_name}: {dialogue_text}" if char_name else dialogue_text
+                )
                 self.add_to_history(history_text)
                 # Auto-scroll history
                 self.auto_scroll_history()
@@ -279,7 +283,7 @@ class SceneDynamics:
         if self.should_show_next_dialogue_page():
             return
 
-        choices = list(self.story.get_current_choices()) # type: ignore
+        choices = list(self.story.get_current_choices())  # type: ignore
         self.choice_banners.extend(
             (self.create_choice_banner(choice, i, 0.45 + (i * 0.08)), i)
             for i, choice in enumerate(choices)
@@ -292,7 +296,7 @@ class SceneDynamics:
             # Add choice to history
             self.add_to_history(choices[choice_idx], True)
             self.auto_scroll_history()
-            
+
         self.story.choose_choice_index(choice_idx)
         if not self.story.can_continue():
             return
@@ -302,7 +306,9 @@ class SceneDynamics:
             if self.dialogue_banner:
                 self.dialogue_banner.update_text(dialogue_text, char_name)
                 self.update_character_sprite(char_name)
-                history_text = f"{char_name}: {dialogue_text}" if char_name else dialogue_text
+                history_text = (
+                    f"{char_name}: {dialogue_text}" if char_name else dialogue_text
+                )
                 self.add_to_history(history_text)
                 self.auto_scroll_history()
                 self.update_choices()
@@ -321,13 +327,16 @@ class SceneDynamics:
         if not (sprite := self.get_character_sprite(char_name)):
             self.character_sprite = None
             return
-        
+
         border_width = int(self.screen_width * 0.18)
         border_height = int(self.screen_height * 0.4)
-        
+
         border_surface = pygame.Surface((border_width, border_height), pygame.SRCALPHA)
         border_surface.blit(
-            pygame.transform.scale(self.character_border, (border_width, border_height)), (0, 0)
+            pygame.transform.scale(
+                self.character_border, (border_width, border_height)
+            ),
+            (0, 0),
         )
 
         sprite_height = int(border_height * 0.8)
@@ -350,20 +359,20 @@ class SceneDynamics:
         """Add a new entry to the scene history."""
         if not text.strip():
             return
-            
+
         entry = {
-            'text': text,
-            'is_choice': is_choice,
-            'timestamp': pygame.time.get_ticks()
+            "text": text,
+            "is_choice": is_choice,
+            "timestamp": pygame.time.get_ticks(),
         }
         self.scene_history.append(entry)
-        
+
         # Add an empty line after choices
         if is_choice:
             empty_entry = {
-                'text': ' ',  # Empty line
-                'is_choice': False,
-                'timestamp': pygame.time.get_ticks()
+                "text": " ",  # Empty line
+                "is_choice": False,
+                "timestamp": pygame.time.get_ticks(),
             }
             self.scene_history.append(empty_entry)
 
@@ -393,31 +402,31 @@ class SceneDynamics:
             font=self.assets.fonts.monogram_extended(50),
             position=(width // 2, 20),
             color=(182, 160, 118),
-            center=True
+            center=True,
         )
         title.draw(window)
         y_offset = 80
 
         for entry in self.scene_history:
             # Handle empty lines
-            if not entry['text'].strip():
+            if not entry["text"].strip():
                 y_offset += line_height
                 continue
-                
-            color = choice_color if entry['is_choice'] else text_color
-            prefix = "» " if entry['is_choice'] else ""
+
+            color = choice_color if entry["is_choice"] else text_color
+            prefix = "» " if entry["is_choice"] else ""
             full_text = f"{prefix}{entry['text']}"
-            
+
             # Word wrap
             words = full_text.split()
             lines = []
             current_line = []
             current_width = 0
-            
+
             for word in words:
                 word_surface = font.render(word + " ", True, color)
                 word_width = word_surface.get_width()
-                
+
                 if current_width + word_width <= max_width:
                     current_line.append(word)
                     current_width += word_width
@@ -426,10 +435,10 @@ class SceneDynamics:
                         lines.append(" ".join(current_line))
                     current_line = [word]
                     current_width = word_width
-            
+
             if current_line:
                 lines.append(" ".join(current_line))
-            
+
             # Render wrapped lines
             for line in lines:
                 text = Text(
@@ -437,18 +446,22 @@ class SceneDynamics:
                     font=font,
                     position=(padding, y_offset),
                     color=color,
-                    center=False
+                    center=False,
                 )
                 text.draw(content)
                 y_offset += line_height
-        
+
         # Calculate max scroll
         max_scroll = max(0, content_height - height + padding)
-        self.history_scroll_position = min(max_scroll, max(0, self.history_scroll_position))
-        
+        self.history_scroll_position = min(
+            max_scroll, max(0, self.history_scroll_position)
+        )
+
         # Draw scrollable content below the title
-        window.blit(content, (0, 60), (0, self.history_scroll_position, width, height - 60))
-        
+        window.blit(
+            content, (0, 60), (0, self.history_scroll_position, width, height - 60)
+        )
+
         # Draw the final window
         surface.blit(window, (padding, padding))
 
@@ -456,17 +469,19 @@ class SceneDynamics:
         """Automatically scroll history to show newest content."""
         if not self.show_history:
             return
-            
+
         # Calculate total content height
         line_height = 35
-        content_height = len(self.scene_history) * line_height + 100  # Extra space for title
-        
+        content_height = (
+            len(self.scene_history) * line_height + 100
+        )  # Extra space for title
+
         # Calculate visible area height
         padding = 40
         window_height = self.surface.get_height() - (padding * 2)
-        
+
         # Calculate maximum scroll position
         max_scroll = max(0, content_height - window_height)
-        
+
         # Set scroll position to show current content
         self.history_scroll_position = max_scroll

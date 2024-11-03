@@ -68,7 +68,7 @@ class WalkToGateSurface(Surface):
         elif event.key == pygame.K_ESCAPE:
             self.manager.set_active_surface_by_name("pause")
             return
-        
+
         choice_num = None
         if pygame.K_1 <= event.key <= pygame.K_9:
             choice_num = event.key - pygame.K_1

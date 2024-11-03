@@ -86,7 +86,7 @@ class PackingSurface(Surface):
         elif event.key == pygame.K_ESCAPE:
             self.manager.set_active_surface_by_name("pause")
             return
-        
+
         choice_num = None
         if pygame.K_1 <= event.key <= pygame.K_9:
             choice_num = event.key - pygame.K_1
@@ -105,7 +105,7 @@ class PackingSurface(Surface):
             elif event.key == pygame.K_DOWN:
                 self.scene.history_scroll_position += self.scene.history_scroll_speed
                 return
- 
+
         if not self.scene.dialogue_banner:
             return
 
