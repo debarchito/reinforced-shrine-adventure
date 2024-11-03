@@ -160,6 +160,8 @@ class SceneDynamics:
         "on_scene_complete",
         "scene_history",
         "show_history",
+        "history_scroll_position",
+        "history_scroll_speed",
         "screen_width",
         "screen_height",
     )
@@ -181,6 +183,8 @@ class SceneDynamics:
         self.on_scene_complete: Optional[Callable] = None
         self.scene_history: list[tuple[Optional[str], str]] = []
         self.show_history = False
+        self.history_scroll_position = 0
+        self.history_scroll_speed = 35
         self.screen_width = surface.get_width()
         self.screen_height = surface.get_height()
 
@@ -250,6 +254,8 @@ class SceneDynamics:
                 # Add to history
                 history_text = f"{char_name}: {dialogue_text}" if char_name else dialogue_text
                 self.add_to_history(history_text)
+                # Auto-scroll history
+                self.auto_scroll_history()
 
         self.update_choices()
 
@@ -285,6 +291,7 @@ class SceneDynamics:
         if choice_idx < len(choices):
             # Add choice to history
             self.add_to_history(choices[choice_idx], True)
+            self.auto_scroll_history()
             
         self.story.choose_choice_index(choice_idx)
         if not self.story.can_continue():
@@ -297,6 +304,7 @@ class SceneDynamics:
                 self.update_character_sprite(char_name)
                 history_text = f"{char_name}: {dialogue_text}" if char_name else dialogue_text
                 self.add_to_history(history_text)
+                self.auto_scroll_history()
                 self.update_choices()
 
     def get_character_sprite(
@@ -349,9 +357,18 @@ class SceneDynamics:
             'timestamp': pygame.time.get_ticks()
         }
         self.scene_history.append(entry)
+        
+        # Add an empty line after choices
+        if is_choice:
+            empty_entry = {
+                'text': ' ',  # Empty line
+                'is_choice': False,
+                'timestamp': pygame.time.get_ticks()
+            }
+            self.scene_history.append(empty_entry)
 
     def render_history(self, surface: pygame.Surface) -> None:
-        """Render the scene history popup."""
+        """Render the scene history popup with scrolling."""
         overlay = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 180))
         surface.blit(overlay, (0, 0))
@@ -363,35 +380,93 @@ class SceneDynamics:
         pygame.draw.rect(window, (182, 160, 118), (0, 0, width, height), 2)
 
         font = self.assets.fonts.monogram_extended(30)
-        y_offset = 20
         line_height = 35
         text_color = (255, 255, 255)
         choice_color = (182, 160, 118)
+        max_width = width - (padding * 2)
+        content_height = max(height, len(self.scene_history) * line_height + 100)
+        content = pygame.Surface((width, content_height), pygame.SRCALPHA)
+        content.fill((0, 0, 0, 0))
 
         title = Text(
             content="Scene History",
             font=self.assets.fonts.monogram_extended(50),
-            position=(width // 2, y_offset),
+            position=(width // 2, 20),
             color=(182, 160, 118),
             center=True
         )
         title.draw(window)
-        y_offset += 60
+        y_offset = 80
 
         for entry in self.scene_history:
+            # Handle empty lines
+            if not entry['text'].strip():
+                y_offset += line_height
+                continue
+                
             color = choice_color if entry['is_choice'] else text_color
             prefix = "» " if entry['is_choice'] else ""
-            text = Text(
-                content=f"{prefix}{entry['text']}",
-                font=font,
-                position=(padding, y_offset),
-                color=color,
-                center=False
-            )
-            text.draw(window)
-            y_offset += line_height
+            full_text = f"{prefix}{entry['text']}"
             
-            if y_offset > height - line_height:
-                break
+            # Word wrap
+            words = full_text.split()
+            lines = []
+            current_line = []
+            current_width = 0
+            
+            for word in words:
+                word_surface = font.render(word + " ", True, color)
+                word_width = word_surface.get_width()
+                
+                if current_width + word_width <= max_width:
+                    current_line.append(word)
+                    current_width += word_width
+                else:
+                    if current_line:
+                        lines.append(" ".join(current_line))
+                    current_line = [word]
+                    current_width = word_width
+            
+            if current_line:
+                lines.append(" ".join(current_line))
+            
+            # Render wrapped lines
+            for line in lines:
+                text = Text(
+                    content=line,
+                    font=font,
+                    position=(padding, y_offset),
+                    color=color,
+                    center=False
+                )
+                text.draw(content)
+                y_offset += line_height
         
+        # Calculate max scroll
+        max_scroll = max(0, content_height - height + padding)
+        self.history_scroll_position = min(max_scroll, max(0, self.history_scroll_position))
+        
+        # Draw scrollable content below the title
+        window.blit(content, (0, 60), (0, self.history_scroll_position, width, height - 60))
+        
+        # Draw the final window
         surface.blit(window, (padding, padding))
+
+    def auto_scroll_history(self) -> None:
+        """Automatically scroll history to show newest content."""
+        if not self.show_history:
+            return
+            
+        # Calculate total content height
+        line_height = 35
+        content_height = len(self.scene_history) * line_height + 100  # Extra space for title
+        
+        # Calculate visible area height
+        padding = 40
+        window_height = self.surface.get_height() - (padding * 2)
+        
+        # Calculate maximum scroll position
+        max_scroll = max(0, content_height - window_height)
+        
+        # Set scroll position to show current content
+        self.history_scroll_position = max_scroll

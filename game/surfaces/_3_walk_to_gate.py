@@ -58,14 +58,22 @@ class WalkToGateSurface(Surface):
 
     def __handle_choice_input(self, event: pygame.event.Event) -> None:
         """Handle keyboard/mouse input for choices."""
+        if event.key == pygame.K_h:
+            self.scene.show_history = not self.scene.show_history
+            if self.scene.show_history:
+                self.scene.auto_scroll_history()  # Auto-scroll when opening history
+            else:
+                self.scene.history_scroll_position = 0  # Reset only when closing
+            return
+        elif event.key == pygame.K_ESCAPE:
+            self.manager.set_active_surface_by_name("pause")
+            return
+        
         choice_num = None
         if pygame.K_1 <= event.key <= pygame.K_9:
             choice_num = event.key - pygame.K_1
         elif pygame.K_KP1 <= event.key <= pygame.K_KP9:
             choice_num = event.key - pygame.K_KP1
-        elif event.key == pygame.K_ESCAPE:
-            self.manager.set_active_surface_by_name("pause")
-            return
 
         if choice_num is not None and choice_num < len(self.scene.choice_banners):
             self.scene.handle_choice_selection(choice_num)
@@ -79,6 +87,14 @@ class WalkToGateSurface(Surface):
 
     def on_event(self, event: pygame.event.Event) -> None:
         """Handle input events for dialogue and choices."""
+        if self.scene.show_history and event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                self.scene.history_scroll_position -= self.scene.history_scroll_speed
+                return
+            elif event.key == pygame.K_DOWN:
+                self.scene.history_scroll_position += self.scene.history_scroll_speed
+                return
+
         if not self.scene.dialogue_banner:
             return
 
