@@ -61,9 +61,9 @@ class WalkToGateSurface(Surface):
         if event.key == pygame.K_h:
             self.scene.show_history = not self.scene.show_history
             if self.scene.show_history:
-                self.scene.auto_scroll_history()  # Auto-scroll when opening history
+                self.scene.auto_scroll_history()
             else:
-                self.scene.history_scroll_position = 0  # Reset only when closing
+                self.scene.history_scroll_position = 0
             return
         elif event.key == pygame.K_ESCAPE:
             self.manager.set_active_surface_by_name("pause")

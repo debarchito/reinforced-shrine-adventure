@@ -7,12 +7,18 @@ import re
 import sys
 import pygame
 import importlib
-from typing import Optional, Callable
 from game.assets import Assets
 from abc import ABC, abstractmethod
+from game.components.text import Text
+from typing import Optional, TypedDict, Callable
 from game.components.choice_banner import ChoiceBanner
 from game.components.dialogue_banner import DialogueBanner
-from game.components.text import Text
+
+
+class HistoryEntry(TypedDict):
+    text: str
+    is_choice: bool
+    timestamp: int
 
 
 class Surface(ABC):
@@ -21,6 +27,7 @@ class Surface(ABC):
     __slots__ = "is_active"
 
     def __init__(self) -> None:
+        """Initialize a new Surface instance."""
         self.is_active = False
 
     def activate(self) -> None:
@@ -67,38 +74,35 @@ class SurfaceManager:
     )
 
     def __init__(self, surface: pygame.Surface, assets: Assets) -> None:
+        """Initialize the SurfaceManager with a target surface and assets."""
         self.surface = surface
         self.assets = assets
         self.scene = SceneDynamics(self.surface, self.assets)
-
-        # Surface management
-        self.surfaces: dict[str, Surface] = {}
-        self.last_active_surface_name: Optional[str] = None
-        self.active_surface: Optional[Surface] = None
-        self.active_surface_name: Optional[str] = None
-
-        # Audio management
+        self.surfaces = {}
+        self.last_active_surface_name = None
+        self.active_surface = None
+        self.active_surface_name = None
         self.current_global_sfx_volume = 1.0
-        self.sfx_objects: list[pygame.mixer.Sound] = []
+        self.sfx_objects = []
 
     def on_event(self, event: pygame.event.Event) -> None:
-        """Pass event handling to the active surface only."""
+        """Handle events for the active surface."""
         if self.active_surface and self.active_surface.is_active:
             self.active_surface.on_event(event)
 
     def update(self) -> None:
-        """Update the active surface only."""
+        """Update the active surface state."""
         if self.active_surface and self.active_surface.is_active:
             self.active_surface.update()
 
     def draw(self) -> None:
-        """Draw the active surface onto the display."""
+        """Draw the active surface and update the display."""
         if self.active_surface and self.active_surface.is_active:
             self.active_surface.draw()
             pygame.display.flip()
 
     def set_active_surface_by_name(self, name: str) -> None:
-        """Set the active surface by name while deactivating the previous one."""
+        """Set the active surface by its name."""
         if self.active_surface:
             self.active_surface.deactivate()
             self.last_active_surface_name = (
@@ -115,7 +119,7 @@ class SurfaceManager:
             self.active_surface.activate()
 
     def reinitialize_surface_from_path(self, path: str) -> None:
-        """Reinitialize a specific surface based on the changed file path."""
+        """Reinitialize a surface from a file path after changes."""
         print(f"[?] Detected change in {path}. Reloading module...")
 
         module_name = os.path.normpath(path).replace(os.path.sep, ".").rsplit(".", 1)[0]
@@ -139,7 +143,7 @@ class SurfaceManager:
                 self.set_active_surface_by_name(surface_name)
 
     def set_global_sfx_volume(self, volume: float) -> None:
-        """Set the global volume for sfx."""
+        """Set the global volume for all sound effects."""
         self.current_global_sfx_volume = volume
         for sound in self.sfx_objects:
             sound.set_volume(volume)
@@ -158,12 +162,13 @@ class SceneDynamics:
         "character_border",
         "button_click_1",
         "on_scene_complete",
-        "scene_history",
+        "history",
         "show_history",
         "history_scroll_position",
         "history_scroll_speed",
         "screen_width",
         "screen_height",
+        "current_dialogue",
     )
 
     CHARACTER_SPRITES = {
@@ -174,31 +179,33 @@ class SceneDynamics:
     }
 
     def __init__(self, surface: pygame.Surface, assets: Assets) -> None:
+        """Initialize SceneDynamics with a surface and assets."""
         self.surface = surface
         self.assets = assets
         self.story = assets.story
-        self.choice_banners: list[tuple[ChoiceBanner, int]] = []
-        self.dialogue_banner: Optional[DialogueBanner] = None
-        self.character_sprite: Optional[pygame.Surface] = None
+        self.choice_banners = []
+        self.dialogue_banner = None
+        self.character_sprite = None
         self.character_border = self.assets.images.ui.border_character_wood()
         self.button_click_1 = pygame.mixer.Sound(assets.sounds.button_click_1())
-        self.on_scene_complete: Optional[Callable] = None
-        self.scene_history: list[tuple[Optional[str], str]] = []
+        self.on_scene_complete: Optional[Callable[[str], None]] = None
+        self.history = []
         self.show_history = False
         self.history_scroll_position = 0
         self.history_scroll_speed = 35
         self.screen_width = surface.get_width()
         self.screen_height = surface.get_height()
+        self.current_dialogue = None
 
     def get_next_dialogue(self) -> str:
-        """Get next line of dialogue from story."""
+        """Get the next dialogue text from the story."""
         while self.story.can_continue():
             if text := self.story.cont().strip():
                 return text
         return ""
 
     def parse_dialogue(self, text: str) -> tuple[Optional[str], str]:
-        """Parse dialogue text to extract character name and content."""
+        """Parse dialogue text into character name and content."""
         if not text.startswith("@"):
             return None, text
 
@@ -211,12 +218,12 @@ class SceneDynamics:
     def create_dialogue_banner(
         self, text: str, char_name: Optional[str]
     ) -> DialogueBanner:
-        """Create a dialogue banner with the given parameters."""
+        """Create a new dialogue banner with the given text and character name."""
         return DialogueBanner(
             surface=self.surface,
             banner_image=self.assets.images.ui.border_dialogue_wood(),
             text_content=text,
-            text_color=(255, 255, 255),
+            text_color=(182, 160, 118) if char_name else (255, 255, 255),
             font=self.assets.fonts.monogram_extended(50),
             character_name=char_name,
             character_name_color=(182, 160, 118),
@@ -226,7 +233,7 @@ class SceneDynamics:
         )
 
     def should_show_next_dialogue_page(self) -> bool:
-        """Check if there are more pages of dialogue to show."""
+        """Check if there is a next dialogue page to show."""
         if not self.dialogue_banner:
             return False
 
@@ -238,7 +245,7 @@ class SceneDynamics:
         return next_page_start < len(self.dialogue_banner.full_text_lines)
 
     def handle_dialogue_advance(self) -> None:
-        """Handle advancing to next dialogue line."""
+        """Handle advancing to the next dialogue."""
         if not self.story.can_continue():
             return
 
@@ -253,20 +260,19 @@ class SceneDynamics:
                 char_name, dialogue_text = self.parse_dialogue(next_text)
                 self.dialogue_banner.update_text(dialogue_text, char_name)
                 self.update_character_sprite(char_name)
-                # Add to history
+                self.current_dialogue = (char_name, dialogue_text)
                 history_text = (
                     f"{char_name}: {dialogue_text}" if char_name else dialogue_text
                 )
                 self.add_to_history(history_text)
-                # Auto-scroll history
-                self.auto_scroll_history()
+                self.add_to_history("")
 
         self.update_choices()
 
     def create_choice_banner(
         self, choice: str, index: int, y_offset: float
     ) -> ChoiceBanner:
-        """Create a choice banner with the given parameters."""
+        """Create a new choice banner with the given choice text and position."""
         return ChoiceBanner(
             surface=self.surface,
             banner_image=self.assets.images.ui.border_dialogue_wood(),
@@ -277,60 +283,54 @@ class SceneDynamics:
         )
 
     def update_choices(self) -> None:
-        """Update available choice banners."""
+        """Update the available choices."""
         self.choice_banners.clear()
-
-        if self.should_show_next_dialogue_page():
-            return
-
-        choices = list(self.story.get_current_choices())  # type: ignore
-        self.choice_banners.extend(
-            (self.create_choice_banner(choice, i, 0.45 + (i * 0.08)), i)
-            for i, choice in enumerate(choices)
-        )
+        if not self.should_show_next_dialogue_page():
+            choices = list(self.story.get_current_choices())  # type: ignore
+            self.choice_banners.extend(
+                (self.create_choice_banner(choice, i, 0.45 + (i * 0.08)), i)
+                for i, choice in enumerate(choices)
+            )
 
     def handle_choice_selection(self, choice_idx: int) -> None:
-        """Handle selection of a choice option."""
+        """Handle the selection of a choice."""
         choices = self.story.get_current_choices()
         if choice_idx < len(choices):
-            # Add choice to history
-            self.add_to_history(choices[choice_idx], True)
-            self.auto_scroll_history()
+            choice_text = choices[choice_idx]
+            self.add_to_history(choice_text, True)
+            self.add_to_history("")
+            self.story.choose_choice_index(choice_idx)
 
-        self.story.choose_choice_index(choice_idx)
-        if not self.story.can_continue():
-            return
-
-        if next_text := self.get_next_dialogue():
-            char_name, dialogue_text = self.parse_dialogue(next_text)
-            if self.dialogue_banner:
-                self.dialogue_banner.update_text(dialogue_text, char_name)
-                self.update_character_sprite(char_name)
-                history_text = (
-                    f"{char_name}: {dialogue_text}" if char_name else dialogue_text
-                )
-                self.add_to_history(history_text)
-                self.auto_scroll_history()
-                self.update_choices()
+            if next_text := self.get_next_dialogue():
+                char_name, dialogue_text = self.parse_dialogue(next_text)
+                if self.dialogue_banner:
+                    self.dialogue_banner.update_text(dialogue_text, char_name)
+                    self.update_character_sprite(char_name)
+                    self.current_dialogue = (char_name, dialogue_text)
+                    history_text = (
+                        f"{char_name}: {dialogue_text}" if char_name else dialogue_text
+                    )
+                    self.add_to_history(history_text)
+                    self.add_to_history("")
+                    self.update_choices()
 
     def get_character_sprite(
         self, char_name: Optional[str]
     ) -> Optional[pygame.Surface]:
-        """Get character sprite based on character name."""
+        """Get the character sprite surface for the given character name."""
         if not char_name:
             return None
         sprite_getter = self.CHARACTER_SPRITES.get(char_name)
         return sprite_getter(self.assets) if sprite_getter else None
 
     def update_character_sprite(self, char_name: Optional[str]) -> None:
-        """Update the character sprite based on who is speaking."""
+        """Update the character sprite with the given character name."""
         if not (sprite := self.get_character_sprite(char_name)):
             self.character_sprite = None
             return
 
         border_width = int(self.screen_width * 0.18)
         border_height = int(self.screen_height * 0.4)
-
         border_surface = pygame.Surface((border_width, border_height), pygame.SRCALPHA)
         border_surface.blit(
             pygame.transform.scale(
@@ -349,38 +349,38 @@ class SceneDynamics:
         self.character_sprite = border_surface
 
     def setup(self) -> None:
-        """Set up initial dialogue and character sprite."""
+        """Set up the initial scene state."""
         if initial_text := self.get_next_dialogue():
             char_name, dialogue_text = self.parse_dialogue(initial_text)
             self.dialogue_banner = self.create_dialogue_banner(dialogue_text, char_name)
             self.update_character_sprite(char_name)
+            self.current_dialogue = (char_name, dialogue_text)
+            history_text = (
+                f"{char_name}: {dialogue_text}" if char_name else dialogue_text
+            )
+            self.add_to_history(history_text)
+            self.add_to_history("")
 
     def add_to_history(self, text: str, is_choice: bool = False) -> None:
-        """Add a new entry to the scene history."""
-        if not text.strip():
-            return
-
-        entry = {
+        """Add an entry to the scene history."""
+        entry: HistoryEntry = {
             "text": text,
             "is_choice": is_choice,
             "timestamp": pygame.time.get_ticks(),
         }
-        self.scene_history.append(entry)
+        self.history.append(entry)
 
-        # Add an empty line after choices
-        if is_choice:
-            empty_entry = {
-                "text": " ",  # Empty line
-                "is_choice": False,
-                "timestamp": pygame.time.get_ticks(),
-            }
-            self.scene_history.append(empty_entry)
+        if self.show_history:
+            self.auto_scroll_history()
 
-    def render_history(self, surface: pygame.Surface) -> None:
-        """Render the scene history popup with scrolling."""
+    def __setup_history_window(
+        self, surface: pygame.Surface
+    ) -> tuple[pygame.Surface, int, int, int]:
+        """Set up the history window surface and return key dimensions."""
         overlay = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 180))
         surface.blit(overlay, (0, 0))
+
         padding = 40
         width = surface.get_width() - (padding * 2)
         height = surface.get_height() - (padding * 2)
@@ -388,100 +388,295 @@ class SceneDynamics:
         window.fill((40, 40, 40, 255))
         pygame.draw.rect(window, (182, 160, 118), (0, 0, width, height), 2)
 
-        font = self.assets.fonts.monogram_extended(30)
-        line_height = 35
-        text_color = (255, 255, 255)
-        choice_color = (182, 160, 118)
-        max_width = width - (padding * 2)
-        content_height = max(height, len(self.scene_history) * line_height + 100)
-        content = pygame.Surface((width, content_height), pygame.SRCALPHA)
-        content.fill((0, 0, 0, 0))
+        return window, width, height, padding
 
+    def __draw_history_title(self, window: pygame.Surface, width: int) -> None:
+        """Draw the history title on the window."""
         title = Text(
-            content="Scene History",
+            content="History",
             font=self.assets.fonts.monogram_extended(50),
-            position=(width // 2, 20),
+            position=(width // 2, 30),
             color=(182, 160, 118),
             center=True,
         )
         title.draw(window)
+
+    def __calculate_total_lines(
+        self, font: pygame.font.Font, max_width: int, padding: int
+    ) -> int:
+        """Calculate total lines needed for history content."""
+        total_lines = 0
+        avg_char_width = font.size("M")[0]
+        chars_per_line = max_width // avg_char_width
+
+        for entry in self.history:
+            if not entry["text"].strip():
+                total_lines += 1
+                continue
+
+            text = entry["text"]
+            if entry["is_choice"]:
+                text = f"» {text}"
+                text_lines = (len(text) // chars_per_line) + 1
+                total_lines += text_lines
+            else:
+                if re.match(r"^[A-Za-z]+:", text.strip()):
+                    char_name, dialogue = text.split(":", 1)
+                    char_name_width = font.size(char_name + ":")[0]
+                    remaining_width = max_width - char_name_width
+                    chars_in_remaining = remaining_width // avg_char_width
+                    dialogue_lines = (len(dialogue.strip()) // chars_in_remaining) + 1
+                    total_lines += dialogue_lines
+                else:
+                    text_lines = (len(text) // chars_per_line) + 1
+                    total_lines += text_lines
+
+        return total_lines
+
+    def __render_text_line(
+        self,
+        content: pygame.Surface,
+        text: str,
+        font: pygame.font.Font,
+        position: tuple[int, int],
+        color: tuple[int, int, int],
+    ) -> None:
+        """Render a single line of text on the content surface."""
+        text_surface = Text(
+            content=text,
+            font=font,
+            position=position,
+            color=color,
+            center=False,
+        )
+        text_surface.draw(content)
+
+    def render_history(self, surface: pygame.Surface) -> None:
+        """Render the scene history on the given surface."""
+        window, width, height, padding = self.__setup_history_window(surface)
+        self.__draw_history_title(window, width)
+
+        font = self.assets.fonts.monogram_extended(45)
+        line_height = 35
+        text_color = (255, 255, 255)
+        choice_color = (182, 160, 118)
+        max_width = width - (padding * 2)
+
+        total_lines = self.__calculate_total_lines(font, max_width, padding)
+        content_height = max(height, total_lines * line_height + 100)
+        content = pygame.Surface(
+            (width, content_height + padding), pygame.SRCALPHA
+        )  # Added padding to content height
         y_offset = 80
 
-        for entry in self.scene_history:
-            # Handle empty lines
+        for entry in self.history:
             if not entry["text"].strip():
                 y_offset += line_height
                 continue
 
+            text = entry["text"]
             color = choice_color if entry["is_choice"] else text_color
-            prefix = "» " if entry["is_choice"] else ""
-            full_text = f"{prefix}{entry['text']}"
 
-            # Word wrap
-            words = full_text.split()
-            lines = []
-            current_line = []
-            current_width = 0
+            if entry["is_choice"]:
+                text = f"» {text}"
+                words = text.split()
+                current_line = []
+                current_width = 0
 
-            for word in words:
-                word_surface = font.render(word + " ", True, color)
-                word_width = word_surface.get_width()
+                for word in words:
+                    word_surface = font.render(word + " ", True, color)
+                    word_width = word_surface.get_width()
 
-                if current_width + word_width <= max_width:
-                    current_line.append(word)
-                    current_width += word_width
-                else:
+                    if current_width + word_width <= max_width:
+                        current_line.append(word)
+                        current_width += word_width
+                    else:
+                        if current_line:
+                            self.__render_text_line(
+                                content,
+                                " ".join(current_line),
+                                font,
+                                (padding, y_offset),
+                                color,
+                            )
+                            y_offset += line_height
+                            current_line = [word]
+                            current_width = word_width
+
+                if current_line:
+                    self.__render_text_line(
+                        content,
+                        " ".join(current_line),
+                        font,
+                        (padding, y_offset),
+                        color,
+                    )
+                    y_offset += line_height
+            else:
+                if re.match(r"^[A-Za-z]+:", text.strip()):
+                    char_name, dialogue = text.split(":", 1)
+                    self.__render_text_line(
+                        content,
+                        char_name + ":",
+                        font,
+                        (padding, y_offset),
+                        choice_color,
+                    )
+
+                    char_name_width = font.size(char_name + ": ")[0]
+                    remaining_width = max_width - char_name_width
+
+                    words = dialogue.strip().split()
+                    current_line = []
+                    current_width = 0
+
+                    for word in words:
+                        word_surface = font.render(word + " ", True, text_color)
+                        word_width = word_surface.get_width()
+
+                        if current_width + word_width <= remaining_width:
+                            current_line.append(word)
+                            current_width += word_width
+                        else:
+                            if current_line:
+                                self.__render_text_line(
+                                    content,
+                                    " ".join(current_line),
+                                    font,
+                                    (padding + char_name_width, y_offset),
+                                    text_color,
+                                )
+                                y_offset += line_height
+                                current_line = [word]
+                                current_width = word_width
+
                     if current_line:
-                        lines.append(" ".join(current_line))
-                    current_line = [word]
-                    current_width = word_width
+                        self.__render_text_line(
+                            content,
+                            " ".join(current_line),
+                            font,
+                            (padding + char_name_width, y_offset),
+                            text_color,
+                        )
+                        y_offset += line_height
+                else:
+                    words = text.split()
+                    current_line = []
+                    current_width = 0
 
-            if current_line:
-                lines.append(" ".join(current_line))
+                    for word in words:
+                        word_surface = font.render(word + " ", True, text_color)
+                        word_width = word_surface.get_width()
 
-            # Render wrapped lines
-            for line in lines:
-                text = Text(
-                    content=line,
-                    font=font,
-                    position=(padding, y_offset),
-                    color=color,
-                    center=False,
-                )
-                text.draw(content)
-                y_offset += line_height
+                        if current_width + word_width <= max_width:
+                            current_line.append(word)
+                            current_width += word_width
+                        else:
+                            if current_line:
+                                self.__render_text_line(
+                                    content,
+                                    " ".join(current_line),
+                                    font,
+                                    (padding, y_offset),
+                                    text_color,
+                                )
+                                y_offset += line_height
+                                current_line = [word]
+                                current_width = word_width
 
-        # Calculate max scroll
-        max_scroll = max(0, content_height - height + padding)
+                    if current_line:
+                        self.__render_text_line(
+                            content,
+                            " ".join(current_line),
+                            font,
+                            (padding, y_offset),
+                            text_color,
+                        )
+                        y_offset += line_height
+
+        max_scroll = max(
+            0, content_height - height + padding * 2
+        )  # Added padding to max scroll
         self.history_scroll_position = min(
             max_scroll, max(0, self.history_scroll_position)
         )
 
-        # Draw scrollable content below the title
         window.blit(
             content, (0, 60), (0, self.history_scroll_position, width, height - 60)
         )
-
-        # Draw the final window
         surface.blit(window, (padding, padding))
 
     def auto_scroll_history(self) -> None:
-        """Automatically scroll history to show newest content."""
+        """Automatically scroll history to the latest entry."""
         if not self.show_history:
             return
 
-        # Calculate total content height
-        line_height = 35
-        content_height = (
-            len(self.scene_history) * line_height + 100
-        )  # Extra space for title
+        max_scroll = self.__calculate_history_scroll_height()
+        self.history_scroll_position = max_scroll
 
-        # Calculate visible area height
+    def handle_history_scroll(self, event: pygame.event.Event) -> None:
+        """Handle scrolling events for the history view."""
+        if not self.show_history or event.type != pygame.KEYDOWN:
+            return
+
+        max_scroll = self.__calculate_history_scroll_height()
+
+        if event.key == pygame.K_UP:
+            self.history_scroll_position = max(
+                0, self.history_scroll_position - self.history_scroll_speed
+            )
+        elif event.key == pygame.K_DOWN:
+            self.history_scroll_position = min(
+                max_scroll, self.history_scroll_position + self.history_scroll_speed
+            )
+
+    def __calculate_history_scroll_height(self) -> int:
+        """Calculate the maximum scroll height for history view."""
+        line_height = 35
         padding = 40
         window_height = self.surface.get_height() - (padding * 2)
+        window_width = self.surface.get_width() - (padding * 2)
+        max_width = window_width - (padding * 2)
 
-        # Calculate maximum scroll position
-        max_scroll = max(0, content_height - window_height)
+        total_lines = self.__count_history_lines(max_width)
+        content_height = (
+            total_lines * line_height + 100 + padding
+        )  # Added padding to content height
+        return max(
+            0, content_height - window_height + padding
+        )  # Added padding to max scroll
 
-        # Set scroll position to show current content
-        self.history_scroll_position = max_scroll
+    def __count_history_lines(self, max_width: int) -> int:
+        """Count total lines needed to display history entries."""
+        total_lines = 0
+        font = self.assets.fonts.monogram_extended(45)
+
+        for entry in self.history:
+            if not entry["text"].strip():
+                total_lines += 1
+                continue
+
+            prefix = "» " if entry["is_choice"] else ""
+            full_text = f"{prefix}{entry['text']}"
+            total_lines += self.__count_text_lines(full_text, font, max_width)
+
+        return total_lines
+
+    def __count_text_lines(
+        self, text: str, font: pygame.font.Font, max_width: int
+    ) -> int:
+        """Count lines needed for a text string."""
+        words = text.split()
+        current_width = 0
+        line_count = 1
+
+        for word in words:
+            word_surface = font.render(word + " ", True, (255, 255, 255))
+            word_width = word_surface.get_width()
+            if current_width + word_width > max_width:
+                line_count += 1
+                current_width = word_width
+            else:
+                current_width += word_width
+
+        return line_count
