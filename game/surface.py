@@ -180,7 +180,9 @@ class SceneDynamics:
         for name in ["Aie", "Haruto", "Ryu", "Kaori", "Airi", "Kanae"]
     }
 
-    def __init__(self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager) -> None:
+    def __init__(
+        self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager
+    ) -> None:
         """Initialize SceneDynamics with a surface and assets."""
         self.surface = surface
         self.assets = assets

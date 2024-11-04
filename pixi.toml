@@ -8,6 +8,8 @@ version = "0.1.0"
 
 [tasks]
 game = "reloadium run -m run --mode game"
+rl_train = "python playground/train.py"
+rl_play = "python playground/gameplay.py"
 check = "ruff check . && pyright"
 format = "ruff format ."
 

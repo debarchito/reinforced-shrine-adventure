@@ -1,75 +1,129 @@
+"""
+Interactive gameplay module for running the trained agent.
+
+Provides functionality to:
+- Load trained model checkpoints
+- Run interactive gameplay sessions
+- Display game state and agent decisions
+- Track choices and statistics
+
+The gameplay loop:
+1. Loads the latest trained model
+2. Initializes environment and agent
+3. Runs interactive episodes with user input between steps
+4. Displays game text, stats, choices and agent decisions
+5. Records and shows history of choices made
+
+Uses numpy arrays for efficient state tracking and statistics.
+"""
+
 import torch
 import os
+import numpy as np
 from env import ReinforcedShrineAdventureEnv
 from agent import ShrineAgent
 
+
 def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    """Clear the terminal screen based on OS."""
+    os.system("cls" if os.name == "nt" else "clear")
+
 
 def load_latest_model(results_dir):
+    """Load the most recently saved model checkpoint.
+
+    Args:
+        results_dir: Directory containing model checkpoints
+
+    Returns:
+        Loaded model checkpoint dictionary
+
+    Raises:
+        FileNotFoundError: If no checkpoint files found
+    """
     # Find the latest model file
-    model_files = [f for f in os.listdir(results_dir) if f.endswith('.pth')]
+    model_files = [f for f in os.listdir(results_dir) if f.endswith(".pth")]
     if not model_files:
         raise FileNotFoundError("No trained models found in results directory")
-    
-    latest_model = max(model_files, key=lambda x: os.path.getctime(os.path.join(results_dir, x)))
+
+    latest_model = max(
+        model_files, key=lambda x: os.path.getctime(os.path.join(results_dir, x))
+    )
     model_path = os.path.join(results_dir, latest_model)
-    
+
     print(f"Loading model: {latest_model}")
     return torch.load(model_path)
 
+
 def play_game():
+    """Run an interactive gameplay session with the trained agent.
+
+    Initializes environment and agent, loads trained model,
+    and runs the game loop with user input between steps.
+    Tracks and displays game state, choices and statistics.
+
+    Uses numpy arrays for efficient state management.
+    """
     # Initialize environment and agent
     env = ReinforcedShrineAdventureEnv()
     agent = ShrineAgent(state_size=None, action_size=4)
-    
+
     # Load the trained model
     checkpoint = load_latest_model("results")
-    agent.qnetwork.load_state_dict(checkpoint['model_state_dict'])
-    agent.epsilon = 0  # No exploration during gameplay
-    
+    agent.policy.load_state_dict(checkpoint["model_state_dict"])
+
     # Start game
     observation, _ = env.reset()
     total_reward = 0
     done = False
-    choices_made = []  # Keep track of choices
-    
+    choices_made = np.array([], dtype=str)  # Track choices as numpy array
+
     while not done:
         clear_screen()
         print("\n=== Shrine Adventure ===\n")
-        
+
         # Display current game state
         print(observation["text"])
-        print("\nStats:", {k: v for k, v in zip(["curiosity", "social", "caution", "supernatural"], observation["stats"])})
-        print("Items:", {k: v for k, v in zip(["talisman", "snacks", "first_aid_kit"], observation["items"])})
+
+        # Convert stats to named numpy array for efficient access
+        stats = np.array(observation["stats"])
+        stat_names = np.array(["curiosity", "social", "caution", "supernatural"])
+        print("\nStats:", {name: val for name, val in zip(stat_names, stats)})
+
+        # Convert items to named numpy array
+        items = np.array(observation["items"])
+        item_names = np.array(["talisman", "snacks", "first_aid_kit"])
+        print("Items:", {name: val for name, val in zip(item_names, items)})
+
         print("\nChoices:")
         for i, choice in enumerate(observation["choices"]):
             print(f"{i}: {choice}")
-            
+
         # Get agent's action
-        action = agent.act(observation)
-        chosen_text = observation['choices'][action]
-        choices_made.append(chosen_text)  # Record the choice
+        action, _, _ = agent.act(observation)
+        chosen_text = observation["choices"][action]
+        choices_made = np.append(choices_made, chosen_text)  # Record choice
         print(f"\nAgent chooses: {chosen_text}")
-        
-        # Wait for user to press enter
+
+        # Wait for user input
         input("\nPress Enter to continue...")
-        
+
         # Take step
         next_observation, reward, done, _, _ = env.step(action)
         total_reward += reward
         observation = next_observation
-    
+
     # Game over
     clear_screen()
     print("\n=== Game Over ===\n")
     print(observation["text"])
     print(f"\nFinal reward: {total_reward}")
-    
-    # Display all choices made
+
+    # Display choice history
     print("\nChoices made throughout the game:")
     for i, choice in enumerate(choices_made, 1):
         print(f"-> Choice {i}: {choice}")
+
 
 if __name__ == "__main__":
     try:
