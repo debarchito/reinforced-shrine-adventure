@@ -51,8 +51,14 @@ def main():
     ax2.set_ylabel('Moving Average Score')
     ax2.legend()
     
+    # Set initial axis limits to prevent autoscaling delays
+    ax1.set_xlim(0, num_episodes)
+    ax1.set_ylim(-5, 5)  # Adjust based on expected score range
+    ax2.set_xlim(0, num_episodes)
+    ax2.set_ylim(-5, 5)  # Adjust based on expected score range
+    
     scores = []
-    moving_avgs = []
+    window_size = 10  # Smaller window for more frequent updates
     
     # Train the agent
     print("Starting training...")
@@ -73,20 +79,28 @@ def main():
             
         scores.append(total_reward)
         
-        # Update live plots
+        # Update live plots every episode
         scores_line.set_data(range(len(scores)), scores)
-        ax1.relim()
-        ax1.autoscale_view()
         
-        if len(scores) >= 100:
-            moving_avgs = moving_average(scores)
-            avg_line.set_data(range(len(moving_avgs)), moving_avgs)
-            ax2.relim()
-            ax2.autoscale_view()
+        # Calculate and update moving average
+        if len(scores) >= window_size:
+            moving_avgs = moving_average(scores, window_size)
+            avg_line.set_data(range(window_size-1, len(scores)), moving_avgs)
+        
+        # Adjust y-axis limits if needed
+        if len(scores) > 0:
+            ymin = min(min(scores), -5)
+            ymax = max(max(scores), 5)
+            ax1.set_ylim(ymin - 0.5, ymax + 0.5)
+            if len(scores) >= window_size:
+                ax2.set_ylim(ymin - 0.5, ymax + 0.5)
+        
+        # Force redraw
+        fig.canvas.draw()
+        fig.canvas.flush_events()
         
         if episode % 10 == 0:
             print(f"Episode: {episode}, Score: {total_reward}, Epsilon: {agent.epsilon:.2f}")
-            plt.pause(0.01)  # Pause to update the plots
             torch.cuda.empty_cache()
     
     plt.ioff()  # Turn off interactive mode
@@ -109,7 +123,7 @@ def main():
     
     # Print final statistics
     print(f"Final epsilon value: {agent.epsilon:.4f}")
-    print(f"Average score over last 100 episodes: {np.mean(scores[-100:]):.2f}")
+    print(f"Average score over last {window_size} episodes: {np.mean(scores[-window_size:]):.2f}")
     print(f"Best score: {max(scores):.2f}")
     
     plt.show()  # Keep the final plot window open

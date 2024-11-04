@@ -95,12 +95,19 @@ class ShrineAgent:
 
     @torch.no_grad()
     def act(self, observation):
+        num_choices = len(observation["choices"])
         if random.random() < self.epsilon:
-            return random.randrange(len(observation["choices"]))
+            return random.randrange(num_choices)
         
         text, stats, items = self.get_state_representation(observation)
         q_values = self.qnetwork(text, stats, items)
-        return torch.argmax(q_values[0]).item()
+        
+        # Mask invalid actions by setting their Q-values to a very low number
+        mask = torch.ones_like(q_values[0]) * float('-inf')
+        mask[:num_choices] = 0
+        masked_q_values = q_values[0] + mask
+        
+        return torch.argmax(masked_q_values).item()
 
     def remember(self, state, action, reward, next_state, done):
         self.memory.append((state, action, reward, next_state, done))
