@@ -63,7 +63,6 @@ class ReinforcedShrineAdventureEnv(gym.Env):
             "has_talisman": False,
             "has_snacks": False,
             "has_first_aid_kit": False,
-            "has_first_aid_kit": False,
         }
 
         self.took_beach_path = True
