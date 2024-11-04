@@ -634,18 +634,19 @@ class SceneDynamics:
         max_scroll = self.__calculate_history_scroll_height()
         self.history_scroll_position = max_scroll
 
-    def handle_history_scroll(self, event: pygame.event.Event) -> None:
-        """Handle scrolling events for the history view."""
-        if not self.show_history or event.type != pygame.KEYDOWN:
+    def handle_history_scroll(self) -> None:
+        """Handle continuous scrolling for history view."""
+        if not self.show_history:
             return
 
         max_scroll = self.__calculate_history_scroll_height()
+        keys = pygame.key.get_pressed()
 
-        if event.key == pygame.K_UP:
+        if keys[pygame.K_UP]:
             self.history_scroll_position = max(
                 0, self.history_scroll_position - self.history_scroll_speed
             )
-        elif event.key == pygame.K_DOWN:
+        elif keys[pygame.K_DOWN]:
             self.history_scroll_position = min(
                 max_scroll, self.history_scroll_position + self.history_scroll_speed
             )
