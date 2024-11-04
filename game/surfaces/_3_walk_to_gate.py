@@ -89,7 +89,10 @@ class WalkToGateSurface(Surface):
                 self.scene.history_scroll_position = 0
             return
         elif event.key == pygame.K_ESCAPE:
-            self.manager.set_active_surface_by_name("pause")
+            if self.scene.show_history:
+                self.scene.show_history = False
+            else:
+                self.manager.set_active_surface_by_name("pause")
             return
 
         choice_num = None
@@ -113,13 +116,11 @@ class WalkToGateSurface(Surface):
         """Handle input events for dialogue and choices."""
         self.question_button.on_event(event)
 
-        if self.scene.show_history and event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                self.scene.history_scroll_position -= self.scene.history_scroll_speed
-                return
-            elif event.key == pygame.K_DOWN:
-                self.scene.history_scroll_position += self.scene.history_scroll_speed
-                return
+        if self.scene.show_history:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_h:
+                self.scene.show_history = False
+                self.scene.history_scroll_position = 0
+            return
 
         if not self.scene.dialogue_banner:
             return
@@ -147,6 +148,7 @@ class WalkToGateSurface(Surface):
     def update(self) -> None:
         """Update the state of surface components."""
         self.question_button.update()
+        self.scene.handle_history_scroll()
 
     def draw(self) -> None:
         """Render the surface components."""

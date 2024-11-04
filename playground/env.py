@@ -23,6 +23,7 @@ Key features:
 import gymnasium as gym
 from gymnasium import spaces
 from bink.story import story_from_file
+
 import numpy as np
 
 
@@ -61,6 +62,7 @@ class ReinforcedShrineAdventureEnv(gym.Env):
         self.items = {
             "has_talisman": False,
             "has_snacks": False,
+            "has_first_aid_kit": False,
             "has_first_aid_kit": False,
         }
 
