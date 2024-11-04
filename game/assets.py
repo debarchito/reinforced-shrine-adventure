@@ -224,6 +224,10 @@ class Sounds:
         """Get button click sound effect path."""
         return "assets/sounds/sfx/button_click_1.mp3"
 
+    def button_click_2(self) -> str:
+        """Get button click sound effect path."""
+        return "assets/sounds/sfx/button_click_2.mp3"
+
 
 class Assets:
     """Provide type-safe access to all game assets."""
