@@ -182,7 +182,6 @@ class ActorCritic(nn.Module):
         return action_probs, value
 
 
-
 class ShrineAgent:
     """PPO agent implementation for text adventure games.
 

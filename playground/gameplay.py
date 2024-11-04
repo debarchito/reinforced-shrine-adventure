@@ -24,7 +24,6 @@ from env import ReinforcedShrineAdventureEnv
 from agent import ShrineAgent
 
 
-
 def clear_screen():
     """Clear the terminal screen based on OS."""
     os.system("cls" if os.name == "nt" else "clear")
@@ -52,10 +51,8 @@ def load_latest_model(results_dir):
     )
     model_path = os.path.join(results_dir, latest_model)
 
-
     print(f"Loading model: {latest_model}")
     return torch.load(model_path)
-
 
 
 def play_game():
@@ -71,7 +68,6 @@ def play_game():
     env = ReinforcedShrineAdventureEnv()
     agent = ShrineAgent(state_size=None, action_size=4)
 
-
     # Load the trained model
     checkpoint = load_latest_model("results")
     agent.policy.load_state_dict(checkpoint["model_state_dict"])
@@ -85,7 +81,6 @@ def play_game():
     while not done:
         clear_screen()
         print("\n=== Shrine Adventure ===\n")
-
 
         # Display current game state
         print(observation["text"])
@@ -104,7 +99,6 @@ def play_game():
         for i, choice in enumerate(observation["choices"]):
             print(f"{i}: {choice}")
 
-
         # Get agent's action
         action, _, _ = agent.act(observation)
         chosen_text = observation["choices"][action]
@@ -114,12 +108,10 @@ def play_game():
         # Wait for user input
         input("\nPress Enter to continue...")
 
-
         # Take step
         next_observation, reward, done, _, _ = env.step(action)
         total_reward += reward
         observation = next_observation
-
 
     # Game over
     clear_screen()
