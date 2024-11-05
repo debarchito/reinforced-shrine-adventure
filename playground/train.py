@@ -13,6 +13,8 @@ Key features:
 - Automatic checkpointing
 - Memory-efficient numpy arrays
 - Progress logging and statistics
+- Dynamic exploration adjustment
+- Success path tracking
 """
 
 import torch
@@ -61,6 +63,8 @@ def main():
     2. Episode rollouts with PPO updates
     3. Live progress visualization
     4. Model checkpointing and results saving
+    5. Success path tracking
+    6. Dynamic exploration adjustment
     """
     # Set random seeds for reproducibility
     torch.manual_seed(42)
@@ -72,7 +76,9 @@ def main():
 
     # Initialize environment and agent
     env = ReinforcedShrineAdventureEnv()
-    agent = ShrineAgent(state_size=None, action_size=4)
+    agent = ShrineAgent(
+        state_size=777, action_size=4
+    )  # Updated state size to match error
 
     # Training parameters
     num_episodes = 1000
@@ -94,13 +100,18 @@ def main():
 
     # Set initial axis limits to prevent autoscaling delays
     ax1.set_xlim(0, num_episodes)
-    ax1.set_ylim(-5, 5)  # Adjust based on expected score range
+    ax1.set_ylim(-10, 50)  # Adjusted for new reward scale
     ax2.set_xlim(0, num_episodes)
-    ax2.set_ylim(-5, 5)  # Adjust based on expected score range
+    ax2.set_ylim(-10, 50)  # Adjusted for new reward scale
 
     window_size = 10  # Smaller window for more frequent updates
     scores = np.zeros(num_episodes, dtype=np.float16)
     moving_avg = np.array([], dtype=np.float16)
+
+    # Track successful episodes and paths
+    success_history = []
+    best_reward = float("-inf")
+    success_threshold = 20.0  # Adjusted for new reward scale
 
     # Train the agent
     print("Starting training...")
@@ -108,19 +119,29 @@ def main():
         observation, _ = env.reset()
         total_reward = 0
         done = False
+        truncated = False
+        episode_choices = []
+        episode_stats = []
+        episode_items = []
 
-        while not done:
+        while not done and not truncated:
             action, log_prob, value = agent.act(observation)
-            next_observation, reward, done, _, _ = env.step(action)
+            next_observation, reward, done, truncated, _ = env.step(action)
+
+            # Record episode details
+            if action < len(observation["choices"]):
+                episode_choices.append(observation["choices"][action])
+                episode_stats.append(observation["stats"].copy())
+                episode_items.append(observation["items"].copy())
 
             agent.memory.add(
                 observation,
                 action,
                 reward,
                 next_observation,
-                done,
+                done or truncated,
                 log_prob,
-                value.item(),
+                value,
             )
 
             total_reward += reward
@@ -129,8 +150,25 @@ def main():
             if len(agent.memory.states) >= agent.batch_size:
                 agent.update()
 
-        if len(agent.memory.states) > 0:
-            agent.update()
+        # Track successful episodes
+        was_successful = total_reward > success_threshold
+        success_history.append(was_successful)
+
+        # If this was the best episode so far, save the successful path
+        if total_reward > best_reward:
+            best_reward = total_reward
+            print(f"\nNew best episode! Reward: {total_reward:.2f}")
+            print("Successful choices:", episode_choices)
+            print("Final stats:", episode_stats[-1] if episode_stats else None)
+            print("Final items:", episode_items[-1] if episode_items else None)
+
+        # Adjust exploration based on recent success rate
+        if len(success_history) >= 50:
+            recent_success_rate = sum(success_history[-50:]) / 50
+            # Dynamically adjust entropy coefficient
+            agent.c2 = max(
+                0.01, 0.1 - recent_success_rate * 0.08
+            )  # Adjusted coefficients
 
         scores[episode] = total_reward
 
@@ -180,6 +218,7 @@ def main():
         f"Average score over last {window_size} episodes: {np.mean(scores[-window_size:]):.2f}"
     )
     print(f"Best score: {np.max(scores):.2f}")
+    print(f"Success rate: {sum(success_history)/len(success_history)*100:.1f}%")
 
     plt.show()  # Keep the final plot window open
 

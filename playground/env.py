@@ -37,22 +37,21 @@ class ReinforcedShrineAdventureEnv(gym.Env):
     def __init__(self):
         super(ReinforcedShrineAdventureEnv, self).__init__()
         self.story = story_from_file("story/json/story.ink.json")
-        # Match action space to agent's actor network output size
+        # Match action space to max choices in story
         self.action_space = spaces.Discrete(4)
         self.observation_space = spaces.Dict(
             {
                 "text": spaces.Text(max_length=2000),
                 "choices": spaces.Sequence(spaces.Text(max_length=100)),
-                # Match stats/items dimensions to agent's input expectations
                 "stats": spaces.Box(
                     low=np.array([self.MIN_STAT] * 4),
                     high=np.array([self.MAX_STAT] * 4),
-                    dtype=np.float16,  # Match agent's tensor dtype
+                    dtype=np.float16,
                 ),
                 "items": spaces.Box(
-                    low=np.array([0] * 3),
-                    high=np.array([1] * 3),
-                    dtype=np.float16,  # Match agent's tensor dtype
+                    low=np.array([0] * 5),  # Updated for 5 items
+                    high=np.array([1] * 5),
+                    dtype=np.float16,
                 ),
             }
         )
@@ -63,6 +62,8 @@ class ReinforcedShrineAdventureEnv(gym.Env):
             "has_talisman": False,
             "has_snacks": False,
             "has_first_aid_kit": False,
+            "has_water": False,
+            "has_flashlight": False,
         }
 
         self.took_beach_path = True
@@ -79,80 +80,116 @@ class ReinforcedShrineAdventureEnv(gym.Env):
         """Update variables based on choice text and context"""
         reward_mod = 0
 
+        # Social interaction rewards
+        if any(
+            word in choice_text.lower()
+            for word in ["share", "join", "defend", "help", "together"]
+        ):
+            self.update_stat("social", 1)
+            reward_mod += 0.5
+
+        # Curiosity rewards
+        if any(
+            word in choice_text.lower()
+            for word in ["investigate", "research", "explore", "question", "learn"]
+        ):
+            self.update_stat("curiosity", 1)
+            reward_mod += 0.5
+
+        # Item collection rewards
         if "Accept talisman" in choice_text:
             self.items["has_talisman"] = True
             self.update_stat("supernatural", 2)
             self.update_stat("social", 1)
             reward_mod += 1.0
 
-        elif "Agree to pack snacks" in choice_text:
-            self.items["has_snacks"] = True
-            self.update_stat("social", 2)
-            reward_mod += 1.0
+        elif "Pack a flashlight" in choice_text:
+            self.items["has_flashlight"] = True
+            self.update_stat("caution", 1)
+            reward_mod += 0.5
 
-        elif "Accept the responsibility" in choice_text:
+        elif "Pack water" in choice_text:
+            self.items["has_water"] = True
+            self.update_stat("caution", 1)
+            reward_mod += 0.5
+
+        elif "Pack a first aid kit" in choice_text:
             self.items["has_first_aid_kit"] = True
             self.update_stat("caution", 2)
-            self.update_stat("social", 1)
             reward_mod += 1.0
 
-        elif any(
-            word in choice_text.lower()
-            for word in ["decline", "reject", "ignore", "leave"]
-        ):
-            reward_mod -= 0.5
+        elif "Pack some snacks" in choice_text:
+            self.items["has_snacks"] = True
+            self.update_stat("social", 1)
+            reward_mod += 0.5
 
+        # Path choice consequences
         if "Take the mountain path" in choice_text:
             self.took_beach_path = False
             if self.is_well_prepared():
-                reward_mod += 1.0
+                reward_mod += 2.0
             else:
-                reward_mod -= 0.5
+                reward_mod -= 1.0
+            self.update_stat("curiosity", 2)
 
-        elif (
-            "Play it safe" in choice_text
-            or "Follow the original beach route" in choice_text
-        ):
+        elif "Follow the original beach route" in choice_text:
             self.took_beach_path = True
             self.update_stat("caution", 1)
-            reward_mod += 0.3
+            reward_mod += 0.5
 
+        # Negative rewards for avoidance
         if any(
             word in choice_text.lower()
-            for word in ["explore", "investigate", "talk", "help", "join"]
+            for word in ["decline", "reject", "ignore", "leave", "refuse"]
         ):
-            reward_mod += 0.5
+            self.update_stat("social", -1)
+            reward_mod -= 0.5
 
         return reward_mod
 
     def is_well_prepared(self):
+        """Check if player has essential items for safety"""
         return (
-            self.items["has_talisman"]
-            and self.items["has_snacks"]
+            self.items["has_flashlight"]
+            and self.items["has_water"]
             and self.items["has_first_aid_kit"]
             and self.stats["caution"] >= 2
         )
 
     def calculate_reward(self, choice_reward: float = 0.0) -> float:
-        """Calculate reward based on current state"""
-        reward = choice_reward * 2.0  # Amplify immediate choice rewards
+        """Calculate reward based on current state and path success"""
+        # Amplify immediate choice rewards more significantly
+        reward = choice_reward * 3.0
+
+        # Reward for interaction and exploration
+        if any(
+            word in self.current_text.lower()
+            for word in ["discovered", "found", "learned"]
+        ):
+            reward += 1.0
 
         if self.done:
-            if self.is_well_prepared():
-                reward += 10.0  # Increase terminal reward for good preparation
-            else:
-                reward -= 5.0  # Penalize more for poor preparation
+            # Track successful path completion
+            success_multiplier = 2.0 if self.is_well_prepared() else 0.5
 
-            items_bonus = sum(self.items.values()) * 2.0  # Double item bonus
+            # Base completion reward
+            if self.is_well_prepared():
+                reward += 15.0  # Increased from 10.0
+            else:
+                reward -= 8.0  # Increased penalty from 5.0
+
+            # Reward for collected items weighted by success
+            items_bonus = sum(self.items.values()) * 3.0 * success_multiplier
             reward += items_bonus
 
+            # Progressive stats rewards weighted by success
             stats_avg = sum(self.stats.values()) / len(self.stats)
             if stats_avg >= 1:
-                reward += 2.0
+                reward += 3.0 * success_multiplier
             if stats_avg >= 2:
-                reward += 4.0
+                reward += 6.0 * success_multiplier
             if stats_avg >= 3:
-                reward += 8.0  # Add extra tier for higher stats
+                reward += 12.0 * success_multiplier
 
         return reward
 
@@ -195,6 +232,8 @@ class ReinforcedShrineAdventureEnv(gym.Env):
                     self.items["has_talisman"],
                     self.items["has_snacks"],
                     self.items["has_first_aid_kit"],
+                    self.items["has_water"],
+                    self.items["has_flashlight"],
                 ],
                 dtype=np.float16,
             ),  # Match agent's tensor dtype

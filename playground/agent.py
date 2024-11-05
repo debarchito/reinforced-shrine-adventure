@@ -106,9 +106,9 @@ class ActorCritic(nn.Module):
         for param in self.bert.parameters():
             param.requires_grad = False
 
-        # Combines BERT output (768) with game state features (7)
+        # Combines BERT output (768) with game state features (9)
         self.feature_combiner = nn.Sequential(
-            nn.Linear(768 + 7, hidden_size),
+            nn.Linear(768 + 9, hidden_size),
             nn.ReLU(),
             nn.LayerNorm(hidden_size),
             nn.Dropout(0.2),
@@ -207,14 +207,14 @@ class ShrineAgent:
         self.memory = RolloutBuffer()
 
         # PPO hyperparameters
-        self.gamma = 0.99  # Increase from 1.0 to enable future reward discounting
-        self.gae_lambda = 0.95  # Increase for better advantage estimation
-        self.clip_epsilon = 0.2  # Decrease for more stable updates
-        self.c1 = 1.0  # Increase value loss coefficient
-        self.c2 = 0.01  # Decrease entropy coefficient for more exploitation
-        self.max_grad_norm = 0.5  # Keep this
-        self.ppo_epochs = 10  # Increase number of update epochs
-        self.batch_size = 256  # Decrease batch size for more frequent updates
+        self.gamma = 0.98  # Increased to value future rewards more
+        self.gae_lambda = 0.97  # Increased for better advantage estimation
+        self.clip_epsilon = 0.15  # Decreased for more stable updates
+        self.c1 = 1.0  # Value loss coefficient
+        self.c2 = 0.02  # Increased entropy coefficient for more exploration
+        self.max_grad_norm = 0.5
+        self.ppo_epochs = 12  # Increased training epochs
+        self.batch_size = 192  # Adjusted batch size
 
     @torch.no_grad()
     def get_state_representation(self, observation):
