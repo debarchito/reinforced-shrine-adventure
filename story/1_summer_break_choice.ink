@@ -168,7 +168,7 @@ As your friends chatter excitedly about tomorrow's adventure, you feel a mix of 
     * [Agree to pack snacks]
         ~ has_snacks = true
         ~ social += 2
-        You decide to pack some instant ramen and hot water before you leave tomorrow.
+        You decide to pack some instant ramen before you leave tomorrow.
     * [Politely decline]
         ~ caution += 1
         ~ social -= 1
