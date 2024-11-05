@@ -1,7 +1,7 @@
 ~ temp took_beach_path = true
 
 === 3_walk_to_gate ===
-The next evening arrives with an ethereal glow, the setting sun painting the sky in shades of amber and rose.
+The next evening arrives with an ethereal glow, the setting sun painting the sky in shades of amber and rose. Dark clouds gather on the horizon, barely noticeable in the twilight.
 
 {social >= 2:
     You arrive at the park entrance to find your friends already gathered, their excitement palpable in the twilight air.
@@ -14,7 +14,7 @@ The next evening arrives with an ethereal glow, the setting sun painting the sky
 {caution >= 2:
     You double-check your supplies one last time, ensuring everything is secure and accessible.
     @Kanae: Always the prepared one, aren't you?
-    {has_first_aid_kit: The weight of the first-aid kit provides a reassuring presence against your back.}
+    {has_first_aid_kit: The weight of the first-aid kit provides a reassuring presence against your back. You'll be grateful for this foresight later.}
 }
 
 The abandoned amusement park looms before you, its rusted gates standing sentinel against the darkening sky. Beyond them, barely visible, the mountain's silhouette rises against the horizon.
@@ -35,13 +35,13 @@ The abandoned amusement park looms before you, its rusted gates standing sentine
 
 {
     - supernatural >= 2:
-        The air feels different here - heavier somehow, charged with an energy that makes the hair on your arms stand up.
+        The air feels different here - heavier somehow, charged with an energy that makes the hair on your arms stand up. The ocean breeze carries an unusual chill.
         {has_talisman: You touch the talisman in your pocket, drawing comfort from its presence.}
     - supernatural <= -2:
         You focus on practical concerns - watching for loose ground, rusty metal, anything that could pose a real danger.
         The "spooky" atmosphere is just your mind playing tricks in the low light.
     - else:
-        The air feels different here - heavier somehow, charged with an energy that makes the hair on your arms stand up.
+        The air feels different here - heavier somehow, charged with an energy that makes the hair on your arms stand up. The ocean breeze carries an unusual chill.
         {has_talisman: You touch the talisman in your pocket, drawing comfort from its presence.}
 }
 
@@ -109,7 +109,7 @@ The abandoned amusement park looms before you, its rusted gates standing sentine
     @Ryu: Save them for when we reach the shrine!
 }
 
-As you make your way through the park, the night air grows thick with anticipation.
+As you make your way through the park, the night air grows thick with anticipation. The distant sound of waves seems unusually loud tonight.
 
 {took_beach_path:
     @Ryu: Hey Aie, isn't there supposed to be a hidden cave somewhere along this route?
@@ -144,7 +144,7 @@ As you make your way through the park, the night air grows thick with anticipati
     
     @Airi: At least down here we can hear the ocean. Up on that mountain path, it's just... silence.
     
-    The group falls quiet, listening to the rhythmic crash of waves against the shore.
+    The group falls quiet, listening to the rhythmic crash of waves against the shore. The water seems closer than it should be, lapping hungrily at the edge of the path.
     
     @Ryu: Guys, isn't the water a bit closer than usual?
     $jump beach_path
