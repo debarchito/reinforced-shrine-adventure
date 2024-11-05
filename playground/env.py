@@ -263,3 +263,42 @@ class ReinforcedShrineAdventureEnv(gym.Env):
         print("\nAvailable choices:")
         for i, choice in enumerate(self.current_choices):
             print(f"{i}: {choice}")
+
+    def play_story(self):
+        """Run interactive story mode for human players."""
+        self.reset()
+        done = False
+        total_reward = 0
+
+        while not done:
+            # Clear screen and show current state
+            print("\n" + "="*50 + "\n")
+            self.render()
+
+            # Get valid player input
+            while True:
+                try:
+                    choice = int(input("\nEnter choice number: "))
+                    if 0 <= choice < len(self.current_choices):
+                        break
+                    print("Invalid choice number. Try again.")
+                except ValueError:
+                    print("Please enter a valid number.")
+
+            # Take step based on player's choice
+            observation, reward, done, truncated, info = self.step(choice)
+            total_reward += reward
+
+            if reward != 0:
+                print(f"\nReward: {reward}")
+
+        print("\n" + "="*50)
+        print("\nGame Over!")
+        print(f"Final Score: {total_reward}")
+        print("\nFinal Stats:", self.stats)
+        print("Final Items:", self.items)
+
+if __name__ == "__main__":
+    # Create and run interactive story
+    env = ReinforcedShrineAdventureEnv()
+    env.play_story()
