@@ -4,7 +4,7 @@ This project serves as a *text-based adventure game-ish environment* to train so
 
 ## Usage and development
 
-> **NOTE:** `macOS` (both `Intel` and `Apple Silicon`) is currently not supported. As things are right now, the project heavily relies on `NVIDIA CUDA` to be available.
+> **NOTE:** `macOS` (both `Intel` and `Apple Silicon`) is currently not supported. As things are right now, the project heavily relies on `NVIDIA CUDA` to work.
 
 This project uses the [pixi](https://github.com/prefix-dev/pixi) package manager (written in *Rust* btw). Follow the instructions below to install `pixi`, setup autocompletions and run the game:
 
@@ -32,7 +32,8 @@ set PYGAME_DETECT_AVX2 1 # fish
 export PYGAME_DETECT_AVX2=1 # bash or zsh
 $env:PYGAME_DETECT_AVX2="1" # powershell
 
-# Install dependencies
+# Install dependencies 
+# (sit tight with some coffee, this might take a while as it has to install CUDA and stuff)
 pixi install
 
 # Activate the virtual environment
@@ -40,6 +41,12 @@ pixi shell
 
 # Run the game. Hot-Module-Replacement (HMR) is enabled
 pixi run game
+
+# Train the agent
+pixi run rl_train
+
+# Let the agent play the game (CLI)
+pixi run rl_play
 ```
 
 Additionally, check the [HOWTO.md](HOWTO.md) file for more information on how to work with the project.
