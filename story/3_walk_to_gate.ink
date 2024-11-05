@@ -112,13 +112,13 @@ The abandoned amusement park looms before you, its rusted gates standing sentine
 As you make your way through the park, the night air grows thick with anticipation.
 
 {took_beach_path:
-    @Ryu: Hey Aie, isn't there supposed to be a hidden cove somewhere along this route?
+    @Ryu: Hey Aie, isn't there supposed to be a hidden cave somewhere along this route?
     
     @{player_name}: Actually yes! I found some old maps in the library. There used to be a secret prayer spot carved into the cliffs.
     
     @Kanae: A hidden shrine within the cliffs? That's amazing!
     
-    @{player_name}: The monks would use it during high tide when the main shrine was inaccessible. They'd row small boats right into the cove.
+    @{player_name}: The monks would use it during high tide when the main shrine was inaccessible. They'd row small boats right into the cave.
     
     @Airi: I've lived here my whole life and never heard about this...
     
@@ -126,9 +126,9 @@ As you make your way through the park, the night air grows thick with anticipati
     
     @Ryu: What kind of ceremonies?
     
-    @{player_name}: They'd wait for nights with a full moon, when the tide was at its highest. The water would fill the cove and reflect the moonlight.
+    @{player_name}: They'd wait for nights with a full moon, when the tide was at its highest. The water would fill the cave and reflect the moonlight.
     
-    @Kanae: Is that why we're going at night? To see this cove?
+    @Kanae: Is that why we're going at night? To see this cave?
     
     @{player_name}: If we can find it. The last recorded ceremony was in 1987, right before...
     
@@ -136,7 +136,7 @@ As you make your way through the park, the night air grows thick with anticipati
     
     @{player_name}: Well...
     
-    @Kaori: Let's focus on finding the cove first! The tide's coming in.
+    @Kaori: Let's focus on finding the cave first! The tide's coming in.
     
     @Ryu: Yeah, and this route might be longer, but at least we won't risk falling off any cliffs.
     
@@ -146,7 +146,7 @@ As you make your way through the park, the night air grows thick with anticipati
     
     The group falls quiet, listening to the rhythmic crash of waves against the shore.
     
-    @Ryu: Guys, the tide's coming in fast...
+    @Ryu: Guys, isn't the water a bit closer than usual?
     $jump beach_path
     -> 3_1_beach_path
 }

@@ -33,7 +33,7 @@ The mountain route seems more direct but potentially treacherous, while the beac
 {caution >= 2:
     You approach your preparation with methodical precision, creating detailed checklists and contingency plans.
     {has_talisman: The talisman rests carefully wrapped on your desk - a spiritual safeguard, regardless of your beliefs.}
-    Your research into the area's terrain and weather patterns helps you pack appropriately.
+    In your excitement about the historical aspects.
 }
 
 {has_snacks: The carefully chosen snacks and thermal supplies are arranged nearby - you've read enough adventure stories to know that shared food can lift spirits in tense moments.}
@@ -86,7 +86,7 @@ It's the time to pack. Will you go according to plan, or will you pack light?
     The talisman finds its place in a secure pocket, carefully wrapped in cloth. Its presence offers a strange comfort.
 }
 
-As you drift off to sleep, you're sure you've checked everything — but did you miss something? 
+As you drift off to sleep, you're sure you've checked everything — though a nagging feeling suggests you might have overlooked something important.
 
 Sleep proves elusive as your mind traces the path ahead - from the weathered steps at the shore's edge to the mysterious heights of the ancient shrine.
 

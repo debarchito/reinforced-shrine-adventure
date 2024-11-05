@@ -272,7 +272,7 @@ class ReinforcedShrineAdventureEnv(gym.Env):
 
         while not done:
             # Clear screen and show current state
-            print("\n" + "="*50 + "\n")
+            print("\n" + "=" * 50 + "\n")
             self.render()
 
             # Get valid player input
@@ -292,11 +292,12 @@ class ReinforcedShrineAdventureEnv(gym.Env):
             if reward != 0:
                 print(f"\nReward: {reward}")
 
-        print("\n" + "="*50)
+        print("\n" + "=" * 50)
         print("\nGame Over!")
         print(f"Final Score: {total_reward}")
         print("\nFinal Stats:", self.stats)
         print("Final Items:", self.items)
+
 
 if __name__ == "__main__":
     # Create and run interactive story

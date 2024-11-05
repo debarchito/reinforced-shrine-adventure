@@ -4,16 +4,18 @@ This project serves as a *text-based adventure game-ish environment* to train so
 
 ## Usage and development
 
+> **NOTE:** `macOS` (both `Intel` and `Apple Silicon`) is currently not supported. As things are right now, the project heavily relies on `NVIDIA CUDA` to be available.
+
 This project uses the [pixi](https://github.com/prefix-dev/pixi) package manager (written in *Rust* btw). Follow the instructions below to install `pixi`, setup autocompletions and run the game:
 
 ```sh
-# Install pixi on Linux & macOS
+# Install pixi on Linux
 curl -fsSL https://pixi.sh/install.sh | bash
 
 # Install pixi on Windows (Powershell)
 iwr -useb https://pixi.sh/install.ps1 | iex
 
-# Linux & macOS autocompletions for pixi
+# Linux autocompletions for pixi
 echo 'pixi completion --shell fish | source' >> ~/.config/fish/config.fish # fish
 echo 'eval "$(pixi completion --shell zsh)"' >> ~/.zshrc # zsh
 echo 'eval "$(pixi completion --shell bash)"' >> ~/.bashrc # bash
