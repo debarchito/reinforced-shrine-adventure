@@ -116,10 +116,23 @@ class WalkToGateSurface(Surface):
         """Handle input events for dialogue and choices."""
         self.question_button.on_event(event)
 
-        if self.scene.show_history:
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_h:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE and self.scene.show_history:
                 self.scene.show_history = False
                 self.scene.history_scroll_position = 0
+                return
+            elif event.key == pygame.K_ESCAPE:
+                self.manager.set_active_surface_by_name("pause")
+                return
+            elif event.key == pygame.K_h:
+                self.scene.show_history = not self.scene.show_history
+                if self.scene.show_history:
+                    self.scene.auto_scroll_history()
+                else:
+                    self.scene.history_scroll_position = 0
+                return
+
+        if self.scene.show_history:
             return
 
         if not self.scene.dialogue_banner:
@@ -129,9 +142,7 @@ class WalkToGateSurface(Surface):
             self.scene.update_choices()
             return
 
-        if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1) or (
-            event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE
-        ):
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             self.scene.handle_dialogue_advance()
             if self.scene.should_show_next_dialogue_page():
                 return

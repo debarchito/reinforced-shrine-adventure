@@ -77,13 +77,13 @@ class SurfaceManager:
         """Initialize the SurfaceManager with a target surface and assets."""
         self.surface = surface
         self.assets = assets
+        self.scene = SceneDynamics(self.surface, self.assets)
         self.surfaces = {}
         self.last_active_surface_name = None
         self.active_surface = None
         self.active_surface_name = None
         self.current_global_sfx_volume = 1.0
         self.sfx_objects = []
-        self.scene = SceneDynamics(self.surface, self.assets, self)
 
     def on_event(self, event: pygame.event.Event) -> None:
         """Handle events for the active surface."""
@@ -155,14 +155,12 @@ class SceneDynamics:
     __slots__ = (
         "surface",
         "assets",
-        "manager",
         "story",
         "choice_banners",
         "dialogue_banner",
         "character_sprite",
         "character_border",
         "button_click_1",
-        "button_click_2",
         "on_scene_complete",
         "history",
         "show_history",
@@ -171,6 +169,10 @@ class SceneDynamics:
         "screen_width",
         "screen_height",
         "current_dialogue",
+        "history_scroll_target",
+        "history_scroll_start",
+        "history_scroll_time",
+        "history_scroll_duration",
     )
 
     CHARACTER_SPRITES = {
@@ -180,30 +182,30 @@ class SceneDynamics:
         for name in ["Aie", "Haruto", "Ryu", "Kaori", "Airi", "Kanae"]
     }
 
-    def __init__(
-        self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager
-    ) -> None:
+    def __init__(self, surface: pygame.Surface, assets: Assets) -> None:
         """Initialize SceneDynamics with a surface and assets."""
         self.surface = surface
         self.assets = assets
-        self.manager = manager
         self.story = assets.story
         self.choice_banners = []
         self.dialogue_banner = None
         self.character_sprite = None
         self.character_border = self.assets.images.ui.border_character_wood()
         self.button_click_1 = pygame.mixer.Sound(assets.sounds.button_click_1())
-        self.button_click_2 = pygame.mixer.Sound(assets.sounds.button_click_2())
-        self.manager.sfx_objects.append(self.button_click_1)
-        self.manager.sfx_objects.append(self.button_click_2)
         self.on_scene_complete: Optional[Callable[[str], None]] = None
         self.history = []
         self.show_history = False
         self.history_scroll_position = 0
-        self.history_scroll_speed = 35
+        self.history_scroll_speed = 100
         self.screen_width = surface.get_width()
         self.screen_height = surface.get_height()
         self.current_dialogue = None
+
+        # Smooth scrolling variables
+        self.history_scroll_target = 0
+        self.history_scroll_start = 0
+        self.history_scroll_time = 0
+        self.history_scroll_duration = 300  # Duration in ms
 
     def get_next_dialogue(self) -> str:
         """Get the next dialogue text from the story."""
@@ -235,7 +237,7 @@ class SceneDynamics:
             font=self.assets.fonts.monogram_extended(50),
             character_name=char_name,
             character_name_color=(182, 160, 118),
-            on_advance=self.button_click_2,
+            on_advance=self.button_click_1,
             x_offset=int(self.screen_width * 0.25),
             y_offset=int(self.screen_height * 0.07),
         )
@@ -312,16 +314,21 @@ class SceneDynamics:
 
             if next_text := self.get_next_dialogue():
                 char_name, dialogue_text = self.parse_dialogue(next_text)
-                if self.dialogue_banner:
-                    self.dialogue_banner.update_text(dialogue_text, char_name)
-                    self.update_character_sprite(char_name)
-                    self.current_dialogue = (char_name, dialogue_text)
-                    history_text = (
-                        f"{char_name}: {dialogue_text}" if char_name else dialogue_text
+                if not self.dialogue_banner:
+                    self.dialogue_banner = self.create_dialogue_banner(
+                        dialogue_text, char_name
                     )
-                    self.add_to_history(history_text)
-                    self.add_to_history("")
-                    self.update_choices()
+                else:
+                    self.dialogue_banner.update_text(dialogue_text, char_name)
+                self.update_character_sprite(char_name)
+                self.current_dialogue = (char_name, dialogue_text)
+                history_text = (
+                    f"{char_name}: {dialogue_text}" if char_name else dialogue_text
+                )
+                self.add_to_history(history_text)
+                self.add_to_history("")
+
+            self.update_choices()
 
     def get_character_sprite(
         self, char_name: Optional[str]
@@ -377,7 +384,7 @@ class SceneDynamics:
             "is_choice": is_choice,
             "timestamp": pygame.time.get_ticks(),
         }
-        self.history.append(entry)
+        self.history.append(entry)  # type: ignore
 
         if self.show_history:
             self.auto_scroll_history()
@@ -495,9 +502,23 @@ class SceneDynamics:
         max_width = width - (padding * 2)
 
         total_lines = self.__calculate_total_lines(font, max_width, padding)
-        content_height = max(height, total_lines * line_height + 100)
+        content_height = max(height, total_lines * line_height + 500)
         content = pygame.Surface((width, content_height + padding), pygame.SRCALPHA)
         y_offset = 80
+
+        current_time = pygame.time.get_ticks()
+        if current_time < self.history_scroll_time + self.history_scroll_duration:
+            progress = (
+                current_time - self.history_scroll_time
+            ) / self.history_scroll_duration
+            progress = max(0, min(1, progress))
+            progress = 1 - (1 - progress) ** 3
+            self.history_scroll_position = (
+                self.history_scroll_start
+                + (self.history_scroll_target - self.history_scroll_start) * progress
+            )
+        else:
+            self.history_scroll_position = self.history_scroll_target
 
         for entry in self.history:
             if not entry["text"].strip():
@@ -624,11 +645,6 @@ class SceneDynamics:
                         )
                         y_offset += line_height
 
-        max_scroll = max(0, content_height - height + padding * 2)
-        self.history_scroll_position = min(
-            max_scroll, max(0, self.history_scroll_position)
-        )
-
         window.blit(
             content, (0, 60), (0, self.history_scroll_position, width, height - 60)
         )
@@ -639,8 +655,11 @@ class SceneDynamics:
         if not self.show_history:
             return
 
-        max_scroll = self.__calculate_history_scroll_height()
-        self.history_scroll_position = max_scroll
+        max_scroll = max(0, self.__calculate_history_scroll_height())
+
+        self.history_scroll_target = max_scroll
+        self.history_scroll_start = self.history_scroll_position
+        self.history_scroll_time = pygame.time.get_ticks()
 
     def handle_history_scroll(self) -> None:
         """Handle continuous scrolling for history view."""
@@ -651,13 +670,19 @@ class SceneDynamics:
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_UP]:
-            self.history_scroll_position = max(
-                0, self.history_scroll_position - self.history_scroll_speed
-            )
+            target = max(0, self.history_scroll_position - self.history_scroll_speed)
+            if target != self.history_scroll_target:
+                self.history_scroll_target = target
+                self.history_scroll_start = self.history_scroll_position
+                self.history_scroll_time = pygame.time.get_ticks()
         elif keys[pygame.K_DOWN]:
-            self.history_scroll_position = min(
+            target = min(
                 max_scroll, self.history_scroll_position + self.history_scroll_speed
             )
+            if target != self.history_scroll_target:
+                self.history_scroll_target = target
+                self.history_scroll_start = self.history_scroll_position
+                self.history_scroll_time = pygame.time.get_ticks()
 
     def __calculate_history_scroll_height(self) -> int:
         """Calculate the maximum scroll height for history view."""
@@ -668,22 +693,86 @@ class SceneDynamics:
         max_width = window_width - (padding * 2)
 
         total_lines = self.__count_history_lines(max_width)
-        content_height = total_lines * line_height + 100 + padding
+        content_height = total_lines * line_height + 100
         return max(0, content_height - window_height + padding)
 
     def __count_history_lines(self, max_width: int) -> int:
         """Count total lines needed to display history entries."""
         total_lines = 0
-        font = self.assets.fonts.monogram_extended(45)
+        font = self.assets.fonts.monogram_extended(50)
 
         for entry in self.history:
             if not entry["text"].strip():
                 total_lines += 1
                 continue
 
-            prefix = "» " if entry["is_choice"] else ""
-            full_text = f"{prefix}{entry['text']}"
-            total_lines += self.__count_text_lines(full_text, font, max_width)
+            text = entry["text"]
+            if entry["is_choice"]:
+                text = f"» {text}"
+                words = text.split()
+                current_line = []
+                current_width = 0
+
+                for word in words:
+                    word_surface = font.render(word + " ", True, (255, 255, 255))
+                    word_width = word_surface.get_width()
+
+                    if current_width + word_width <= max_width:
+                        current_line.append(word)
+                        current_width += word_width
+                    else:
+                        if current_line:
+                            total_lines += 1
+                            current_line = [word]
+                            current_width = word_width
+
+                if current_line:
+                    total_lines += 1
+            else:
+                if re.match(r"^[A-Za-z]+:", text.strip()):
+                    char_name, dialogue = text.split(":", 1)
+                    char_name_width = font.size(char_name + ":")[0]
+                    remaining_width = max_width - char_name_width
+
+                    words = dialogue.strip().split()
+                    current_line = []
+                    current_width = 0
+
+                    for word in words:
+                        word_surface = font.render(word + " ", True, (255, 255, 255))
+                        word_width = word_surface.get_width()
+
+                        if current_width + word_width <= remaining_width:
+                            current_line.append(word)
+                            current_width += word_width
+                        else:
+                            if current_line:
+                                total_lines += 1
+                                current_line = [word]
+                                current_width = word_width
+
+                    if current_line:
+                        total_lines += 1
+                else:
+                    words = text.split()
+                    current_line = []
+                    current_width = 0
+
+                    for word in words:
+                        word_surface = font.render(word + " ", True, (255, 255, 255))
+                        word_width = word_surface.get_width()
+
+                        if current_width + word_width <= max_width:
+                            current_line.append(word)
+                            current_width += word_width
+                        else:
+                            if current_line:
+                                total_lines += 1
+                                current_line = [word]
+                                current_width = word_width
+
+                    if current_line:
+                        total_lines += 1
 
         return total_lines
 
