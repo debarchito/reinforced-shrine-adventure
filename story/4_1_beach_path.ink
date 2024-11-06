@@ -1,4 +1,4 @@
-=== 3_1_beach_path ===
+=== 4_1_beach_path ===
 The beach path stretches before you, a thin line against the restless surf.
 Waves creep higher with each surge, already lapping unusually close to the path.
 
