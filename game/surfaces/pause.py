@@ -158,7 +158,7 @@ class PauseSurface(Surface):
         self.home_button.on_event(event)
         self.exit_button.on_event(event)
 
-    def update(self) -> None:
+    def update(self, delta_time: float) -> None:
         """Update the state of pause menu components."""
         self.resume_button.update()
         self.home_button.update()
