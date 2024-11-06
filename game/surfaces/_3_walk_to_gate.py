@@ -1,7 +1,9 @@
 import pygame
+from typing import cast
 from game.assets import Assets
 from game.components.button import Button
 from game.surface import Surface, SurfaceManager
+from game.surfaces._4_mountain_path import MountainPathSurface
 
 
 class WalkToGateSurface(Surface):
@@ -45,6 +47,15 @@ class WalkToGateSurface(Surface):
             sound_on_click=self.scene.button_click_1,
         )
         self.__setup_background()
+
+    def __next_scene(self, scene_name: str) -> None:
+        """Move to the next scene."""
+        if scene_name == "mountain_path":
+            mountain_path_surface = cast(
+                MountainPathSurface, self.manager.surfaces["mountain_path"]
+            )
+            mountain_path_surface.fade_transition(self.surface)
+            self.manager.set_active_surface_by_name("mountain_path")
 
     def __setup_background(self) -> None:
         """Initialize and scale background image."""
@@ -109,6 +120,7 @@ class WalkToGateSurface(Surface):
         if self.manager.last_active_surface_name not in [None, "pause", "question"]:
             self.scene.setup()
             self.scene.update_choices()
+        self.scene.on_scene_complete = self.__next_scene
         pygame.mixer.music.load(self.assets.sounds.ambient_evening())
         pygame.mixer.music.play(-1)
 

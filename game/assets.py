@@ -230,6 +230,14 @@ class Sounds:
         """Get cicada music path."""
         return "assets/sounds/music/cicada.mp3"
 
+    def rain(self) -> str:
+        """Get rain music path."""
+        return "assets/sounds/music/rain.mp3"
+
+    def silence_of_shrine(self) -> str:
+        """Get silence of shrine music path."""
+        return "assets/sounds/music/silence_of_shrine.mp3"
+
     def button_click_1(self) -> str:
         """Get button click sound effect path."""
         return "assets/sounds/sfx/button_click_1.mp3"

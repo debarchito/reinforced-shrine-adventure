@@ -7,9 +7,10 @@ from game.surfaces.pause import PauseSurface
 from game.surfaces.settings import SettingsSurface
 from game.surfaces.question import QuestionSurface
 from game.surfaces._2_packing import PackingSurface
-from game.surfaces._3_walk_to_gate import WalkToGateSurface
-from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
 from game.surfaces.end_credits import EndCreditsSurface
+from game.surfaces._3_walk_to_gate import WalkToGateSurface
+from game.surfaces._4_mountain_path import MountainPathSurface
+from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
 
 
 def setup_surface_patcher() -> dict[str, float]:
@@ -55,6 +56,7 @@ def main() -> None:
         "walk_to_gate": WalkToGateSurface,
         "question": QuestionSurface,
         "end_credits": EndCreditsSurface,
+        "mountain_path": MountainPathSurface,
     }
 
     # Initialize all surfaces at once
