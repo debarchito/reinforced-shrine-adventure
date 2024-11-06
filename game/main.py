@@ -41,8 +41,7 @@ def main() -> None:
     assets = Assets()
     info = pygame.display.Info()
     surface = pygame.display.set_mode(
-        (info.current_w, info.current_h),
-        pygame.FULLSCREEN | pygame.SCALED
+        (info.current_w, info.current_h), pygame.FULLSCREEN | pygame.SCALED
     )
 
     # Initialize the surface manager and surfaces

@@ -47,11 +47,14 @@ class Backgrounds:
 
     def maintenance_station(self, namehint: str = "") -> pygame.Surface:
         """Load maintenance station background."""
-        return pygame.image.load("assets/images/backgrounds/maintenance_station.jpg", namehint)
+        return pygame.image.load(
+            "assets/images/backgrounds/maintenance_station.jpg", namehint
+        )
 
     def beach(self, namehint: str = "") -> pygame.Surface:
         """Load beach house background."""
         return pygame.image.load("assets/images/backgrounds/beach.jpg", namehint)
+
 
 class UI:
     """Load and provide type-safe access to UI elements."""

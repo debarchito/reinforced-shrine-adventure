@@ -51,7 +51,7 @@ class Surface(ABC):
     @abstractmethod
     def update(self, delta_time: float) -> None:
         """Update the state of this surface.
-        
+
         Args:
             delta_time: Time elapsed since last frame in seconds
         """
@@ -102,11 +102,13 @@ class SurfaceManager:
         if self.active_surface and self.active_surface.is_active:
             # Calculate delta time (time since last frame)
             current_time = pygame.time.get_ticks()
-            if not hasattr(self, 'last_update_time'):
+            if not hasattr(self, "last_update_time"):
                 self.last_update_time = current_time
-            delta_time = (current_time - self.last_update_time) / 1000.0  # Convert to seconds
+            delta_time = (
+                current_time - self.last_update_time
+            ) / 1000.0  # Convert to seconds
             self.last_update_time = current_time
-            
+
             # Pass delta_time to the surface's update method
             self.active_surface.update(delta_time)
 
@@ -200,7 +202,9 @@ class SceneDynamics:
         for name in ["Aie", "Haruto", "Ryu", "Kaori", "Airi", "Kanae"]
     }
 
-    def __init__(self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager) -> None:
+    def __init__(
+        self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager
+    ) -> None:
         """Initialize SceneDynamics with a surface and assets."""
         self.surface = surface
         self.assets = assets
@@ -693,12 +697,14 @@ class SceneDynamics:
         max_scroll = self.__calculate_history_scroll_height()
         keys = pygame.key.get_pressed()
         current_time = pygame.time.get_ticks()
-        
+
         # Handle mouse wheel scrolling with smooth animation
         for event in pygame.event.get(pygame.MOUSEWHEEL):
             scroll_amount = event.y * 40  # Adjusted for better feel
-            target = max(0, min(max_scroll, self.history_scroll_position - scroll_amount))
-            
+            target = max(
+                0, min(max_scroll, self.history_scroll_position - scroll_amount)
+            )
+
             self.history_scroll_target = target
             self.history_scroll_start = self.history_scroll_position
             self.history_scroll_time = current_time
@@ -713,7 +719,9 @@ class SceneDynamics:
             self.history_scroll_time = current_time
             self.history_scroll_duration = 100  # Reduced from 150ms to 100ms
         elif keys[pygame.K_DOWN]:
-            target = min(max_scroll, self.history_scroll_position + self.history_scroll_speed)
+            target = min(
+                max_scroll, self.history_scroll_position + self.history_scroll_speed
+            )
             self.history_scroll_target = target
             self.history_scroll_start = self.history_scroll_position
             self.history_scroll_time = current_time
@@ -726,10 +734,12 @@ class SceneDynamics:
                 # Use easeOutQuint for smoother deceleration
                 progress = elapsed / self.history_scroll_duration
                 progress = 1 - pow(1 - progress, 5)
-                
-                self.history_scroll_position = self.history_scroll_start + (
-                    self.history_scroll_target - self.history_scroll_start
-                ) * progress
+
+                self.history_scroll_position = (
+                    self.history_scroll_start
+                    + (self.history_scroll_target - self.history_scroll_start)
+                    * progress
+                )
             else:
                 self.history_scroll_position = self.history_scroll_target
                 self.history_scroll_time = 0
@@ -844,6 +854,7 @@ class SceneDynamics:
                 current_width += word_width
 
         return line_count
+
     def check_story_end(self) -> None:
         """Check if story has ended and transition to end credits if needed."""
         if not self.story.can_continue() and not self.story.get_current_choices():
@@ -869,13 +880,13 @@ class SceneDynamics:
         while True:
             elapsed_time = pygame.time.get_ticks() - start_time
             progress = min(1.0, elapsed_time / duration)
-            
+
             # Smooth easeInOutCubic function
             if progress < 0.5:
                 progress = 4 * progress * progress * progress
             else:
                 progress = 1 - pow(-2 * progress + 2, 3) / 2
-                
+
             alpha = max(0, int(255 * (1 - progress)))
             fade_surface.set_alpha(alpha)
             surface.blit(self.background_image, (0, 0))
@@ -886,4 +897,3 @@ class SceneDynamics:
                 break
 
             clock.tick(120)  # Increased from 60 to 120 FPS for smoother animation
-

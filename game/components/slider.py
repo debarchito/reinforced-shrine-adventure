@@ -57,22 +57,28 @@ class Slider:
                 if self.rect.collidepoint(event.pos):
                     self.dragging = True
                     self.handle.x = max(
-                        self.rect.x, min(event.pos[0] - self.handle.width // 2, 
-                        self.rect.right - self.handle.width)
+                        self.rect.x,
+                        min(
+                            event.pos[0] - self.handle.width // 2,
+                            self.rect.right - self.handle.width,
+                        ),
                     )
                     self.__update_value_from_handle()
             case pygame.MOUSEBUTTONUP:
                 self.dragging = False
             case pygame.MOUSEMOTION if self.dragging:
                 self.handle.x = max(
-                    self.rect.x, min(event.pos[0] - self.handle.width // 2, 
-                    self.rect.right - self.handle.width)
+                    self.rect.x,
+                    min(
+                        event.pos[0] - self.handle.width // 2,
+                        self.rect.right - self.handle.width,
+                    ),
                 )
                 self.__update_value_from_handle()
 
     def draw(self, surface: pygame.Surface) -> None:
         """Draw the slider background, filled portion and handle."""
-        
+
         filled_width = int(
             self.rect.width
             * ((self.value - self.min_value) / (self.max_value - self.min_value))
