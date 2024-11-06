@@ -13,7 +13,6 @@ from game.components.text import Text
 from typing import Optional, TypedDict, Callable
 from game.components.choice_banner import ChoiceBanner
 from game.components.dialogue_banner import DialogueBanner
-import gc
 
 
 class HistoryEntry(TypedDict):
@@ -77,6 +76,7 @@ class SurfaceManager:
         "current_global_sfx_volume",
         "sfx_objects",
         "last_update_time",
+        "last_active_scene_name",
     )
 
     def __init__(self, surface: pygame.Surface, assets: Assets) -> None:
@@ -91,6 +91,7 @@ class SurfaceManager:
         self.sfx_objects = []
         self.last_update_time = pygame.time.get_ticks()
         self.scene = SceneDynamics(self.surface, self.assets, self)
+        self.last_active_scene_name = "summer_break_choice"
 
     def on_event(self, event: pygame.event.Event) -> None:
         """Handle events for the active surface."""
@@ -127,6 +128,14 @@ class SurfaceManager:
                 .lower()
                 .replace("_surface", "")
             )
+            if self.last_active_surface_name not in [
+                "root",
+                "end_credits",
+                "settings",
+                "pause",
+                "question",
+            ]:
+                self.last_active_scene_name = self.last_active_surface_name
 
         self.active_surface = self.surfaces.get(name)
         self.active_surface_name = name
@@ -863,37 +872,3 @@ class SceneDynamics:
                 if surface.surface == self.surface:
                     self.manager.set_active_surface_by_name("end_credits")
                     return
-
-    def fade_transition(
-        self,
-        surface: pygame.Surface,
-        color: tuple[int, int, int] = (0, 0, 0),
-        duration: int = 800,  # Reduced from 1000ms to 800ms
-    ) -> None:
-        """Fade transition between surfaces with smooth easing."""
-        fade_surface = pygame.Surface(surface.get_size())
-        fade_surface.fill(color)
-        fade_surface.set_alpha(255)
-        clock = pygame.time.Clock()
-        start_time = pygame.time.get_ticks()
-
-        while True:
-            elapsed_time = pygame.time.get_ticks() - start_time
-            progress = min(1.0, elapsed_time / duration)
-
-            # Smooth easeInOutCubic function
-            if progress < 0.5:
-                progress = 4 * progress * progress * progress
-            else:
-                progress = 1 - pow(-2 * progress + 2, 3) / 2
-
-            alpha = max(0, int(255 * (1 - progress)))
-            fade_surface.set_alpha(alpha)
-            surface.blit(self.background_image, (0, 0))
-            surface.blit(fade_surface, (0, 0))
-            pygame.display.flip()
-
-            if alpha == 0:
-                break
-
-            clock.tick(120)  # Increased from 60 to 120 FPS for smoother animation

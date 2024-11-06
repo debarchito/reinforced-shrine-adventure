@@ -178,7 +178,7 @@ class QuestionSurface(Surface):
 
         self.back_button.on_event(event)
 
-    def update(self) -> None:
+    def update(self, delta_time: float) -> None:
         """Update the state of help menu components."""
         self.back_button.update()
 

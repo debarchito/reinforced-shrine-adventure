@@ -112,10 +112,11 @@ class RootSurface(Surface):
     def __start_game(self) -> None:
         """Transition to the first game scene."""
         summer_break_surface = cast(
-            SummerBreakChoiceSurface, self.manager.surfaces["summer_break_choice"]
+            SummerBreakChoiceSurface,
+            self.manager.surfaces[self.manager.last_active_scene_name],
         )
         summer_break_surface.fade_transition(self.surface)
-        self.manager.set_active_surface_by_name("summer_break_choice")
+        self.manager.set_active_surface_by_name(self.manager.last_active_scene_name)
 
     def hook(self) -> None:
         """Hook up necessary components for this surface."""

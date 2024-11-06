@@ -156,7 +156,7 @@ class WalkToGateSurface(Surface):
                 self.scene.handle_choice_selection(choice_idx)
                 break
 
-    def update(self) -> None:
+    def update(self, delta_time: float) -> None:
         """Update the state of surface components."""
         self.question_button.update()
         self.scene.handle_history_scroll()
