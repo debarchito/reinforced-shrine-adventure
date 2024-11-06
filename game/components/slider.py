@@ -35,6 +35,7 @@ class Slider:
 
     def __calculate_handle_x(self, value: float) -> int:
         """Calculate x position of handle based on value."""
+
         return self.rect.x + int(
             self.rect.width
             * ((value - self.min_value) / (self.max_value - self.min_value))
@@ -42,6 +43,7 @@ class Slider:
 
     def __update_value_from_handle(self) -> None:
         """Update slider value based on handle position."""
+
         self.value = self.min_value + (self.max_value - self.min_value) * (
             (self.handle.x - self.rect.x) / self.rect.width
         )
@@ -49,6 +51,7 @@ class Slider:
 
     def on_event(self, event: pygame.event.Event) -> None:
         """Handle mouse events for dragging the slider handle."""
+
         match event.type:
             case pygame.MOUSEBUTTONDOWN:
                 if self.rect.collidepoint(event.pos):
@@ -69,6 +72,7 @@ class Slider:
 
     def draw(self, surface: pygame.Surface) -> None:
         """Draw the slider background, filled portion and handle."""
+        
         filled_width = int(
             self.rect.width
             * ((self.value - self.min_value) / (self.max_value - self.min_value))
