@@ -83,7 +83,6 @@ class SurfaceManager:
         """Initialize the SurfaceManager with a target surface and assets."""
         self.surface = surface
         self.assets = assets
-        self.scene = SceneDynamics(self, self.surface, self.assets)
         self.surfaces = {}
         self.last_active_surface_name = None
         self.active_surface = None
@@ -91,6 +90,7 @@ class SurfaceManager:
         self.current_global_sfx_volume = 1.0
         self.sfx_objects = []
         self.last_update_time = pygame.time.get_ticks()
+        self.scene = SceneDynamics(self.surface, self.assets, self)
 
     def on_event(self, event: pygame.event.Event) -> None:
         """Handle events for the active surface."""
@@ -171,12 +171,14 @@ class SceneDynamics:
         "manager",
         "surface",
         "assets",
+        "manager",
         "story",
         "choice_banners",
         "dialogue_banner",
         "character_sprite",
         "character_border",
         "button_click_1",
+        "button_click_2",
         "on_scene_complete",
         "history",
         "show_history",
@@ -198,18 +200,21 @@ class SceneDynamics:
         for name in ["Aie", "Haruto", "Ryu", "Kaori", "Airi", "Kanae"]
     }
 
-    def __init__(self, manager: SurfaceManager, surface: pygame.Surface, assets: Assets) -> None:
+    def __init__(self, surface: pygame.Surface, assets: Assets, manager: SurfaceManager) -> None:
         """Initialize SceneDynamics with a surface and assets."""
-        self.manager = manager
         self.surface = surface
         self.assets = assets
+        self.manager = manager
         self.story = assets.story
         self.choice_banners = []
         self.dialogue_banner = None
         self.character_sprite = None
         self.character_border = self.assets.images.ui.border_character_wood()
-        self.button_click_1 = pygame.mixer.Sound(assets.sounds.button_click_1())
         self.on_scene_complete: Optional[Callable[[str], None]] = None
+        self.button_click_1 = pygame.mixer.Sound(self.assets.sounds.button_click_1())
+        self.button_click_2 = pygame.mixer.Sound(self.assets.sounds.button_click_2())
+        self.manager.sfx_objects.append(self.button_click_1)
+        self.manager.sfx_objects.append(self.button_click_2)
         self.history = []
         self.show_history = False
         self.history_scroll_position = 0
@@ -254,7 +259,7 @@ class SceneDynamics:
             font=self.assets.fonts.monogram_extended(50),
             character_name=char_name,
             character_name_color=(182, 160, 118),
-            on_advance=self.button_click_1,
+            on_advance=self.button_click_2,
             x_offset=int(self.screen_width * 0.25),
             y_offset=int(self.screen_height * 0.07),
         )

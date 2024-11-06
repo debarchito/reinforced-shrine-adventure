@@ -1,8 +1,10 @@
 INCLUDE 1_summer_break_choice.ink
 INCLUDE 2_packing.ink
 INCLUDE 3_walk_to_gate.ink
-INCLUDE 3_1_beach_path.ink
-INCLUDE 3_2_mountain_path.ink
+INCLUDE 4_1_beach_path.ink
+INCLUDE 4_2_mountain_path.ink
+INCLUDE 5_1_station_night.ink
+INCLUDE 5_2_watch_storm.ink
 
 // Details
 VAR player_name = "Aie"
@@ -17,5 +19,7 @@ VAR has_snacks = false
 VAR has_water = false
 VAR has_first_aid_kit = false
 VAR has_flashlight = false
+// Routes
+VAR took_beach_path = false
 
 -> 1_summer_break_choice

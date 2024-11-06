@@ -17,7 +17,7 @@ Kaori bursts into the classroom like a whirlwind, her eyes practically sparkling
 
 - Kaori's gaze sweeps the room like a searchlight, landing on you and your usual squad: Airi (the worrier), Kanae (the voice of reason), Ryu (the adventurer), and Haruto (the peacekeeper).
 
-@Kaori: Why don't we visit this SUPER AWESOME shrine for a test of courage? There might even be hidden treasure!
+@Kaori: Why don't we visit this SUPER AWESOME shrine? There's a rumor about hidden treasure somewhere around there!
 
 @Airi: A shrine... a treasure... what? Slow down!
 
@@ -25,9 +25,9 @@ Kaori bursts into the classroom like a whirlwind, her eyes practically sparkling
 
 @Kaori: Pffft, breathing is overrated when you've got NEWS THIS BIG!
 
-@Kaori: Ya'll know that spooky abandoned amusement park by the ocean in Ukiyo? Well, there's this HUGE beach on the northern side.
+@Kaori: Remember that spooky abandoned amusement park by the ocean in Ukiyo? Well, there's this HUGE beach on the northern side.
 
-@Kaori: It's like, BOOM - mountains! SPLASH - ocean! And right there, this amazing old shrine just sitting at the top of this hill! And get this - it's TOTALLY haunted!
+@Kaori: It's a place where the mountains and the ocean meet...and right there, this amazing old shrine just sitting at the top of this hill! And get this - it's TOTALLY haunted!
 
 * [Share the enthusiasm] 
     ~ curiosity += 1
@@ -39,7 +39,7 @@ Kaori bursts into the classroom like a whirlwind, her eyes practically sparkling
     You give your best skeptical look.
     @{player_name}: Haunted? Really, Kaori?
 
-- @Kaori: The stairs to the shrine? They start RIGHT AT THE BEACH! It's like something straight outta those magical girl animes!
+- @Kaori: The stairs to the shrine you ask (author's note: nobody asked)? They start RIGHT AT THE BEACH! It's like something straight outta those magical girl animes!
 
 @Kanae: Inside voice, Kaori. INSIDE. VOICE.
 
@@ -51,7 +51,7 @@ Kaori bursts into the classroom like a whirlwind, her eyes practically sparkling
 * [Defend Kaori's excitement]
     ~ social += 2
     You lean into the energy.
-    @{player_name}: Let her be excited! This actually sounds super cool!
+@{player_name}: I mean, let her be. It's fairly interesting.
 
 - @Kaori: ANYWAY! Here's the best part!
 
@@ -71,7 +71,7 @@ Kaori bursts into the classroom like a whirlwind, her eyes practically sparkling
     ~ social -= 1
     You try to become one with your chair, hoping to avoid the incoming chaos.
     
-- @Kaori: SO! Test of courage time! Who's in?!
+- @Kaori: SO! Who's in?!
 
 @Ryu: Count me in! Better than sitting at home playing games all break!
 
@@ -166,7 +166,6 @@ As your friends chatter excitedly about tomorrow's adventure, you feel a mix of 
     @{player_name}: I'm fine. Just thinking about what to pack.
     - @Haruto: That's the spirit! Maybe bring some snacks to share?
     * [Agree to pack snacks]
-        ~ has_snacks = true
         ~ social += 2
         You decide to pack some instant ramen before you leave tomorrow.
     * [Politely decline]
@@ -194,10 +193,10 @@ As your friends chatter excitedly about tomorrow's adventure, you feel a mix of 
 
 @Kaori: This is going to be the best summer break ever! See you all tomorrow!
 
-The group disperses, leaving you with your thoughts about the upcoming test of courage.
+The group disperses, leaving you with your thoughts about the upcoming adventure.
 
 // Group ending leads to packing
-$jump
+$jump packing
 -> 2_packing
 
 === solo_ending ===
@@ -210,34 +209,30 @@ You head home alone, feeling a mix of relief and regret. As you settle in for a 
 * [Reply with encouragement] 
     ~ social += 1
     @{player_name}: Have fun, guys. Be safe out there.
-    {caution >= 3: You add some safety reminders about bringing first aid kits and checking the weather.}
+    You add some safety reminders about bringing first aid kits and checking the weather.
     -> DONE
 * [Don't reply]
     ~ social -= 2
     You set your phone aside, trying to ignore the pang of regret.
 
 {
-    - supernatural <= -2:
-        As night falls, you feel confident in your decision. 
-        Ghost stories are just stories, and abandoned buildings are genuinely dangerous. Better to be smart than sorry.
     - supernatural >= 2:
         You can't help but wonder if you're missing out on something extraordinary.
         What if the legends about the shrine are true? Still, some mysteries might be better left unexplored.
     - else:
-        The stories about the shrine nag at your mind - whether true or not, they hold an undeniable allure.
+        As night falls, you feel confident in your decision. 
+        Ghost stories are just stories, and abandoned buildings are genuinely dangerous. Better to be smart than sorry.
 }
 
-{social >= 3:
+{social < 4:
     The thought of your friends experiencing this adventure without you leaves an empty feeling in your chest.
     Maybe next time you'll be braver.
 }
 
-{caution >= 3:
-    You remind yourself that safety comes first.
-    Abandoned buildings are dangerous, regardless of any supernatural elements.
-}
+You remind yourself that safety comes first.
+Abandoned buildings are dangerous, regardless of any supernatural elements...yes.
 
-{curiosity >= 3:
+{curiosity >= 0:
     You wonder if you've made the right choice. Part of you wishes you were braver, while another part is glad to be safe at home.
     Your mind keeps wandering back to the mysteries of the shrine. What secrets might it hold? What stories could be waiting to be discovered?
 }
