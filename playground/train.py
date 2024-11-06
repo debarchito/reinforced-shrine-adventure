@@ -13,8 +13,7 @@ Key features:
 - Automatic checkpointing
 - Memory-efficient numpy arrays
 - Progress logging and statistics
-- Dynamic exploration adjustment
-- Success path tracking
+- Entropy reduction for successful paths
 """
 
 import torch
@@ -63,8 +62,7 @@ def main():
     2. Episode rollouts with PPO updates
     3. Live progress visualization
     4. Model checkpointing and results saving
-    5. Success path tracking
-    6. Dynamic exploration adjustment
+    5. Entropy reduction for successful paths
     """
     # Set random seeds for reproducibility
     torch.manual_seed(42)
@@ -77,11 +75,14 @@ def main():
     # Initialize environment and agent
     env = ReinforcedShrineAdventureEnv()
     agent = ShrineAgent(
-        state_size=777, action_size=4
-    )  # Updated state size to match error
+        state_size=773, action_size=4, batch_size=256
+    )  # Increased from 192
 
     # Training parameters
     num_episodes = 1000
+    initial_entropy_coef = 0.02
+    min_entropy_coef = 0.005
+    entropy_decay = 0.98
 
     # Set up live plotting
     plt.ion()  # Turn on interactive mode
@@ -98,20 +99,21 @@ def main():
     ax2.set_ylabel("Moving Average Score")
     ax2.legend()
 
-    # Set initial axis limits to prevent autoscaling delays
+    # Set initial axis limits
     ax1.set_xlim(0, num_episodes)
-    ax1.set_ylim(-10, 50)  # Adjusted for new reward scale
+    ax1.set_ylim(-10, 50)
     ax2.set_xlim(0, num_episodes)
-    ax2.set_ylim(-10, 50)  # Adjusted for new reward scale
+    ax2.set_ylim(-10, 50)
 
-    window_size = 10  # Smaller window for more frequent updates
+    window_size = 10
     scores = np.zeros(num_episodes, dtype=np.float16)
     moving_avg = np.array([], dtype=np.float16)
 
-    # Track successful episodes and paths
+    # Track successful episodes
     success_history = []
     best_reward = float("-inf")
-    success_threshold = 20.0  # Adjusted for new reward scale
+    success_threshold = 20.0
+    current_entropy_coef = initial_entropy_coef
 
     # Train the agent
     print("Starting training...")
@@ -121,8 +123,6 @@ def main():
         done = False
         truncated = False
         episode_choices = []
-        episode_stats = []
-        episode_items = []
 
         while not done and not truncated:
             action, log_prob, value = agent.act(observation)
@@ -131,8 +131,6 @@ def main():
             # Record episode details
             if action < len(observation["choices"]):
                 episode_choices.append(observation["choices"][action])
-                episode_stats.append(observation["stats"].copy())
-                episode_items.append(observation["items"].copy())
 
             agent.memory.add(
                 observation,
@@ -148,27 +146,35 @@ def main():
             observation = next_observation
 
             if len(agent.memory.states) >= agent.batch_size:
-                agent.update()
+                # Update with current entropy coefficient
+                agent.update(entropy_coef=current_entropy_coef)
 
         # Track successful episodes
         was_successful = total_reward > success_threshold
         success_history.append(was_successful)
+
+        # Calculate success rate over recent episodes
+        window = 50  # or another suitable size
+        if len(success_history) >= window:
+            recent_success_rate = sum(success_history[-window:]) / window
+
+            # Adjust entropy based on success rate
+            if recent_success_rate > 0.7:  # if successful more than 70% of time
+                current_entropy_coef = max(
+                    min_entropy_coef, current_entropy_coef * entropy_decay
+                )
+            elif recent_success_rate < 0.3:  # if struggling
+                current_entropy_coef = min(
+                    initial_entropy_coef, current_entropy_coef / entropy_decay
+                )
 
         # If this was the best episode so far, save the successful path
         if total_reward > best_reward:
             best_reward = total_reward
             print(f"\nNew best episode! Reward: {total_reward:.2f}")
             print("Successful choices:", episode_choices)
-            print("Final stats:", episode_stats[-1] if episode_stats else None)
-            print("Final items:", episode_items[-1] if episode_items else None)
-
-        # Adjust exploration based on recent success rate
-        if len(success_history) >= 50:
-            recent_success_rate = sum(success_history[-50:]) / 50
-            # Dynamically adjust entropy coefficient
-            agent.c2 = max(
-                0.01, 0.1 - recent_success_rate * 0.08
-            )  # Adjusted coefficients
+            print("Final items:", observation["items"])
+            print(f"Current entropy coefficient: {current_entropy_coef:.6f}")
 
         scores[episode] = total_reward
 
@@ -207,6 +213,7 @@ def main():
             "model_state_dict": agent.policy.state_dict(),
             "optimizer_state_dict": agent.optimizer.state_dict(),
             "scores": scores,
+            "entropy_coef": current_entropy_coef,
         },
         f"{results_dir}/shrine_agent_{timestamp}.pth",
     )
@@ -219,6 +226,7 @@ def main():
     )
     print(f"Best score: {np.max(scores):.2f}")
     print(f"Success rate: {sum(success_history)/len(success_history)*100:.1f}%")
+    print(f"Final entropy coefficient: {current_entropy_coef:.6f}")
 
     plt.show()  # Keep the final plot window open
 

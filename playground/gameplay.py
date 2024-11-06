@@ -11,7 +11,7 @@ The gameplay loop:
 1. Loads the latest trained model
 2. Initializes environment and agent
 3. Runs interactive episodes with user input between steps
-4. Displays game text, stats, choices and agent decisions
+4. Displays game text, choices and agent decisions
 5. Records and shows history of choices made
 
 Uses numpy arrays for efficient state tracking and statistics.
@@ -66,7 +66,7 @@ def play_game():
     """
     # Initialize environment and agent
     env = ReinforcedShrineAdventureEnv()
-    agent = ShrineAgent(state_size=None, action_size=4)
+    agent = ShrineAgent(state_size=773, action_size=4)
 
     # Load the trained model
     checkpoint = load_latest_model("results")
@@ -76,24 +76,20 @@ def play_game():
     observation, _ = env.reset()
     total_reward = 0
     done = False
+    truncated = False
     choices_made = np.array([], dtype=str)  # Track choices as numpy array
 
-    while not done:
+    while not done and not truncated:
         clear_screen()
         print("\n=== Shrine Adventure ===\n")
 
         # Display current game state
         print(observation["text"])
 
-        # Convert stats to named numpy array for efficient access
-        stats = np.array(observation["stats"])
-        stat_names = np.array(["curiosity", "social", "caution", "supernatural"])
-        print("\nStats:", {name: val for name, val in zip(stat_names, stats)})
-
-        # Convert items to named numpy array
-        items = np.array(observation["items"])
-        item_names = np.array(["talisman", "snacks", "first_aid_kit"])
-        print("Items:", {name: val for name, val in zip(item_names, items)})
+        # Display items
+        item_names = ["talisman", "flashlight", "water", "first_aid_kit", "snacks"]
+        items = observation["items"]
+        print("\nItems:", {name: bool(val) for name, val in zip(item_names, items)})
 
         print("\nChoices:")
         for i, choice in enumerate(observation["choices"]):
@@ -109,9 +105,12 @@ def play_game():
         input("\nPress Enter to continue...")
 
         # Take step
-        next_observation, reward, done, _, _ = env.step(action)
+        next_observation, reward, done, truncated, _ = env.step(action)
         total_reward += reward
         observation = next_observation
+
+        if reward != 0:
+            print(f"\nReward: {reward}")
 
     # Game over
     clear_screen()

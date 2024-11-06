@@ -43,7 +43,7 @@ It's the time to pack. Will you go according to plan, or will you pack light?
     You add a flashlight to your bag. Essential for exploring in the dark.
     -> continue_packing
 
-* [Skip the flashlight]
+* [Skip]
     You decide against bringing a flashlight. Your phone light should be enough... right?
     -> continue_packing
 
@@ -53,7 +53,7 @@ It's the time to pack. Will you go according to plan, or will you pack light?
     You add two water bottles. Staying hydrated is important.
     -> first_aid_choice
     
-* [Skip water]
+* [Skip]
     You decide not to bring water. There might be vending machines nearby.
     -> first_aid_choice
 
@@ -63,17 +63,17 @@ It's the time to pack. Will you go according to plan, or will you pack light?
     Better safe than sorry. You add the first-aid kit.
     -> snacks_choice
     
-* [Skip first aid]
+* [Skip]
     You leave the first aid kit. What could possibly go wrong?
     -> snacks_choice
 
 === snacks_choice ===
 * [Pack snacks?]
     ~ has_snacks = true
-    You pack the plannedsnacks. Food always brings people together.
+    You pack the planned snacks. Food always brings people together.
     -> final_check
     
-* [Skip snacks]
+* [Skip]
     Your stomach might regret this later, but you decide to travel light.
     -> final_check
 

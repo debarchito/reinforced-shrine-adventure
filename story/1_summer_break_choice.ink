@@ -88,7 +88,7 @@ All eyes turn to you like spotlights.
 * [Give in with enthusiasm]
     ~ social += 2
     ~ curiosity += 1
-    @{player_name}: You know what? Let's do this!
+    @{player_name}: You know what? Let's do this! I can't wait to see what's in there!
     @Kaori: YAAAAAAAY!
     -> group_planning
 * [Express doubts]
