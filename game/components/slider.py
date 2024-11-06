@@ -51,13 +51,19 @@ class Slider:
         """Handle mouse events for dragging the slider handle."""
         match event.type:
             case pygame.MOUSEBUTTONDOWN:
-                if self.handle.collidepoint(event.pos):
+                if self.rect.collidepoint(event.pos):
                     self.dragging = True
+                    self.handle.x = max(
+                        self.rect.x, min(event.pos[0] - self.handle.width // 2, 
+                        self.rect.right - self.handle.width)
+                    )
+                    self.__update_value_from_handle()
             case pygame.MOUSEBUTTONUP:
                 self.dragging = False
             case pygame.MOUSEMOTION if self.dragging:
                 self.handle.x = max(
-                    self.rect.x, min(event.pos[0], self.rect.right - self.handle.width)
+                    self.rect.x, min(event.pos[0] - self.handle.width // 2, 
+                    self.rect.right - self.handle.width)
                 )
                 self.__update_value_from_handle()
 
