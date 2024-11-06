@@ -161,6 +161,7 @@ class SceneDynamics:
         "character_sprite",
         "character_border",
         "button_click_1",
+        "button_click_2",
         "on_scene_complete",
         "history",
         "show_history",
@@ -193,6 +194,7 @@ class SceneDynamics:
         self.character_border = self.assets.images.ui.border_character_wood()
         self.button_click_1 = pygame.mixer.Sound(assets.sounds.button_click_1())
         self.on_scene_complete: Optional[Callable[[str], None]] = None
+        self.button_click_2 = pygame.mixer.Sound(assets.sounds.button_click_2())
         self.history = []
         self.show_history = False
         self.history_scroll_position = 0
@@ -237,7 +239,7 @@ class SceneDynamics:
             font=self.assets.fonts.monogram_extended(50),
             character_name=char_name,
             character_name_color=(182, 160, 118),
-            on_advance=self.button_click_1,
+            on_advance=self.button_click_2,
             x_offset=int(self.screen_width * 0.25),
             y_offset=int(self.screen_height * 0.07),
         )
