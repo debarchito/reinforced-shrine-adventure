@@ -130,7 +130,7 @@ class RootSurface(Surface):
         self.cog_button.on_event(event)
         self.quit_button.on_event(event)
 
-    def update(self) -> None:
+    def update(self, delta_time: float) -> None:
         """Update the state of menu components."""
         self.start_button.update()
         self.cog_button.update()

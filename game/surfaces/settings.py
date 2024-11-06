@@ -157,8 +157,8 @@ class SettingsSurface(Surface):
         self.sfx_slider.on_event(event)
         self.music_slider.on_event(event)
 
-    def update(self) -> None:
-        """Update the state of settings components."""
+    def update(self, delta_time: float) -> None:
+        """Update the state of components."""
         self.back_button.update()
 
     def draw(self) -> None:
