@@ -1,3 +1,9 @@
+## Contributors
+
+- `Debarchito` on [GitHub](https://github.com/debarchito)
+- `Subhajit` on [GitHub](https://github.com/HappySR)
+- `Kaustav (CAP FR)` on [GitHub](https://github.com/kaustav-sol)
+
 ## Fonts
 
 - `Datagoblin` on [itch.io](https://datagoblin.itch.io/monogram)

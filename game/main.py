@@ -4,12 +4,17 @@ from game.assets import Assets
 from game.surface import SurfaceManager
 from game.surfaces.root import RootSurface
 from game.surfaces.pause import PauseSurface
+from game.surfaces._7_shrine import ShrineSurface
 from game.surfaces.settings import SettingsSurface
 from game.surfaces.question import QuestionSurface
 from game.surfaces._2_packing import PackingSurface
 from game.surfaces.end_credits import EndCreditsSurface
+from game.surfaces._4_beach_path import BeachPathSurface
+from game.surfaces._5_watch_storm import WatchStormSurface
 from game.surfaces._3_walk_to_gate import WalkToGateSurface
 from game.surfaces._4_mountain_path import MountainPathSurface
+from game.surfaces._5_station_night import StationNightSurface
+from game.surfaces._6_silent_morning import SilentMorningSurface
 from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
 
 
@@ -57,6 +62,11 @@ def main() -> None:
         "question": QuestionSurface,
         "end_credits": EndCreditsSurface,
         "mountain_path": MountainPathSurface,
+        "station_night": StationNightSurface,
+        "watch_storm": WatchStormSurface,
+        "silent_morning": SilentMorningSurface,
+        "shrine": ShrineSurface,
+        "beach_path": BeachPathSurface,
     }
 
     # Initialize all surfaces at once

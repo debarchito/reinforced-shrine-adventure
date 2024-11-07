@@ -1,7 +1,6 @@
 import pygame
 from typing import cast
 from game.assets import Assets
-from game.components.text import Text
 from game.components.button import Button
 from game.surface import Surface, SurfaceManager
 from game.surfaces._1_summer_break_choice import SummerBreakChoiceSurface
@@ -16,7 +15,7 @@ class RootSurface(Surface):
         "manager",
         "info",
         "background",
-        "heading",
+        "logo",
         "button_click_1",
         "start_button",
         "cog_button",
@@ -35,7 +34,7 @@ class RootSurface(Surface):
         self.manager = manager
         self.info = pygame.display.Info()
         self.__setup_background()
-        self.__setup_heading()
+        self.__setup_logo()
         self.__setup_buttons()
 
     def __setup_background(self) -> None:
@@ -45,16 +44,18 @@ class RootSurface(Surface):
             (self.info.current_w, self.info.current_h),
         )
 
-    def __setup_heading(self) -> None:
-        """Initialize heading text."""
-        self.heading = Text(
-            content="Reinforced Shrine Adventure",
-            font=self.assets.fonts.monogram_extended(130),
-            position=(
-                self.surface.get_width() // 2,
-                int(self.surface.get_height() * 0.3),
-            ),
+    def __setup_logo(self) -> None:
+        """Initialize logo image."""
+        logo_surface = pygame.transform.scale(
+            self.assets.logo(),
+            (int(self.surface.get_width() * 0.8), int(self.surface.get_height() * 1.2)),
         )
+        logo_rect = logo_surface.get_rect()
+        logo_rect.center = (
+            self.surface.get_width() // 1.92,  # type: ignore
+            int(self.surface.get_height() * 0.2),
+        )
+        self.logo = (logo_surface, logo_rect)
 
     def __setup_buttons(self) -> None:
         """Initialize menu buttons and sound effects."""
@@ -140,7 +141,8 @@ class RootSurface(Surface):
     def draw(self) -> None:
         """Render the menu components to the surface."""
         self.surface.blit(self.background, (0, 0))
-        self.heading.draw(self.surface)
+        logo_surface, logo_rect = self.logo
+        self.surface.blit(logo_surface, logo_rect)
         self.start_button.draw(self.surface)
         self.cog_button.draw(self.surface)
         self.quit_button.draw(self.surface)

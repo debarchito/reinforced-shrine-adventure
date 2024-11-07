@@ -90,7 +90,7 @@ A particularly violent gust of wind rattles the station's metal door, making eve
     
     @Ryu: *settling down* We still need to keep an eye on the path.
 
-    $jump station_night
+$jump station_night
     -> 5_1_station_night
 
 * [Propose watching for a break]
@@ -102,5 +102,5 @@ A particularly violent gust of wind rattles the station's metal door, making eve
     
     @Ryu: *studying old route maps on wall* According to this, we're more than halfway there.
 
-    $jump watch_storm
+$jump watch_storm
     -> 5_2_watch_storm

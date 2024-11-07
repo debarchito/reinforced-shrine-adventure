@@ -1,7 +1,10 @@
 import pygame
+from typing import cast
 from game.assets import Assets
 from game.components.button import Button
 from game.surface import Surface, SurfaceManager
+from game.surfaces._5_watch_storm import WatchStormSurface
+from game.surfaces._5_station_night import StationNightSurface
 
 
 class MountainPathSurface(Surface):
@@ -104,11 +107,27 @@ class MountainPathSurface(Surface):
         if choice_num is not None and choice_num < len(self.scene.choice_banners):
             self.scene.handle_choice_selection(choice_num)
 
+    def __next_scene(self, scene_name: str) -> None:
+        """Move to the next scene."""
+        if scene_name == "station_night":
+            station_night_surface = cast(
+                StationNightSurface, self.manager.surfaces["station_night"]
+            )
+            station_night_surface.fade_transition(self.surface)
+            self.manager.set_active_surface_by_name("station_night")
+        elif scene_name == "watch_storm":
+            watch_storm_surface = cast(
+                WatchStormSurface, self.manager.surfaces["watch_storm"]
+            )
+            watch_storm_surface.fade_transition(self.surface)
+            self.manager.set_active_surface_by_name("watch_storm")
+
     def hook(self) -> None:
         """Hook up necessary components for this surface."""
         if self.manager.last_active_surface_name not in [None, "pause", "question"]:
             self.scene.setup()
             self.scene.update_choices()
+        self.scene.on_scene_complete = self.__next_scene
         pygame.mixer.music.load(self.assets.sounds.rain())
         pygame.mixer.music.play(-1)
 

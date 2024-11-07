@@ -3,12 +3,11 @@ from typing import cast
 from game.assets import Assets
 from game.components.button import Button
 from game.surface import Surface, SurfaceManager
-from game.surfaces._4_beach_path import BeachPathSurface
-from game.surfaces._4_mountain_path import MountainPathSurface
+from game.surfaces._7_shrine import ShrineSurface
 
 
-class WalkToGateSurface(Surface):
-    """Third game scene surface that handles dialogue and choices."""
+class SilentMorningSurface(Surface):
+    """Fifthgame scene surface that handles dialogue and choices."""
 
     __slots__ = (
         "surface",
@@ -51,23 +50,14 @@ class WalkToGateSurface(Surface):
 
     def __next_scene(self, scene_name: str) -> None:
         """Move to the next scene."""
-        if scene_name == "mountain_path":
-            mountain_path_surface = cast(
-                MountainPathSurface, self.manager.surfaces["mountain_path"]
-            )
-            mountain_path_surface.fade_transition(self.surface)
-            self.manager.set_active_surface_by_name("mountain_path")
-        elif scene_name == "beach_path":
-            beach_path_surface = cast(
-                BeachPathSurface, self.manager.surfaces["beach_path"]
-            )
-            beach_path_surface.fade_transition(self.surface)
-            self.manager.set_active_surface_by_name("beach_path")
+        shrine_surface = cast(ShrineSurface, self.manager.surfaces["shrine"])
+        shrine_surface.fade_transition(self.surface)
+        self.manager.set_active_surface_by_name("shrine")
 
     def __setup_background(self) -> None:
         """Initialize and scale background image."""
         self.background_image = pygame.transform.scale(
-            self.assets.images.backgrounds.abandoned_amusement_park(),
+            self.assets.images.backgrounds.morning_forest(),
             (self.info.current_w, self.info.current_h),
         )
 
@@ -128,7 +118,7 @@ class WalkToGateSurface(Surface):
             self.scene.setup()
             self.scene.update_choices()
         self.scene.on_scene_complete = self.__next_scene
-        pygame.mixer.music.load(self.assets.sounds.ambient_evening())
+        pygame.mixer.music.load(self.assets.sounds.morning_chirp())
         pygame.mixer.music.play(-1)
 
     def on_event(self, event: pygame.event.Event) -> None:

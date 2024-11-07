@@ -4,7 +4,7 @@ Waves creep higher with each surge, already lapping unusually close to the path.
 
 @Kanae: *voice tense* This isn't right... The water shouldn't be this high yet.
 
-@Ryu: *checking phone with shaking hands* There's a coastal flood warning... a spring tide combined with a storm surge. The barometric pressure dropped suddenly.
+@Ryu: *checking phone with shaking hands* There's a coastal flood warning... a tide combined with a storm surge. The barometric pressure dropped suddenly.
 
 @Aie: *face paling* A flood warning? But I checked the weather this morning...no...how could I have missed something this important..?
 
@@ -16,7 +16,7 @@ The realization hits hard — this was the crucial detail everyone overlooked. I
     ~ caution += 2
     @{player_name}: *urgently* We need to move, NOW! Head towards high ground...anywhere but here!
     @Airi: *voice trembling* What's happening? Why is it getting so dark?
-    @{player_name}: Spring tides combined with a storm can raise water levels by several meters, fast. We shouldn't have come this way… damn it.
+    @{player_name}: Tides combined with a storm can raise water levels by several meters, fast. We shouldn't have come this way… damn it.
     @Kanae: *fighting panic* The last major flood here was decades ago. Nobody thought...
 
 * [Look for escape routes]

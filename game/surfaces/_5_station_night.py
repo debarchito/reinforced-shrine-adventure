@@ -1,14 +1,13 @@
 import pygame
-from typing import cast
 from game.assets import Assets
 from game.components.button import Button
 from game.surface import Surface, SurfaceManager
-from game.surfaces._4_beach_path import BeachPathSurface
-from game.surfaces._4_mountain_path import MountainPathSurface
+from typing import cast
+from game.surfaces._6_silent_morning import SilentMorningSurface
 
 
-class WalkToGateSurface(Surface):
-    """Third game scene surface that handles dialogue and choices."""
+class StationNightSurface(Surface):
+    """Fifth game scene surface that handles dialogue and choices."""
 
     __slots__ = (
         "surface",
@@ -49,27 +48,20 @@ class WalkToGateSurface(Surface):
         )
         self.__setup_background()
 
-    def __next_scene(self, scene_name: str) -> None:
-        """Move to the next scene."""
-        if scene_name == "mountain_path":
-            mountain_path_surface = cast(
-                MountainPathSurface, self.manager.surfaces["mountain_path"]
-            )
-            mountain_path_surface.fade_transition(self.surface)
-            self.manager.set_active_surface_by_name("mountain_path")
-        elif scene_name == "beach_path":
-            beach_path_surface = cast(
-                BeachPathSurface, self.manager.surfaces["beach_path"]
-            )
-            beach_path_surface.fade_transition(self.surface)
-            self.manager.set_active_surface_by_name("beach_path")
-
     def __setup_background(self) -> None:
         """Initialize and scale background image."""
         self.background_image = pygame.transform.scale(
-            self.assets.images.backgrounds.abandoned_amusement_park(),
+            self.assets.images.backgrounds.maintenance_station_interior(),
             (self.info.current_w, self.info.current_h),
         )
+
+    def __next_scene(self, scene_name: str) -> None:
+        """Move to the next scene."""
+        silent_morning_surface = cast(
+            SilentMorningSurface, self.manager.surfaces["silent_morning"]
+        )
+        silent_morning_surface.fade_transition(self.surface)
+        self.manager.set_active_surface_by_name("silent_morning")
 
     def fade_transition(
         self,
@@ -128,7 +120,7 @@ class WalkToGateSurface(Surface):
             self.scene.setup()
             self.scene.update_choices()
         self.scene.on_scene_complete = self.__next_scene
-        pygame.mixer.music.load(self.assets.sounds.ambient_evening())
+        pygame.mixer.music.load(self.assets.sounds.rain())
         pygame.mixer.music.play(-1)
 
     def on_event(self, event: pygame.event.Event) -> None:

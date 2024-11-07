@@ -51,6 +51,28 @@ class Backgrounds:
             "assets/images/backgrounds/maintenance_station.jpg", namehint
         )
 
+    def maintenance_station_interior(self, namehint: str = "") -> pygame.Surface:
+        """Load maintenance station interior background."""
+        return pygame.image.load(
+            "assets/images/backgrounds/maintenance_station_interior.png", namehint
+        )
+
+    def broken_bridge(self, namehint: str = "") -> pygame.Surface:
+        """Load broken bridge background."""
+        return pygame.image.load(
+            "assets/images/backgrounds/broken_bridge.png", namehint
+        )
+
+    def morning_forest(self, namehint: str = "") -> pygame.Surface:
+        """Load morning forest background."""
+        return pygame.image.load(
+            "assets/images/backgrounds/morning_forest.png", namehint
+        )
+
+    def shrine(self, namehint: str = "") -> pygame.Surface:
+        """Load shrine background."""
+        return pygame.image.load("assets/images/backgrounds/shrine.png", namehint)
+
     def beach(self, namehint: str = "") -> pygame.Surface:
         """Load beach house background."""
         return pygame.image.load("assets/images/backgrounds/beach.jpg", namehint)
@@ -238,6 +260,10 @@ class Sounds:
         """Get silence of shrine music path."""
         return "assets/sounds/music/silence_of_shrine.mp3"
 
+    def morning_chirp(self) -> str:
+        """Get morning chirp sound effect path."""
+        return "assets/sounds/music/morning_chirp.mp3"
+
     def button_click_1(self) -> str:
         """Get button click sound effect path."""
         return "assets/sounds/sfx/button_click_1.mp3"
@@ -250,10 +276,11 @@ class Sounds:
 class Assets:
     """Provide type-safe access to all game assets."""
 
-    __slots__ = ("fonts", "images", "sounds", "story")
+    __slots__ = ("fonts", "images", "sounds", "story", "logo")
 
     def __init__(self) -> None:
         self.fonts = Fonts()
         self.images = Images()
         self.sounds = Sounds()
         self.story = story_from_file("story/json/story.ink.json")
+        self.logo = lambda: pygame.image.load("assets/images/logo.png")
