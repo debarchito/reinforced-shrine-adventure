@@ -31,20 +31,15 @@ As you carefully unfold it, your flashlight reveals detailed route maps of the s
 
 @Kaori: *leaning in* What's that marking there?
 
-@Haruto: *studying the map* This is interesting... Look at this notation: "Bridge collapse during typhoon season. Emergency zip-line system implemented for maintenance access."
+@Haruto: *studying the map* This is interesting... Look at this: "Bridge collapsed during typhoon season. Emergency zip-line system implemented for maintenance access."
 
-@Ryu: *excited* A zip-line? That means the original route was a dead end..?
+@Ryu: *excited* A zip-line? That means the original route was a dead end all along..?
 
-@Airi: But that years back... Would it even still be there?
-
-{supernatural >= 2:
-    A sudden gust of wind howls through the station's vents, making the papers flutter.
-    The sound almost seems to form words...
-}
+@Airi: But that was years ago... Would it even still be there?
 
 * [Study the map carefully]
     ~ curiosity += 1
-    @{player_name}: These markings show the zip-line route... it goes right over the valley to the shrine platform.
+    @{player_name}: These markings show the zip-line route... they are actually quite detailed.
     
     @Haruto: *tracing the path* If it's still intact, it could save us hours of hiking.
     
@@ -58,19 +53,23 @@ As you carefully unfold it, your flashlight reveals detailed route maps of the s
 
 It's almost as if decicing to stay back paid off silently.
 
-- As the night deepens, your group arranges the emergency blankets on the cleared floor. The storm's fury seems to have lessened somewhat, but rain still drums steadily on the metal roof.
+- As the night deepens, your group arranges the emergency blankets on the cleared floor.
+The storm's fury seems to have lessened somewhat, but rain still drums steadily on the metal roof.
 
 @Airi: *wrapping herself in a blanket* Should we take turns keeping watch?
 
-@Haruto: Good idea. I'll take first shift.
+@Kaori: Good idea. I'll take first shift.
 
 {has_flashlight: 
     You position your flashlight to create a makeshift lantern, casting a warm glow over your makeshift camp.
 }
 
+After a few hours, it's your turn to keep watch. 
 As your friends settle in for the night, you can't help but wonder about the zip-line.
 Could it really offer a way to reach the shrine? And more importantly - should you risk it?
+But the original route is a dead end, so it's not like you have a lot of options.
 
 The maintenance map rests nearby, its secrets waiting to be explored in the morning light.
 
--> DONE
+$jump silent_morning
+-> 6_silent_morning

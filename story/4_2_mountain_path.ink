@@ -95,6 +95,7 @@ A particularly violent gust of wind rattles the station's metal door, making eve
 
 * [Propose watching for a break]
     ~ curiosity += 1
+    ~ stayed_at_station = true
     @{player_name}: Let's watch the storm. If it lets up even a little, we can make a run for it.
     
     @Airi: The shrine can't be too much further...
