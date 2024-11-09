@@ -116,7 +116,7 @@ class EndCreditsSurface(Surface):
         with open("assets/Credits.md", "r", encoding="utf-8") as f:
             credits_content = f.read()
 
-        # max_width = int(self.surface.get_width() * 0.8)
+        max_width = int(self.surface.get_width() * 0.8)  # 80% of screen width
         self.credits_elements = []
 
         # Process each line
@@ -138,19 +138,59 @@ class EndCreditsSurface(Surface):
             else:
                 font = self.assets.fonts.monogram_extended_italic(adjusted_size)
 
-            # Create text component with indentation for bullets
-            text_component = Text(
-                content=text,
-                font=font,
-                position=(
-                    self.surface.get_width() // 2 + styles["indent"],
-                    0,
-                ),  # Add indent to x position
-                color=styles["color"],
-                center=True,
-            )
+            # Word wrap the text
+            is_bullet = text.startswith("• ")
+            words = text.split()
+            current_line = []
+            x_offset = styles["indent"]  # Account for indentation
 
-            self.credits_elements.append(text_component)
+            # If it's a bullet point, keep the bullet with the first word
+            if is_bullet:
+                bullet_and_first_word = [words[0] + " " + words[1]]
+                words = bullet_and_first_word + words[2:]
+
+            for word in words:
+                current_line.append(word)
+                test_line = " ".join(current_line)
+                if font.size(test_line)[0] + x_offset > max_width:
+                    # Line is too long, wrap it
+                    if len(current_line) > 1:
+                        current_line.pop()  # Remove last word
+                        # Create text component for current line
+                        wrapped_text = Text(
+                            content=" ".join(current_line),
+                            font=font,
+                            position=(self.surface.get_width() // 2 + x_offset, 0),
+                            color=styles["color"],
+                            center=True,
+                        )
+                        self.credits_elements.append(wrapped_text)
+                        # For wrapped bullet point lines, add extra indent
+                        if is_bullet:
+                            x_offset += 20  # Add extra indent for wrapped bullet lines
+                        current_line = [word]  # Start new line with the last word
+                    else:
+                        # Single word is too long, force it on its own line
+                        wrapped_text = Text(
+                            content=word,
+                            font=font,
+                            position=(self.surface.get_width() // 2 + x_offset, 0),
+                            color=styles["color"],
+                            center=True,
+                        )
+                        self.credits_elements.append(wrapped_text)
+                        current_line = []
+
+            # Add remaining words as final line
+            if current_line:
+                wrapped_text = Text(
+                    content=" ".join(current_line),
+                    font=font,
+                    position=(self.surface.get_width() // 2 + x_offset, 0),
+                    color=styles["color"],
+                    center=True,
+                )
+                self.credits_elements.append(wrapped_text)
 
             # Add extra spacing after headers
             if styles["add_newline"]:
