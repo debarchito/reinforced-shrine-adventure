@@ -65,4 +65,4 @@ Please check the [assets/Credits.md](assets/Credits.md) file. It contains the cr
 
 ## License
 
-This project is licensed under the `MIT License`. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under [GPL v3.0](LICENSE).
