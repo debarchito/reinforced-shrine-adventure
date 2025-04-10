@@ -17,3 +17,6 @@ wheels/
 
 # training stuff
 **/results/
+
+# Direnv
+.direnv

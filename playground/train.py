@@ -64,28 +64,23 @@ def main():
     4. Model checkpointing and results saving
     5. Entropy reduction for successful paths
     """
-    # Set random seeds for reproducibility
     torch.manual_seed(42)
     np.random.seed(42)
 
-    # Create results directory
     results_dir = "results"
     os.makedirs(results_dir, exist_ok=True)
 
-    # Initialize environment and agent
     env = ReinforcedShrineAdventureEnv()
     agent = ShrineAgent(
         state_size=773, action_size=4, batch_size=256
-    )  # Increased from 192
+    )
 
-    # Training parameters
     num_episodes = 1000
     initial_entropy_coef = 0.02
     min_entropy_coef = 0.005
     entropy_decay = 0.98
 
-    # Set up live plotting
-    plt.ion()  # Turn on interactive mode
+    # plt.ion()
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 10))
     (scores_line,) = ax1.plot([], [], "b-", label="Episode Scores")
     (avg_line,) = ax2.plot([], [], "r-", label="Moving Average")

@@ -52,7 +52,7 @@ def load_latest_model(results_dir):
     model_path = os.path.join(results_dir, latest_model)
 
     print(f"Loading model: {latest_model}")
-    return torch.load(model_path)
+    return torch.load(model_path, weights_only=False)
 
 
 def play_game():
